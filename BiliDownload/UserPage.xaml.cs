@@ -69,9 +69,15 @@ namespace BiliDownload
             }
         }
 
-        private void pwdLoginBtn_Click(object sender, RoutedEventArgs e)
+        private async void pwdLoginBtn_Click(object sender, RoutedEventArgs e)
         {
-
+            var dialog = new ContentDialog()
+            {
+                Title = "提示",
+                Content = "人机验证好难搞，这东西暂时不考虑了",
+                PrimaryButtonText = "知道了。。"
+            };
+            await dialog.ShowAsync();
         }
 
         private void logoutBtn_Click(object sender, RoutedEventArgs e)

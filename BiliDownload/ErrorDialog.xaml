@@ -1,0 +1,18 @@
+﻿<ContentDialog
+    x:Class="BiliDownload.ErrorDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:BiliDownload"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Title="出错啦⊙﹏⊙∥"
+    PrimaryButtonText="查看用户"
+    SecondaryButtonText="知道了..."
+    PrimaryButtonClick="ContentDialog_PrimaryButtonClick"
+    SecondaryButtonClick="ContentDialog_SecondaryButtonClick">
+
+    <Grid>
+        <TextBlock TextWrapping="Wrap" FontFamily="Microsoft Yahei UI" FontSize="20" x:Name="messageTextBlock"/>
+    </Grid>
+</ContentDialog>

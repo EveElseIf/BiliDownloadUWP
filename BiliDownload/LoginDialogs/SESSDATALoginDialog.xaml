@@ -1,0 +1,31 @@
+﻿<ContentDialog
+    x:Class="BiliDownload.LoginDialogs.SESSDATALoginDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:BiliDownload.LoginDialogs"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Title="登录"
+    PrimaryButtonText="登录"
+    SecondaryButtonText="取消"
+    PrimaryButtonClick="ContentDialog_PrimaryButtonClick"
+    SecondaryButtonClick="ContentDialog_SecondaryButtonClick">
+
+    <Grid MinWidth="400">
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <TextBlock Grid.Row="0" Text="使用Session Data登录" FontFamily="Microsoft Yahei UI" FontSize="15"/>
+        <Grid Grid.Row="1" Margin="0,10,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="80"/>
+            </Grid.ColumnDefinitions>
+            <TextBox x:Name="sESSDATATextBox" Grid.Column="0" PlaceholderText="输入你的Session Data" Margin="0,0,5,0"/>
+            <Button x:Name="verifyBtn" Click="verifyBtn_Click" Grid.Column="1" Content="校验" Width="80"/>
+        </Grid>
+
+    </Grid>
+</ContentDialog>

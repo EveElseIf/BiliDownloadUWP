@@ -21,7 +21,11 @@ namespace BiliDownload.Launcher
             var p1 = Process.Start(pi);
             p1.WaitForExit();
 
-            Directory.Delete(cacheFolder, true);
+            try
+            {
+                Directory.Delete(cacheFolder, true);
+            }
+            catch { }
         }
     }
 }

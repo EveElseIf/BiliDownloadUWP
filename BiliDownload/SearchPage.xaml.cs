@@ -34,12 +34,12 @@ namespace BiliDownload
         {
             this.InitializeComponent();
             NavigationCacheMode = NavigationCacheMode.Enabled;
-            Current = this;
+            if (Current == null) Current = this;
         }
 
         public async void searchBtn_Click(object sender, RoutedEventArgs e)
         {
-            if (!Regex.IsMatch(searchTextbox.Text, "[a-zA-z]+://[^\\s]*")) return;
+            //if (!Regex.IsMatch(searchTextbox.Text, "[a-zA-z]+://[^\\s]*")) return;
 
             if (string.IsNullOrWhiteSpace(searchTextbox.Text)) return;
                         
@@ -144,7 +144,7 @@ namespace BiliDownload
                 searchProgressRing.Visibility = Visibility.Collapsed;
 
             MainPage.NavView.SelectedItem = MainPage.NavViewItems[0];
-            this.Frame.Navigate(typeof(DownloadPage), new DownloadNavigateModel()
+            MainPage.ContentFrame.Navigate(typeof(DownloadPage), new DownloadNavigateModel()
             {
                 VideoList = new List<BiliVideo>()
                 {

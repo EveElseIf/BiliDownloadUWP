@@ -4,10 +4,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Storage;
 using Windows.UI.Core.Preview;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -73,11 +75,11 @@ namespace BiliDownload
                 // 订阅退出事件
                 SystemNavigationManagerPreview.GetForCurrentView().CloseRequested += async (s, args) =>
                 {
+                    var deferral = args.GetDeferral();
                     if (DownloadPage.Current.activeDownloadList?.Count < 1) 
                         DownloadXmlHelper.DeleteCurrentDownloads();//当下载列表没任务的时候，删除xml
                     if (DownloadPage.Current.activeDownloadList?.Count > 0)//当下载列表存在任务时
                     {
-                        var deferral = args.GetDeferral();
                         var dialog = new ContentDialog()
                         {
                             Title = "提示",
@@ -97,11 +99,24 @@ namespace BiliDownload
                             DownloadPage.Current.PauseAll();
                             DownloadXmlHelper.StoreCurrentDownloads();//退出时就储存未完成的任务
                         }
-                        deferral.Complete();
                     }
+                    deferral.Complete();
                 };
                 // 确保当前窗口处于活动状态
                 Window.Current.Activate();
+            }
+        }
+        /// <summary>
+        /// 删除所有缓存文件
+        /// </summary>
+        /// <returns></returns>
+        public static async Task CleanCacheAsync()
+        {
+            var folder = ApplicationData.Current.LocalCacheFolder;
+            var files = (await folder.GetFilesAsync()).ToList();
+            foreach (var file in files)
+            {
+                await file.DeleteAsync();
             }
         }
 

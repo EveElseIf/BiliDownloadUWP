@@ -134,6 +134,7 @@
       <DependentUpon>ErrorDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Exception\ParsingVideoException.cs" />
+    <Compile Include="Helper\BiliFavHelper.cs" />
     <Compile Include="Helper\BiliLoginHelper.cs" />
     <Compile Include="Helper\BiliUserHelper.cs" />
     <Compile Include="Helper\BiliVideoHelper.cs" />
@@ -149,14 +150,17 @@
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Model\BiliFav.cs" />
     <Compile Include="Model\BiliUser.cs" />
     <Compile Include="Model\BiliVideo.cs" />
     <Compile Include="Model\BiliVideoInfo.cs" />
     <Compile Include="Model\BiliVideoMaster.cs" />
     <Compile Include="Model\BiliVideoPart.cs" />
-    <Compile Include="Model\Json\BiliBangumi.cs" />
+    <Compile Include="Model\BiliBangumi.cs" />
     <Compile Include="Model\Json\BiliBangumiInfoJson.cs" />
     <Compile Include="Model\Json\BiliJsonBase.cs" />
+    <Compile Include="Model\Json\FavJson.cs" />
+    <Compile Include="Model\Json\FavListJson.cs" />
     <Compile Include="Model\Json\SelfInfoJson.cs" />
     <Compile Include="Model\Json\VideoInfoJson.cs" />
     <Compile Include="Model\Json\OldVideoStreamJson.cs" />

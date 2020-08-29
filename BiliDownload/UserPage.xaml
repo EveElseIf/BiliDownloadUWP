@@ -26,10 +26,54 @@
         </Grid>
         <Grid Grid.Row="1" x:Name="contentGrid">
             <Grid.RowDefinitions>
-                <RowDefinition Height="100"/>
                 <RowDefinition/>
                 <RowDefinition Height="40"/>
             </Grid.RowDefinitions>
+
+            <StackPanel Visibility="Collapsed" x:Name="progressRingStackPanel" Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center" Canvas.ZIndex="999">
+                <ProgressRing x:Name="commonProgressRing" Width="100" Height="100"/>
+                <TextBlock Text="Now Loading..."/>
+            </StackPanel>
+
+            <Grid Grid.Row="0" x:Name="realContentGrid">
+                <Pivot>
+                    <PivotItem Header="收藏夹">
+                        <ListView x:Name="favGridViewList" SelectionMode="None" Loaded="favGridViewList_Loaded" Background="White">
+                            <!--显示多个gridview的列表-->
+                            <ListView.ItemTemplate>
+                                <DataTemplate x:DataType="local:FavViewModel">
+                                    <Grid Margin="20" BorderBrush="AliceBlue" BorderThickness="3">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="60"/>
+                                            <RowDefinition/>
+                                        </Grid.RowDefinitions>
+                                        <TextBlock Text="{x:Bind Title}" FontFamily="Microsoft Yahei UI" FontSize="30" Margin="20,10,0,0"/>
+                                        <GridView x:Name="favVideoGridView" IsItemClickEnabled="True" ItemClick="favVideoGridView_ItemClick" Grid.Row="1" ItemsSource="{x:Bind VideoList}" Margin="20,0,20,0">
+                                            <!--一个收藏夹-->
+                                            <GridView.ItemTemplate>
+                                                <DataTemplate x:DataType="local:FavVideoViewModel">
+                                                    <RelativePanel>
+                                                        <Grid Height="170" Width="190" Margin="20">
+                                                            <Grid.RowDefinitions>
+                                                                <RowDefinition Height="120"/>
+                                                                <RowDefinition/>
+                                                            </Grid.RowDefinitions>
+                                                            <Image Grid.Row="0" Source="{x:Bind CoverImg}"/>
+                                                            <TextBlock Grid.Row="1" Text="{x:Bind Title}" TextWrapping="Wrap"
+                                                                   FontFamily="Microsoft Yahei UI" FontSize="20"/>
+                                                        </Grid>
+                                                    </RelativePanel>
+                                                </DataTemplate>
+                                            </GridView.ItemTemplate>
+                                        </GridView>
+                                    </Grid>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                    </PivotItem>
+                </Pivot>
+            </Grid>
+            <!--这里登录后是不显示的-->
             <Grid x:Name="loginGrid" Grid.RowSpan="999">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="100"/>

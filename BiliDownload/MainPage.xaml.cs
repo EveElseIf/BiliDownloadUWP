@@ -37,6 +37,7 @@ namespace BiliDownload
         };
         public static NavigationView NavView { private set; get; }
         public static List<NavigationViewItem> NavViewItems { private set; get; }
+        public static Frame ContentFrame { private set; get; }
         public MainPage()
         {
             this.InitializeComponent();
@@ -48,6 +49,8 @@ namespace BiliDownload
                 this.SearchItem,//1
                 this.UserItem//2
             };
+            new SearchPage();
+            if (ContentFrame == null) ContentFrame = this.contentFrame;
         }
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {

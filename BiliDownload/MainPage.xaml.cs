@@ -52,9 +52,12 @@ namespace BiliDownload
             new SearchPage();
             if (ContentFrame == null) ContentFrame = this.contentFrame;
         }
-        protected override void OnNavigatedTo(NavigationEventArgs e)
+        protected async override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
+            this.navView.IsPaneOpen = true;
+            await Task.Delay(1500);
+            this.navView.IsPaneOpen = false;
         }
         private void navView_ItemInvoked(NavigationView sender, NavigationViewItemInvokedEventArgs args)
         {

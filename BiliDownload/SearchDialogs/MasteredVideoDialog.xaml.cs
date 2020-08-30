@@ -54,7 +54,7 @@ namespace BiliDownload.SearchDialogs
                 new MasteredVideoDialogViewModel.ComboBoxData("1080P 高清 (需要登录)" ,80),
                 new MasteredVideoDialogViewModel.ComboBoxData("1080P+ 高清(大会员)" ,112),
                 new MasteredVideoDialogViewModel.ComboBoxData("1080P60 高清(大会员)" ,116),
-                new MasteredVideoDialogViewModel.ComboBoxData("4K 超清(大会员)" ,120)
+                //new MasteredVideoDialogViewModel.ComboBoxData("4K 超清(大会员)" ,120)
             };
             vm.ComboBoxDataList = list;
         }
@@ -158,6 +158,21 @@ namespace BiliDownload.SearchDialogs
                     MainPage.NavView.SelectedItem = MainPage.NavViewItems[2];
                     SearchPage.Current.Frame.Navigate(typeof(UserPage));
                 }
+            }
+            catch (NullReferenceException ex)
+            {
+                var dialog = new ContentDialog()
+                {
+                    Title = "错误",
+                    Content = new TextBlock()
+                    {
+                        Text = "该视频不存在dash格式的视频文件",
+                        FontFamily = new FontFamily("Microsoft Yahei UI"),
+                        FontSize = 20
+                    },
+                    PrimaryButtonText = "知道了"
+                };
+                await dialog.ShowAsync();
             }
         }
     }

@@ -100,6 +100,7 @@ namespace BiliDownload
                             DownloadXmlHelper.StoreCurrentDownloads();//退出时就储存未完成的任务
                         }
                     }
+                    CompleteXmlHelper.StoreCompletedDownloads();//储存已完成任务列表
                     deferral.Complete();
                 };
                 // 确保当前窗口处于活动状态

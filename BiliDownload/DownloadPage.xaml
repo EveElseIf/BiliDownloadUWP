@@ -34,8 +34,8 @@
                                     </Grid.RowDefinitions>
                                     <Grid Grid.Row="0">
                                         <Grid.ColumnDefinitions>
-                                            <ColumnDefinition MinWidth="400"/>
                                             <ColumnDefinition/>
+                                            <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
                                         <TextBlock Grid.Column="0"
                                        FontFamily="Microsoft Yahei UI" 
@@ -105,6 +105,9 @@
                                            VerticalAlignment="Center" Margin="0,0,10,0"/>
                                             <HyperlinkButton Click="openFolderBtn_Click" x:Name="open" Margin="0,0,10,0">
                                                 <TextBlock Text="📂" FontSize="20"/>
+                                            </HyperlinkButton>
+                                            <HyperlinkButton Click="removeCompleteBtn_Click" x:Name="removeCompleteBtn" Margin="0,0,10,0">
+                                                <TextBlock Text="❌" FontSize="20"/>
                                             </HyperlinkButton>
                                         </StackPanel>
                                     </Grid>

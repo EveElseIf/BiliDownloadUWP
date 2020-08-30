@@ -102,6 +102,26 @@ namespace BiliDownload
             }
             await Task.WhenAll(tasks);
         }
+        private void CheckComplete()//检查一下已完成的任务
+        {
+            if (CompleteXmlHelper.CheckXml() == false) return;
+            RecreateComplete();
+        }
+        private void RecreateComplete()
+        {
+            var xmlList = CompleteXmlHelper.GetCompleteDownloads();
+            var completeList = new List<CompletedDownloadModel>();
+            foreach (var xml in xmlList)
+            {
+                var model = new CompletedDownloadModel()
+                {
+                    Title = xml.Title,
+                    Size = xml.Size.ToString(),
+                    Path = xml.Path
+                };
+                this.completedDownloadList.Add(model);
+            }
+        }
         protected async override void OnNavigatedTo(NavigationEventArgs e)//当导航到此页面时，检查传入的对象
                                                                           //如果是 DownloadNavigateModel 类就创建下载
         {
@@ -110,7 +130,9 @@ namespace BiliDownload
             {
                 IsResumed = true;
                 await CheckDownloadAsync();
+                CheckComplete();
             }//检查是否有未完成的任务，有就重建
+            //检查是否有已完成的任务，有就添加到完成列表
             if (!(e.Parameter is DownloadNavigateModel)) return;
 
             if(ApplicationData.Current.LocalSettings.Values["downloadPath"] as string == null)//检查下载目录是否为空
@@ -200,6 +222,12 @@ namespace BiliDownload
                 return;
             }
             await Launcher.LaunchFolderPathAsync(path);
+        }
+
+        private void removeCompleteBtn_Click(object sender, RoutedEventArgs e)
+        {
+            var model = (sender as HyperlinkButton).DataContext as CompletedDownloadModel;
+            this.completedDownloadList.Remove(model);
         }
     }
     public class DownloadViewModel : INotifyPropertyChanged
@@ -474,7 +502,7 @@ namespace BiliDownload
             await VideoHelper.MakeVideoAsync(videoFile, audioFile, outputFile.Path);
             ChineseStatus = "已完成";
             IsCompleted = true;
-            CreateCompleted(Title, FullProgress, outputFile.Path);
+            CreateCompleted($"{DownloadName} - {title}", FullProgress, outputFile.Path);
         }
         private void CreateCompleted(string title,ulong size,string path)
         {
@@ -553,6 +581,7 @@ namespace BiliDownload
             get => $"大小 {size / 1000000}Mb";
             set { size = ulong.Parse(value); }
         }
+        public ulong SizeNative { get => size; }
 
         public string Path { get; set; }
     }

@@ -32,7 +32,7 @@ namespace BiliDownload.Helper
             file.Close();
             file.Dispose();
         }
-        public static bool CheckXml()
+        public static bool CheckXml()//xml不存在就创建，当xml内容为空时，直接返回false
         {
             if (!File.Exists(XmlPath))
             { 

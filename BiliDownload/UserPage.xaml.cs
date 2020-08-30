@@ -8,6 +8,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
@@ -33,7 +34,7 @@ namespace BiliDownload
         public static string SESSDATA { get => ApplicationData.Current.LocalSettings.Values["biliUserSESSDATA"] as string; }
         public static long Uid { get => (long)ApplicationData.Current.LocalSettings.Values["biliUserUid"]; }
         bool loginStatus { set; get; }
-        bool favLoader { set; get; } = false;
+        bool favLoaded { set; get; } = false;
         public UserPage()
         {
             this.InitializeComponent();
@@ -136,7 +137,7 @@ namespace BiliDownload
 
         private async void favGridViewList_Loaded(object sender, RoutedEventArgs e)
         {
-            if (favLoader) return;
+            if (favLoaded) return;
             ShowProgressRing();
 
             var favInfoList = await BiliFavHelper.GetUserFavListInfoAsync(Uid, SESSDATA);
@@ -176,23 +177,42 @@ namespace BiliDownload
             this.favGridViewList.ItemsSource = collection;
 
             HideProgressRing();
-            favLoader = true;
+            favLoaded = true;
         }
 
         private async void favVideoGridView_ItemClick(object sender, ItemClickEventArgs e)
         {
-            if ((e.ClickedItem as FavVideoViewModel).Bv == "加载更多") 
+            if ((e.ClickedItem as FavVideoViewModel).Bv == "加载更多")
             {
                 var viewModel = (sender as GridView).DataContext as FavViewModel;
                 await viewModel.GetMoreVideoAsync();
             }
+            else if (!Regex.IsMatch((e.ClickedItem as FavVideoViewModel).Bv, "[B|b][V|v][0-9]*")) return;
             else
             {
-                var infoVideo = e.ClickedItem as FavVideoViewModel;
-                var video = await BiliVideoHelper.GetVideoMasterInfoAsync(infoVideo.Bv, SESSDATA);
-                var dialog = await MasteredVideoDialog.CreateAsync(video);
-                var result = await dialog.ShowAsync();
-                if (result == ContentDialogResult.Secondary) return;
+                try
+                {
+                    var infoVideo = e.ClickedItem as FavVideoViewModel;
+                    var video = await BiliVideoHelper.GetVideoMasterInfoAsync(infoVideo.Bv, SESSDATA);
+                    var dialog = await MasteredVideoDialog.CreateAsync(video);//创建下载对话框
+                    var result = await dialog.ShowAsync();
+                    if (result == ContentDialogResult.Secondary) return;
+                }
+                catch(NullReferenceException ex)
+                {
+                    var dialog = new ContentDialog()
+                    {
+                        Title = "错误",
+                        Content = new TextBlock()
+                        {
+                            Text = "该视频已失效",
+                            FontFamily = new FontFamily("Microsoft Yahei UI"),
+                            FontSize = 20
+                        },
+                        PrimaryButtonText = "知道了"
+                    };
+                    await dialog.ShowAsync();
+                }
             }
         }
     }
@@ -217,7 +237,7 @@ namespace BiliDownload
             {
                 Bv = "加载更多",
                 Title = "加载更多",
-                CoverImg = new BitmapImage(new Uri("ms-appx:///Assets/LockScreenLogo.scale-200.png"))
+                CoverImg = new BitmapImage(new Uri("ms-appx:///Assets/LoadMore.png"))
             });
 
             model.VideoList = list;
@@ -262,7 +282,7 @@ namespace BiliDownload
             {
                 Bv = "加载更多",
                 Title = "加载更多",
-                CoverImg = new BitmapImage(new Uri("ms-appx:///Assets/LockScreenLogo.scale-200.png"))
+                CoverImg = new BitmapImage(new Uri("ms-appx:///Assets/LoadMore.png"))
             });
         }
         public int Id { get; set; }
@@ -290,7 +310,7 @@ namespace BiliDownload
 
                 model.CoverImg = imgSource;
             }
-            catch(System.Exception ex)
+            catch(System.Exception ex)//封面下载不了的异常
             {
                 model.CoverImg = new BitmapImage(new Uri("ms-appx:///Assets/LockScreenLogo.scale-200.png"));
             }

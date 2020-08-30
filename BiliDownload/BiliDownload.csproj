@@ -138,6 +138,7 @@
     <Compile Include="Helper\BiliLoginHelper.cs" />
     <Compile Include="Helper\BiliUserHelper.cs" />
     <Compile Include="Helper\BiliVideoHelper.cs" />
+    <Compile Include="Helper\CompleteXmlHelper.cs" />
     <Compile Include="Helper\DownloadXmlHelper.cs" />
     <Compile Include="Helper\NetHelper.cs" />
     <Compile Include="Helper\VideoHelper.cs" />
@@ -165,6 +166,7 @@
     <Compile Include="Model\Json\VideoInfoJson.cs" />
     <Compile Include="Model\Json\OldVideoStreamJson.cs" />
     <Compile Include="Model\Json\VideoStreamJson.cs" />
+    <Compile Include="Model\Xml\CompletedXmlModel.cs" />
     <Compile Include="Model\Xml\DownloadXmlModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SearchDialogs\BangumiDialog.xaml.cs">
@@ -192,6 +194,7 @@
     </AppxManifest>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Assets\LoadMore.png" />
     <Content Include="Properties\Default.rd.xml" />
     <Content Include="Assets\LockScreenLogo.scale-200.png" />
     <Content Include="Assets\SplashScreen.scale-200.png" />

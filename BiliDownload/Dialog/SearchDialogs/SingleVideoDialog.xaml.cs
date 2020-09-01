@@ -1,4 +1,5 @@
-﻿using BiliDownload.Helper;
+﻿using BiliDownload.Exception;
+using BiliDownload.Helper;
 using BiliDownload.Model;
 using System;
 using System.Collections.Generic;
@@ -57,6 +58,8 @@ namespace BiliDownload.SearchDialogs
         {
             var model = new SingleVideoDialogViewModel();
             model.VideoName = videoInfo.Name;
+            model.Bv = videoInfo.Bv;
+            model.Cid = videoInfo.Cid;
             
             var stream = await NetHelper.HttpGetStreamAsync(videoInfo.CoverUrl, null, null);
             var file = await ApplicationData.Current.LocalCacheFolder.CreateFileAsync("videocovercache", CreationCollisionOption.GenerateUniqueName);
@@ -99,6 +102,22 @@ namespace BiliDownload.SearchDialogs
                 return;
             }
             this.needToClose = true;
+            try
+            {
+                await MainHelper.CreateDownloadAsync
+                    (vm.Bv, vm.Cid, this.QualitySelectionProperty, ApplicationData.Current.LocalSettings.Values["biliUserSESSDATA"] as string);
+            }
+            catch (ParsingVideoException ex)
+            {
+                var dialog = new ErrorDialog(ex.Message);
+                var result = await dialog.ShowAsync();
+
+                if (result == ContentDialogResult.Primary)
+                {
+                    MainPage.ContentFrame.Navigate(typeof(UserPage));
+                    MainPage.NavView.SelectedItem = MainPage.NavViewItems[2];
+                }
+            }
         }
 
         private void ContentDialog_SecondaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
@@ -114,6 +133,8 @@ namespace BiliDownload.SearchDialogs
     }
     public class SingleVideoDialogViewModel
     {
+        public string Bv { get; set; }
+        public long Cid { get; set; }
         public string VideoName { get; set; }
         public ImageSource VideoCover { get; set; }
         public List<VideoQuality> VideoQualityList { get; set; }

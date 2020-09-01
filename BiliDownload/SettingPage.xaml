@@ -23,7 +23,7 @@
                         <RowDefinition/>
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="4*"/>
+                        <ColumnDefinition Width="402"/>
                         <ColumnDefinition Width="50"/>
                         <ColumnDefinition Width="5*"/>
                     </Grid.ColumnDefinitions>
@@ -37,13 +37,27 @@
                         <RowDefinition/>
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="360"/>
+                        <ColumnDefinition Width="405"/>
                         <ColumnDefinition Width="50"/>
                         <ColumnDefinition Width="5*"/>
                     </Grid.ColumnDefinitions>
                     <TextBlock Grid.Row="0" Text="转码CPU占用率" FontFamily="Microsoft Yahei UI" FontSize="30" Margin="20,20,0,20"/>
                     <TextBlock Text="是否限制FFMpeg转码CPU占用率" FontFamily="Microsoft Yahei UI" FontSize="20" Grid.Row="1" Grid.Column="0" Margin="40,10,20,10"/>
                     <ToggleSwitch x:Name="cpuLimitSwitch" Toggled="cpuLimitSwitch_Toggled" Grid.Row="1" Grid.Column="1"/>
+                </Grid>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="405"/>
+                        <ColumnDefinition Width="50"/>
+                        <ColumnDefinition Width="5*"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Row="0" Text="优先下载HEVC编码视频" FontFamily="Microsoft Yahei UI" FontSize="30" Margin="20,20,0,20"/>
+                    <TextBlock Text="是否优先下载HEVC(H.265)编码的视频" FontFamily="Microsoft Yahei UI" FontSize="20" Grid.Row="1" Grid.Column="0" Margin="40,10,20,10"/>
+                    <ToggleSwitch x:Name="hevcDownloadSwitch" Toggled="hevcDownloadSwitch_Toggled" Grid.Row="1" Grid.Column="1"/>
                 </Grid>
                 <!--<Grid>
                     <Grid.RowDefinitions>

@@ -107,7 +107,7 @@ namespace BiliDownload.HelperPage
             await WebView.ClearTemporaryWebDataAsync();
             this.progressRing.Visibility = Visibility.Visible;
             (sender as Button).IsEnabled = false;
-            this.loginWebView.Navigate(new Uri($"https://eveelseif.github.io/geetest-validator?gt={gt}&challenge={challenge}"));
+            this.loginWebView.Navigate(new Uri($"https://eveelseif.gitee.io/geetest-validator?gt={gt}&challenge={challenge}"));
         }
 
         private async void cancelBtn_Click(object sender, RoutedEventArgs e)

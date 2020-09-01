@@ -52,7 +52,7 @@ namespace BiliDownload.SearchDialogs
                 new BangumiDialogViewModel.ComboBoxData("1080P 高清 (需要登录)" ,80),
                 new BangumiDialogViewModel.ComboBoxData("1080P+ 高清(大会员)" ,112),
                 new BangumiDialogViewModel.ComboBoxData("1080P60 高清(大会员)" ,116),
-                new BangumiDialogViewModel.ComboBoxData("4K 超清(大会员)" ,120)
+                //new BangumiDialogViewModel.ComboBoxData("4K 超清(大会员)" ,120)
             };
             vm.ComboBoxDataList = list;
         }
@@ -117,7 +117,21 @@ namespace BiliDownload.SearchDialogs
             this.needToClose = true;
             var quality = (int)this.qualityComboBox.SelectedValue;
 
-            await SearchPage.Current.CreateDownloadsAsync(list, quality, sESSDATA);
+            try
+            {
+                await MainHelper.CreateDownloadsAsync(list, quality, sESSDATA);
+            }
+            catch (ParsingVideoException ex)
+            {
+                var dialog = new ErrorDialog(ex.Message);
+                var result = await dialog.ShowAsync();
+
+                if (result == ContentDialogResult.Primary)
+                {
+                    MainPage.NavView.SelectedItem = MainPage.NavViewItems[2];
+                    MainPage.ContentFrame.Navigate(typeof(UserPage));
+                }
+            }
         }
 
         private void ContentDialog_SecondaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
@@ -137,29 +151,23 @@ namespace BiliDownload.SearchDialogs
                 var info = await BiliVideoHelper.GetSingleVideoInfoAsync(model.Info.Bv, model.Info.Cid, 64, sESSDATA);
                 var dialog = await SingleVideoDialog.CreateAsync(info);
                 var result = await dialog.ShowAsync();
-                if (result == ContentDialogResult.Secondary)
-                { SearchPage.Current.searchBtn_Click(SearchPage.Current, null); return; }
-                var quality = dialog.QualitySelectionProperty;
-
-                await SearchPage.Current.CreateDownloadAsync(model.Info.Bv, model.Info.Cid, quality, sESSDATA);
+                if (result == ContentDialogResult.Secondary)  { this.needToClose = false; await this.ShowAsync(); }
             }
             catch (ParsingVideoException ex)
             {
                 var dialog = new ErrorDialog(ex.Message);
                 var result = await dialog.ShowAsync();
-                SearchPage.Current.Reset();
 
                 if (result == ContentDialogResult.Primary)
                 {
                     MainPage.NavView.SelectedItem = MainPage.NavViewItems[2];
-                    SearchPage.Current.Frame.Navigate(typeof(UserPage));
+                    MainPage.ContentFrame.Navigate(typeof(UserPage));
                 }
             }
             catch(System.Exception ex)
             {
                 var dialog = new ErrorDialog(ex.Message);
                 dialog.PrimaryButtonText = "";
-                SearchPage.Current.Reset();
                 await dialog.ShowAsync();
             }
         }

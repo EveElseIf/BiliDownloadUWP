@@ -144,6 +144,7 @@
     <Compile Include="Helper\BiliVideoHelper.cs" />
     <Compile Include="Helper\CompleteXmlHelper.cs" />
     <Compile Include="Helper\DownloadXmlHelper.cs" />
+    <Compile Include="Helper\MainHelper.cs" />
     <Compile Include="Helper\NetHelper.cs" />
     <Compile Include="Helper\VideoHelper.cs" />
     <Compile Include="Dialog\LoginDialogs\QRcodeLoginDialog.xaml.cs">

@@ -50,8 +50,9 @@ namespace BiliDownload
                 this.SearchItem,//1
                 this.UserItem//2
             };
-            new SearchPage();
             if (ContentFrame == null) ContentFrame = this.contentFrame;
+            if (ApplicationData.Current.LocalSettings.Values["HEVC"] == null)
+                ApplicationData.Current.LocalSettings.Values["HEVC"] = false;
         }
         protected async override void OnNavigatedTo(NavigationEventArgs e)
         {
@@ -63,12 +64,14 @@ namespace BiliDownload
             {
                 var dialog = new ContentDialog()
                 {
-                    Title = "初次使用",
+                    Title = "初次使用，请阅读说明",
                     Content = new TextBlock()
                     {
-                        Text = "欢迎使用，由于您是初次启动本程序，请完成设置",
+                        Text = "欢迎使用，此程序处于早期测试版本，您可能会遇到各种各样的BUG。由于您是初次启动本程序，请完成设置。",
                         FontFamily = new FontFamily("Microsoft Yahei UI"),
-                        FontSize = 20
+                        FontSize = 20,
+                        TextWrapping = TextWrapping.Wrap,
+                        Margin = new Thickness(10)
                     },
                     PrimaryButtonText = "前往设置",
                     SecondaryButtonText = "关闭"

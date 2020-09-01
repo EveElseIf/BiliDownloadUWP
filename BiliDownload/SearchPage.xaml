@@ -22,7 +22,7 @@
                 <ColumnDefinition Width="40"/>
             </Grid.ColumnDefinitions>
             <TextBox Grid.Column="0" x:Name="searchTextbox"
-                     PlaceholderText="输入url或bv进行搜索" FontSize="20" 
+                     PlaceholderText="输入url、bv、av、ss、ep进行搜索" FontSize="20" 
                      FontFamily="Microsoft Yahei UI"/>
             <Button Grid.Column="1" Content="🔍" x:Name="searchBtn" 
                     Click="searchBtn_Click" Height="40"/>

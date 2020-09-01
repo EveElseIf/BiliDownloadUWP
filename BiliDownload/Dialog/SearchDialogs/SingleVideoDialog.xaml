@@ -23,7 +23,7 @@
                 <RowDefinition/>
             </Grid.RowDefinitions>
             <TextBlock Grid.Row="0" Text="{x:Bind vm.VideoName}" TextWrapping="Wrap" FontFamily="Microsoft Yahei UI" FontSize="20" Margin="10,10,10,0"/>
-            <Image Grid.Row="1" Source="{x:Bind vm.VideoCover}" Stretch="Uniform"/>
+            <Image Grid.Row="1" Source="{x:Bind vm.VideoCover}" Stretch="Uniform" VerticalAlignment="Bottom"/>
         </Grid>
         <ListBox x:Name="qualitySelectListBox" Grid.Column="1"
                  ItemsSource="{x:Bind vm.VideoQualityList}"

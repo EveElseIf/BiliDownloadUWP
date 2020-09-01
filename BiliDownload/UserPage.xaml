@@ -15,12 +15,12 @@
         </Grid.RowDefinitions>
         <ProgressRing x:Name="initializingProgressRing" 
                       HorizontalAlignment="Left" Height="60" Width="60" Margin="50,0,0,0"/>
-        <Grid Visibility="Collapsed" x:Name="avatarAndNameGrid" Grid.Row="0" Margin="30">
+        <Grid Visibility="Collapsed" x:Name="avatarAndNameGrid" VerticalAlignment="Center" Grid.Row="0" Margin="30,0,0,0">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="100"/>
+                <ColumnDefinition Width="150"/>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
-            <Image x:Name="avatarImage" Grid.Column="0" Height="60" Width="60"/>
+            <Image x:Name="avatarImage" Grid.Column="0" Height="100" Width="100"/>
             <TextBlock Grid.Column="1" Text="用户名" x:Name="userNameTextBlock"
                        FontFamily="Microsoft Yahei UI" FontSize="50" VerticalAlignment="Center"/>
         </Grid>
@@ -67,6 +67,11 @@
                                                         </RelativePanel>
                                                     </DataTemplate>
                                                 </GridView.ItemTemplate>
+                                                <GridView.ItemContainerTransitions>
+                                                    <TransitionCollection>
+                                                        <EntranceThemeTransition FromHorizontalOffset="400"/>
+                                                    </TransitionCollection>
+                                                </GridView.ItemContainerTransitions>
                                             </GridView>
                                         </ScrollViewer>
                                     </Grid>
@@ -88,6 +93,11 @@
                                     </Grid>
                                 </DataTemplate>
                             </GridView.ItemTemplate>
+                            <GridView.ItemContainerTransitions>
+                                <TransitionCollection>
+                                    <EntranceThemeTransition FromHorizontalOffset="400"/>
+                                </TransitionCollection>
+                            </GridView.ItemContainerTransitions>
                         </GridView>
                     </PivotItem>
                 </Pivot>
@@ -105,7 +115,7 @@
                     <TextBlock Text="使用二维码登录" FontFamily="Microsoft Yahei UI" FontSize="20"/>
                 </HyperlinkButton>
                 <HyperlinkButton Grid.Row="2" x:Name="pwdLoginBtn" Click="pwdLoginBtn_Click" Margin="20,5,0,5">
-                    <TextBlock Text="使用账号密码登录（还没做好）" FontFamily="Microsoft Yahei UI" FontSize="20"/>
+                    <TextBlock Text="使用账号密码登录" FontFamily="Microsoft Yahei UI" FontSize="20"/>
                 </HyperlinkButton>
                 <HyperlinkButton Grid.Row="3" x:Name="sESSDATALoginBtn" Click="sESSDATALoginBtn_Click" Margin="20,5,0,5">
                     <TextBlock Text="使用Session Data登录" FontFamily="Microsoft Yahei UI" FontSize="20"/>

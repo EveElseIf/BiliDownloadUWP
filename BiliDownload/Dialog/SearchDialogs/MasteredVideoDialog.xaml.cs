@@ -121,7 +121,7 @@ namespace BiliDownload.SearchDialogs
             this.needToClose = true;
             var quality = (int)this.qualityComboBox.SelectedValue;
 
-            await SearchPage.Current.CreateDownloadsAsync(list, quality, sESSDATA);
+            await MainHelper.CreateDownloadsAsync(list, quality, sESSDATA);
         }
 
         private void ContentDialog_SecondaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
@@ -141,22 +141,17 @@ namespace BiliDownload.SearchDialogs
                 var info = await BiliVideoHelper.GetSingleVideoInfoAsync(model.Info.Bv, model.Info.Cid, 64, sESSDATA);
                 var dialog = await SingleVideoDialog.CreateAsync(info);
                 var result = await dialog.ShowAsync();
-                if (result == ContentDialogResult.Secondary)
-                { SearchPage.Current.searchBtn_Click(SearchPage.Current, null); return; }
-                var quality = dialog.QualitySelectionProperty;
-
-                await SearchPage.Current.CreateDownloadAsync(model.Info.Bv, model.Info.Cid, quality, sESSDATA);
+                if (result == ContentDialogResult.Secondary) { this.needToClose = false; await this.ShowAsync(); }
             }
             catch (ParsingVideoException ex)
             {
                 var dialog = new ErrorDialog(ex.Message);
                 var result = await dialog.ShowAsync();
-                SearchPage.Current.Reset();
 
                 if (result == ContentDialogResult.Primary)
                 {
                     MainPage.NavView.SelectedItem = MainPage.NavViewItems[2];
-                    SearchPage.Current.Frame.Navigate(typeof(UserPage));
+                    MainPage.ContentFrame.Navigate(typeof(UserPage));
                 }
             }
             catch (NullReferenceException ex)

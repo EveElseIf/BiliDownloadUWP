@@ -18,7 +18,7 @@
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
         <Grid Grid.Column="0">
-            <TextBlock Text="{x:Bind vm.VideoTitle}" FontFamily="Microsoft Yahei UI" FontSize="20" Margin="10"/>
+            <TextBlock Text="{x:Bind vm.VideoTitle}" TextWrapping="Wrap" Width="220" FontFamily="Microsoft Yahei UI" FontSize="20" Margin="10"/>
             <Image HorizontalAlignment="Right" Source="{x:Bind vm.VideoCover}" Margin="10" Stretch="Uniform" VerticalAlignment="Bottom"/>
         </Grid>
         <Grid Grid.Column="1">

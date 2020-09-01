@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.Storage;
 
 namespace BiliDownload.Helper
 {
@@ -143,6 +144,11 @@ namespace BiliDownload.Helper
                 (await NetHelper.HttpGet("http://api.bilibili.com/x/player/playurl",
                 cookies, $"bvid={bv}", $"cid={cid}", $"qn={quality}", "fnval=16"));
 
+            if (json.data == null)
+            {
+                throw new ParsingVideoException("视频解析失败，请检查是否缺少大会员权限");
+            }
+
             var video = new BiliVideo();
 
             video.Bv = bv;
@@ -152,14 +158,38 @@ namespace BiliDownload.Helper
             video.Quality = (BiliVideoQuality)json.data.quality;
             video.Title = master.Title;
 
-            if (json.data.dash.video.Where(v => v.id == quality && v.codecs.Contains("avc")).Count() > 0)
+            if ((bool)ApplicationData.Current.LocalSettings.Values["HEVC"])//优先使用hevc
             {
-                video.VideoUrl = json.data.dash.video.Where(v => v.id == quality && v.codecs.Contains("avc")).FirstOrDefault().baseUrl;
+                if (json.data.dash.video.Where(v => v.id == quality && v.codecs.Contains("hev")).Count() > 0)
+                {
+                    video.VideoUrl = json.data.dash.video.Where(v => v.id == quality && v.codecs.Contains("hev")).FirstOrDefault().baseUrl;
+                }
+                else if(json.data.dash.video.Where(v => v.codecs.Contains("hev")).Count() > 0)
+                {
+                    var list = json.data.dash.video.Where(v => v.codecs.Contains("hev")).OrderByDescending(v => v.id).ToList();
+                    video.VideoUrl = list.First().baseUrl;
+                }
+                else if (json.data.dash.video.Where(v => v.id == quality && v.codecs.Contains("avc")).Count() > 0)
+                {
+                    video.VideoUrl = json.data.dash.video.Where(v => v.id == quality && v.codecs.Contains("avc")).FirstOrDefault().baseUrl;
+                }
+                else
+                {
+                    var list = json.data.dash.video.Where(v => v.codecs.Contains("avc")).OrderByDescending(v => v.id).ToList();
+                    video.VideoUrl = list.First().baseUrl;
+                }
             }
             else
             {
-                var list = json.data.dash.video.Where(v => v.codecs.Contains("avc")).OrderByDescending(v => v.id).ToList();
-                video.VideoUrl = list.First().baseUrl;
+                if (json.data.dash.video.Where(v => v.id == quality && v.codecs.Contains("avc")).Count() > 0)
+                {
+                    video.VideoUrl = json.data.dash.video.Where(v => v.id == quality && v.codecs.Contains("avc")).FirstOrDefault().baseUrl;
+                }
+                else
+                {
+                    var list = json.data.dash.video.Where(v => v.codecs.Contains("avc")).OrderByDescending(v => v.id).ToList();
+                    video.VideoUrl = list.First().baseUrl;
+                }
             }
 
             if (json.data.dash.audio.Where(v => v.id == 30280).Count() > 0)

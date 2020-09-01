@@ -31,6 +31,7 @@ namespace BiliDownload
             NavigationCacheMode = NavigationCacheMode.Disabled;
             this.locationTextBox.Text = ApplicationData.Current.LocalSettings.Values["downloadPath"] as string ?? string.Empty;
             if ((bool)ApplicationData.Current.LocalSettings.Values["cpuLimit"]) this.cpuLimitSwitch.IsOn = true;
+            if ((bool)ApplicationData.Current.LocalSettings.Values["HEVC"]) this.hevcDownloadSwitch.IsOn = true;
         }
 
         private async void selectLocationBtn_Click(object sender, RoutedEventArgs e)
@@ -48,6 +49,11 @@ namespace BiliDownload
         private void cpuLimitSwitch_Toggled(object sender, RoutedEventArgs e)
         {
             ApplicationData.Current.LocalSettings.Values["cpuLimit"] = cpuLimitSwitch.IsOn;
+        }
+
+        private void hevcDownloadSwitch_Toggled(object sender, RoutedEventArgs e)
+        {
+            ApplicationData.Current.LocalSettings.Values["HEVC"] = hevcDownloadSwitch.IsOn;
         }
     }
 }

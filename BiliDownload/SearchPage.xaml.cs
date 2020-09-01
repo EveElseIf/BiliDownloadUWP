@@ -55,123 +55,50 @@ namespace BiliDownload
             {
                 var bangumi = await BiliVideoHelper.GetBangumiInfoAsync(info.Item4, 0, sESSDATA);
                 var dialog = await BangumiDialog.CreateAsync(bangumi);
+                Reset();
                 var result = await dialog.ShowAsync();
-                if (result == ContentDialogResult.Secondary)
-                {
-                    searchBtn.IsEnabled = true;
-                    searchProgressRing.IsActive = false;
-                    searchProgressRing.Visibility = Visibility.Collapsed;
-                    return;
-                }
+                if (result == ContentDialogResult.Secondary) return;
             }
             if (info.Item3 == UrlType.BangumiSS)//下载ss番剧
             {
                 var bangumi = await BiliVideoHelper.GetBangumiInfoAsync(info.Item4, 1, sESSDATA);
                 var dialog = await BangumiDialog.CreateAsync(bangumi);
+                Reset();
                 var result = await dialog.ShowAsync();
-                if (result == ContentDialogResult.Secondary)
-                {
-                    searchBtn.IsEnabled = true;
-                    searchProgressRing.IsActive = false;
-                    searchProgressRing.Visibility = Visibility.Collapsed;
-                    return;
-                }
+                if (result == ContentDialogResult.Secondary) return;
             }
 
             else if (info.Item3 == UrlType.SingelVideo) //指定了分p的时候
             {
-                try
-                {
-                    var dialog = await SingleVideoDialog.CreateAsync
-                        (await BiliVideoHelper.GetSingleVideoInfoAsync(info.Item1, info.Item2, 64, sESSDATA));
-                    var result = await dialog.ShowAsync();
-                    if (result == ContentDialogResult.Secondary)
-                    {
-                        searchBtn.IsEnabled = true;
-                        searchProgressRing.IsActive = false;
-                        searchProgressRing.Visibility = Visibility.Collapsed;
-                        return;
-                    }
-                    var quality = dialog.QualitySelectionProperty;
-
-                    await CreateDownloadAsync(info.Item1, info.Item2, quality, sESSDATA);
-                }
-                catch(ParsingVideoException ex)
-                {
-                    var dialog = new ErrorDialog(ex.Message);
-                    var result = await dialog.ShowAsync();
-
-                    searchBtn.IsEnabled = true;
-                    searchProgressRing.IsActive = false;
-                    searchProgressRing.Visibility = Visibility.Collapsed;
-
-                    if (result == ContentDialogResult.Primary)
-                    {
-                        this.Frame.Navigate(typeof(UserPage));
-                        MainPage.NavView.SelectedItem = MainPage.NavViewItems[2];
-                    }
-                }
+                var dialog = await SingleVideoDialog.CreateAsync
+                    (await BiliVideoHelper.GetSingleVideoInfoAsync(info.Item1, info.Item2, 64, sESSDATA));
+                Reset();
+                var result = await dialog.ShowAsync();
+                if (result == ContentDialogResult.Secondary) return;
             }
             else if (info.Item3 == UrlType.MasteredVideo) //没有指定分p的时候
             {
                 var master = await BiliVideoHelper.GetVideoMasterInfoAsync(info.Item1, sESSDATA);
-
                 var dialog = await MasteredVideoDialog.CreateAsync(master);
+                Reset();
                 var result = await dialog.ShowAsync();
-                if (result == ContentDialogResult.Secondary)
-                {
-                    Reset();
-                    return;
-                }
+                if (result == ContentDialogResult.Secondary) return;
             }
-            else throw new System.Exception("没找到下载的方法");
+            else
+            {
+                Reset();
+                var dialog = new ContentDialog()
+                {
+                    Content = "解析失败，没有找到合适的下载方法"
+                };
+                await dialog.ShowAsync();
+            }
         }
         public void Reset()
         {
-            searchBtn.IsEnabled = true;
-            searchProgressRing.IsActive = false;
-            searchProgressRing.Visibility = Visibility.Collapsed;
-        }
-        public async Task CreateDownloadAsync(string bv,long cid, int quality, string sESSDATA) //创建下载
-        {
-            var video = await BiliVideoHelper.GetSingleVideoAsync(bv, cid, quality, sESSDATA);
-
-            if (searchBtn.IsEnabled == false)
-                searchBtn.IsEnabled = true;
-            if (searchProgressRing.IsActive == true) 
-                searchProgressRing.IsActive = false;
-            if (searchProgressRing.Visibility == Visibility.Visible) 
-                searchProgressRing.Visibility = Visibility.Collapsed;
-
-            MainPage.NavView.SelectedItem = MainPage.NavViewItems[0];
-            MainPage.ContentFrame.Navigate(typeof(DownloadPage), new DownloadNavigateModel()
-            {
-                VideoList = new List<BiliVideo>()
-                {
-                    video
-                }
-            });
-        }
-        public async Task CreateDownloadsAsync(List<BiliVideoInfo> videos,int quality,string sESSDATA)
-        {
-            var videoList = new List<BiliVideo>();
-            foreach (var video in videos)
-            {
-                videoList.Add(await BiliVideoHelper.GetSingleVideoAsync(video.Bv, video.Cid, quality, sESSDATA));
-            }
-
-            if (searchBtn.IsEnabled == false)
-                searchBtn.IsEnabled = true;
-            if (searchProgressRing.IsActive == true)
-                searchProgressRing.IsActive = false;
-            if (searchProgressRing.Visibility == Visibility.Visible)
-                searchProgressRing.Visibility = Visibility.Collapsed;
-
-            MainPage.NavView.SelectedItem = MainPage.NavViewItems[0];
-            this.Frame.Navigate(typeof(DownloadPage), new DownloadNavigateModel()
-            {
-                VideoList = videoList
-            });
+            this.searchBtn.IsEnabled = true;
+            this.searchProgressRing.IsActive = false;
+            this.searchProgressRing.Visibility = Visibility.Collapsed;
         }
         private enum UrlType
         {
@@ -237,9 +164,5 @@ namespace BiliDownload
                 return (master.Bv, cid, type, 0);
             else throw new System.Exception();
         }
-    }
-    internal class DownloadNavigateModel
-    {
-        public List<BiliVideo> VideoList { get; set; }
     }
 }

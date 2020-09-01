@@ -51,7 +51,7 @@ namespace BiliDownload
 
             var info = await AnalyzeVideoUrlAsync(searchTextbox.Text, sESSDATA); //分析输入的url，提取bv或者av，是否指定分p
 
-            if (info.Item3 == UrlType.BangumiEP)
+            if (info.Item3 == UrlType.BangumiEP)//下载ep番剧
             {
                 var bangumi = await BiliVideoHelper.GetBangumiInfoAsync(info.Item4, 0, sESSDATA);
                 var dialog = await BangumiDialog.CreateAsync(bangumi);
@@ -64,7 +64,7 @@ namespace BiliDownload
                     return;
                 }
             }
-            if (info.Item3 == UrlType.BangumiSS)
+            if (info.Item3 == UrlType.BangumiSS)//下载ss番剧
             {
                 var bangumi = await BiliVideoHelper.GetBangumiInfoAsync(info.Item4, 1, sESSDATA);
                 var dialog = await BangumiDialog.CreateAsync(bangumi);

@@ -29,6 +29,7 @@ namespace BiliDownload
     /// </summary>
     public sealed partial class MainPage : Page
     {
+        public bool Initialized { get => (bool)ApplicationData.Current.LocalSettings.Values["Initialized"]; }
         private readonly List<(string, Type)> pages = new List<(string, Type)>
         {
             ("DownloadPage",typeof(DownloadPage)),
@@ -55,7 +56,33 @@ namespace BiliDownload
         protected async override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            this.navView.IsPaneOpen = true;
+
+            if (ApplicationData.Current.LocalSettings.Values["Initialized"] == null)
+                ApplicationData.Current.LocalSettings.Values["Initialized"] = false;
+            if (Initialized == false)
+            {
+                var dialog = new ContentDialog()
+                {
+                    Title = "初次使用",
+                    Content = new TextBlock()
+                    {
+                        Text = "欢迎使用，由于您是初次启动本程序，请完成设置",
+                        FontFamily = new FontFamily("Microsoft Yahei UI"),
+                        FontSize = 20
+                    },
+                    PrimaryButtonText = "前往设置",
+                    SecondaryButtonText = "关闭"
+                };
+                var result = await dialog.ShowAsync();
+                if (result == ContentDialogResult.Primary)
+                { 
+                    this.contentFrame.Navigate(typeof(SettingPage));
+                    this.navView.SelectedItem = navView.SettingsItem;
+                }
+                ApplicationData.Current.LocalSettings.Values["Initialized"] = true;
+            }
+
+                this.navView.IsPaneOpen = true;
             await Task.Delay(1500);
             this.navView.IsPaneOpen = false;
         }

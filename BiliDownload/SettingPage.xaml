@@ -45,7 +45,7 @@
                     <TextBlock Text="是否限制FFMpeg转码CPU占用率" FontFamily="Microsoft Yahei UI" FontSize="20" Grid.Row="1" Grid.Column="0" Margin="40,10,20,10"/>
                     <ToggleSwitch x:Name="cpuLimitSwitch" Toggled="cpuLimitSwitch_Toggled" Grid.Row="1" Grid.Column="1"/>
                 </Grid>
-                <Grid>
+                <!--<Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition/>
                         <RowDefinition/>
@@ -58,7 +58,7 @@
                     <TextBlock Grid.Row="0" Text="测试布局用的。。。" FontFamily="Microsoft Yahei UI" FontSize="30" Margin="20,20,0,20"/>
                     <TextBox Grid.Row="1" Grid.Column="0" Margin="40,10,20,10"/>
                     <Button Grid.Row="1" Grid.Column="1" Content="浏览"/>
-                </Grid>
+                </Grid>-->
             </StackPanel>
         </ScrollViewer>
     </Grid>

@@ -10,7 +10,7 @@
   <Identity
     Name="10f77a87-63a6-46f4-aaae-87269261966a"
     Publisher="CN=EveElseIf"
-    Version="1.0.0.0" />
+    Version="1.0.1.0" />
 
   <Properties>
     <DisplayName>BiliDownload.Package</DisplayName>
@@ -43,6 +43,9 @@
 		<Extensions>
 			<desktop:Extension Category="windows.fullTrustProcess" Executable="BiliDownload.Launcher/BiliDownload.Launcher.exe"/>
 		</Extensions>
+      <uap:ApplicationContentUriRules>
+        <uap:Rule Type="include" Match="https://*.github.io" WindowsRuntimeAccess="all"/>
+      </uap:ApplicationContentUriRules>
     </Application>
   </Applications>
 

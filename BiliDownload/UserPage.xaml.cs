@@ -1,6 +1,8 @@
 ﻿using BiliDownload.Helper;
+using BiliDownload.HelperPage;
 using BiliDownload.LoginDialogs;
 using BiliDownload.Model;
+using BiliDownload.Model.Json;
 using BiliDownload.SearchDialogs;
 using System;
 using System.Collections.Generic;
@@ -13,10 +15,12 @@ using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Storage;
+using Windows.UI.WindowManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
+using Windows.UI.Xaml.Hosting;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
@@ -35,10 +39,15 @@ namespace BiliDownload
         public static long Uid { get => (long)ApplicationData.Current.LocalSettings.Values["biliUserUid"]; }
         bool loginStatus { set; get; }
         bool favLoaded { set; get; } = false;
+        bool bangumiLoaded { set; get; } = false;
+        bool userInitialized { set; get; } = false;
+        public AppWindow LoginWindow { get; private set; }
+        public static UserPage Current { get; private set; }
         public UserPage()
         {
             this.InitializeComponent();
             NavigationCacheMode = NavigationCacheMode.Enabled;
+            if (Current == null) Current = this;
         }
         protected async override void OnNavigatedTo(NavigationEventArgs e)
         {
@@ -46,7 +55,6 @@ namespace BiliDownload
 
             ResetAll();
 
-            NavigationCacheMode = NavigationCacheMode.Enabled;
             if (ApplicationData.Current.LocalSettings.Values["isLogined"] == null)
                 ApplicationData.Current.LocalSettings.Values["isLogined"] = false;
             if ((bool)ApplicationData.Current.LocalSettings.Values["isLogined"]) loginStatus = true;
@@ -61,7 +69,9 @@ namespace BiliDownload
                 initializingProgressRing.Visibility = Visibility.Visible;
                 initializingProgressRing.IsActive = true;
 
-                await InitializeUserAsync();//初始化用户信息
+                if(!userInitialized)
+                    await InitializeUserAsync();//初始化用户信息
+                userInitialized = true;
 
                 logoutBtn.Visibility = Visibility.Visible;
                 avatarAndNameGrid.Visibility = Visibility.Visible;
@@ -96,7 +106,7 @@ namespace BiliDownload
         }
 
         #region 下面都是登录用的
-        private async void loginBtn_Click(object sender, RoutedEventArgs e)
+        private async void loginBtn_Click(object sender, RoutedEventArgs e)//二维码登录
         {
             var dialog = new QRcodeLoginDialog();
             var result = await dialog.ShowAsync();
@@ -105,19 +115,36 @@ namespace BiliDownload
                 this.Frame.Navigate(typeof(UserPage));
             }
         }
-
+        #region 下面是密码登录用的
         private async void pwdLoginBtn_Click(object sender, RoutedEventArgs e)
         {
-            var dialog = new ContentDialog()
-            {
-                Title = "提示",
-                Content = "人机验证好难搞，这东西暂时不考虑了",
-                PrimaryButtonText = "知道了。。"
-            };
-            await dialog.ShowAsync();
+            AppWindow loginWindow = await AppWindow.TryCreateAsync();
+            this.LoginWindow = loginWindow;
+            loginWindow.RequestSize(new Size(600, 800));
+            Frame loginFrame = new Frame() { Height = 800, Width = 600 };
+            loginFrame.Navigate(typeof(PwdLoginPage));
+            ElementCompositionPreview.SetAppWindowContent(loginWindow, loginFrame);
+            await loginWindow.TryShowAsync();
         }
-
-        private void logoutBtn_Click(object sender, RoutedEventArgs e)
+        public async Task PwdLoginOk()
+        {
+            if(this.LoginWindow!=null)
+            {
+                await this.LoginWindow.CloseAsync();
+                this.LoginWindow = null;
+                this.Frame.Navigate(typeof(UserPage));
+            }
+        }
+        public async Task PwdLoginCancel()
+        {
+            if (this.LoginWindow != null)
+            {
+                await this.LoginWindow.CloseAsync();
+                this.LoginWindow = null;
+            }
+        }
+        #endregion
+        private void logoutBtn_Click(object sender, RoutedEventArgs e)//登出
         {
             if (!loginStatus) return;
             ApplicationData.Current.LocalSettings.Values["isLogined"] = false;
@@ -134,6 +161,7 @@ namespace BiliDownload
             if (result == ContentDialogResult.Primary) this.Frame.Navigate(typeof(UserPage));
         }
         #endregion
+        #region 下面是收藏夹用的
 
         private async void favGridViewList_Loaded(object sender, RoutedEventArgs e)
         {
@@ -215,6 +243,137 @@ namespace BiliDownload
                 }
             }
         }
+        #endregion
+        #region 下面是追番用的
+        private async void bangumiListGridView_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            var bangumiInfo = e.ClickedItem as BangumiViewModel;
+            if (bangumiInfo.SessonId == 0)//加载更多
+            {
+                var list = this.bangumiListGridView.ItemsSource as ObservableCollection<BangumiViewModel>;
+                var count = list.Count - 1;
+                if ((count < 15) || (count % 15 != 0))
+                {
+                    var dialog = new ErrorDialog("已经没有更多了")
+                    {
+                        PrimaryButtonText = ""
+                    };
+                    await dialog.ShowAsync();
+                    return;
+                }
+
+                var newList = await BiliBangumiListHelper.GetBangumiListAsync((count / 15) + 1, UserPage.Uid, UserPage.SESSDATA);
+
+                if (newList == null)
+                {
+                    var dialog = new ErrorDialog("已经没有更多了")
+                    {
+                        PrimaryButtonText = ""
+                    };
+                    await dialog.ShowAsync();
+                    return;
+                }
+
+                var toAddList = new List<BangumiViewModel>();
+                list.Remove(list.Last());
+                foreach (var bangumi in newList) // 添加新视频
+                {
+                    var model = new BangumiViewModel()
+                    {
+                        Title = bangumi.Title,
+                        SessonId = bangumi.SeasonId
+                    };
+                    try
+                    {
+                        var file = await ApplicationData.Current.LocalCacheFolder.CreateFileAsync("VideoCoverCache", CreationCollisionOption.GenerateUniqueName);
+                        var imgStream = await NetHelper.HttpGetStreamAsync(bangumi.Cover, null, null);
+                        var fileStream = await file.OpenStreamForWriteAsync();
+                        await imgStream.CopyToAsync(fileStream);
+                        imgStream.Close();
+                        fileStream.Close();
+                        var imgSource = new BitmapImage();
+                        await imgSource.SetSourceAsync((await file.OpenStreamForReadAsync()).AsRandomAccessStream());
+
+                        model.CoverImg = imgSource;
+                    }
+                    catch (System.Exception ex)//封面下载不了的异常
+                    {
+                        model.CoverImg = new BitmapImage(new Uri("ms-appx:///Assets/LockScreenLogo.scale-200.png"));
+                    }
+                    toAddList.Add(model);
+                }
+                toAddList.ForEach(b => list.Add(b));//把新番剧添加到list里
+                list.Add(new BangumiViewModel()//添加加载更多按钮
+                {
+                    Title = "加载更多",
+                    SessonId = 0,
+                    CoverImg = new BitmapImage(new Uri("ms-appx:///Assets/LoadMore.png"))
+                });
+            }
+            else
+            {
+                var bangumi = await BiliVideoHelper.GetBangumiInfoAsync(bangumiInfo.SessonId, 1, SESSDATA);
+                var dialog = await BangumiDialog.CreateAsync(bangumi);
+                var result = await dialog.ShowAsync();
+                if (result == ContentDialogResult.Secondary) return;
+            }
+        }
+
+        private async void bangumiListGridView_Loaded(object sender, RoutedEventArgs e)//加载番剧
+        {
+            if (bangumiLoaded) return;
+            ShowProgressRing();
+
+            var list = new List<BangumiViewModel>();
+            var infoList = await BiliBangumiListHelper.GetBangumiListAsync(1, Uid, SESSDATA);
+            if (infoList.Count < 1)
+            {
+                list.Add(new BangumiViewModel()
+                {
+                    Title = "追番为空",
+                    SessonId = 0
+                });
+            }
+            else
+            {
+                foreach (var bangumi in infoList)
+                {
+                    var model = new BangumiViewModel()
+                    {
+                        Title = bangumi.Title,
+                        SessonId = bangumi.SeasonId
+                    };
+                    try
+                    {
+                        var file = await ApplicationData.Current.LocalCacheFolder.CreateFileAsync("VideoCoverCache", CreationCollisionOption.GenerateUniqueName);
+                        var imgStream = await NetHelper.HttpGetStreamAsync(bangumi.Cover, null, null);
+                        var fileStream = await file.OpenStreamForWriteAsync();
+                        await imgStream.CopyToAsync(fileStream);
+                        imgStream.Close();
+                        fileStream.Close();
+                        var imgSource = new BitmapImage();
+                        await imgSource.SetSourceAsync((await file.OpenStreamForReadAsync()).AsRandomAccessStream());
+
+                        model.CoverImg = imgSource;
+                    }
+                    catch (System.Exception ex)//封面下载不了的异常
+                    {
+                        model.CoverImg = new BitmapImage(new Uri("ms-appx:///Assets/LockScreenLogo.scale-200.png"));
+                    }
+                    list.Add(model);
+                }
+            }
+            list.Add(new BangumiViewModel()
+            {
+                Title = "加载更多",
+                SessonId = 0,
+                CoverImg = new BitmapImage(new Uri("ms-appx:///Assets/LoadMore.png"))
+            });
+            HideProgressRing();
+            var colletion = new ObservableCollection<BangumiViewModel>(list);
+            this.bangumiListGridView.ItemsSource = colletion;
+        }
+        #endregion
     }
     public class FavViewModel
     {
@@ -317,6 +476,12 @@ namespace BiliDownload
             return model;
         }
         public string Bv { get; set; }
+        public string Title { get; set; }
+        public ImageSource CoverImg { get; set; }
+    }
+    public class BangumiViewModel
+    {
+        public int SessonId { get; set; }
         public string Title { get; set; }
         public ImageSource CoverImg { get; set; }
     }

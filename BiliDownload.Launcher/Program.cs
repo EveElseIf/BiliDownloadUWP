@@ -16,7 +16,7 @@ namespace BiliDownload.Launcher
             var pi = new ProcessStartInfo("ffmpeg.exe", arg)
             {
                 UseShellExecute = false,
-                CreateNoWindow = false
+                CreateNoWindow = true
             };
             var p1 = Process.Start(pi);
             p1.WaitForExit();

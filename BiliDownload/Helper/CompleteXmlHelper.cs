@@ -24,7 +24,8 @@ namespace BiliDownload.Helper
         }
         public static void WriteXml(string content)
         {
-            var file = File.Open(XmlPath, FileMode.Open);
+            DeleteCompletedDownloads();
+            var file = File.Create(XmlPath);
             var bytes = Encoding.UTF8.GetBytes(content);
             file.Write(bytes, 0, bytes.Count());
             file.Close();
@@ -63,9 +64,12 @@ namespace BiliDownload.Helper
         public static void StoreCompletedDownloads()
         {
             var list = DownloadPage.Current.completedDownloadList;
-            if (list.Count < 1) return;
-            var xmlString = CreateCompleteXmlStream(list.ToList());
-            WriteXml(xmlString);
+            if (list.Count < 1) DeleteCompletedDownloads();
+            else
+            {
+                var xmlString = CreateCompleteXmlStream(list.ToList());
+                WriteXml(xmlString);
+            }
         }
         public static string CreateCompleteXmlStream(List<CompletedDownloadModel> list)
         {

@@ -53,6 +53,7 @@ namespace BiliDownload
             if (ContentFrame == null) ContentFrame = this.contentFrame;
             if (ApplicationData.Current.LocalSettings.Values["HEVC"] == null)
                 ApplicationData.Current.LocalSettings.Values["HEVC"] = false;
+            ApplicationData.Current.LocalSettings.Values["lock"] = false;//创建锁
         }
         protected async override void OnNavigatedTo(NavigationEventArgs e)
         {

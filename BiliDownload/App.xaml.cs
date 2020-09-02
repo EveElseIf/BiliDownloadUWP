@@ -100,6 +100,19 @@ namespace BiliDownload
                             DownloadXmlHelper.StoreCurrentDownloads();//退出时就储存未完成的任务
                         }
                     }
+                    if (VideoHelper.Locked)
+                    {
+                        var dialog = new ContentDialog()
+                        {
+                            Title = "正在等待转换完成",
+                            Content = new ProgressRing()
+                            {
+                                IsActive = true
+                            }
+                        };
+                        await dialog.ShowAsync();
+                        while (VideoHelper.Locked) await Task.Delay(1000);
+                    }
                     CompleteXmlHelper.StoreCompletedDownloads();//储存已完成任务列表
                     deferral.Complete();
                 };

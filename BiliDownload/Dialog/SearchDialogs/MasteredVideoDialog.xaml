@@ -29,6 +29,7 @@
         <Grid Grid.Row="1">
             <Grid.RowDefinitions>
                 <RowDefinition Height="40"/>
+                <RowDefinition Height="20"/>
                 <RowDefinition/>
             </Grid.RowDefinitions>
             <StackPanel Grid.Row="0" Orientation="Horizontal">
@@ -41,7 +42,11 @@
                           ItemsSource="{x:Bind vm.ComboBoxDataList}" DisplayMemberPath="Text" SelectedValuePath="Value"
                           Margin="0,0,10,0" Width="120"/>
             </StackPanel>
-            <ListView Grid.Row="1" x:Name="videoListView"
+            <Grid Grid.Row="1">
+                <TextBlock Text="全选" FontFamily="Microsoft Yahei UI" FontSize="15" Margin="50,0,0,0"/>
+                <CheckBox x:Name="selectAllCheckBox" Click="selectAllCheckBox_Click" Margin="15,0,0,0"/>
+            </Grid>
+            <ListView Grid.Row="2" x:Name="videoListView"
                  ItemsSource="{x:Bind vm.VideoList}" SelectionMode="None">
                 <ListView.ItemContainerStyle>
                     <Style TargetType="ListViewItem">

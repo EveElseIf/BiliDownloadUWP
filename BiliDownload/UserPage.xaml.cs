@@ -372,6 +372,7 @@ namespace BiliDownload
             HideProgressRing();
             var colletion = new ObservableCollection<BangumiViewModel>(list);
             this.bangumiListGridView.ItemsSource = colletion;
+            this.bangumiLoaded = true;
         }
         #endregion
     }

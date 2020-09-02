@@ -24,6 +24,7 @@
         <Grid Grid.Column="1">
             <Grid.RowDefinitions>
                 <RowDefinition Height="40"/>
+                <RowDefinition Height="20"/>
                 <RowDefinition/>
                 <RowDefinition Height="40"/>
             </Grid.RowDefinitions>
@@ -32,7 +33,11 @@
                            FontFamily="Microsoft Yahei UI" FontSize="20"
                            Margin="10,0,0,0" VerticalAlignment="Center"/>
             </StackPanel>
-            <ListView Grid.Row="1" x:Name="videoListView"
+            <Grid Grid.Row="1">
+                <CheckBox x:Name="selectAllCheckBox" Click="selectAllCheckBox_Click" Margin="2,0,0,0"/>
+                <TextBlock Text="全选" FontFamily="Microsoft Yahei UI" FontSize="15" Margin="30,0,0,0"/>
+            </Grid>
+            <ListView Grid.Row="2" x:Name="videoListView"
                  ItemsSource="{x:Bind vm.VideoList}" SelectionMode="None">
                 <ListView.ItemContainerStyle>
                     <Style TargetType="ListViewItem">
@@ -42,7 +47,7 @@
                 </ListView.ItemContainerStyle>
                 <ListView.ItemTemplate>
                     <DataTemplate x:DataType="local:VideoInfo">
-                        <Grid Background="{x:Bind BackGroundColorBrush}">
+                        <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="30"/>
                                 <ColumnDefinition Width="*"/>
@@ -56,7 +61,7 @@
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
-            <StackPanel Grid.Row="2" Orientation="Horizontal">
+            <StackPanel Grid.Row="3" Orientation="Horizontal">
                 <TextBlock Text="下载清晰度" FontFamily="Microsoft Yahei UI" 
                            FontSize="18" VerticalAlignment="Center" Margin="10,0,10,0"/>
                 <ComboBox x:Name="qualityComboBox" VerticalAlignment="Center" 

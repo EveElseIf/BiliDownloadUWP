@@ -4,6 +4,7 @@ using BiliDownload.Model;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -121,7 +122,36 @@ namespace BiliDownload.SearchDialogs
             this.needToClose = true;
             var quality = (int)this.qualityComboBox.SelectedValue;
 
-            await MainHelper.CreateDownloadsAsync(list, quality, sESSDATA);
+            try
+            {
+                await MainHelper.CreateDownloadsAsync(list, quality, sESSDATA);
+            }
+            catch (ParsingVideoException ex)
+            {
+                var dialog = new ErrorDialog(ex.Message);
+                var result = await dialog.ShowAsync();
+
+                if (result == ContentDialogResult.Primary)
+                {
+                    MainPage.NavView.SelectedItem = MainPage.NavViewItems[2];
+                    MainPage.ContentFrame.Navigate(typeof(UserPage));
+                }
+            }
+            catch (NullReferenceException ex)
+            {
+                var dialog = new ContentDialog()
+                {
+                    Title = "错误",
+                    Content = new TextBlock()
+                    {
+                        Text = "该视频不存在dash格式的视频文件",
+                        FontFamily = new FontFamily("Microsoft Yahei UI"),
+                        FontSize = 20
+                    },
+                    PrimaryButtonText = "知道了"
+                };
+                await dialog.ShowAsync();
+            }
         }
 
         private void ContentDialog_SecondaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
@@ -170,6 +200,24 @@ namespace BiliDownload.SearchDialogs
                 await dialog.ShowAsync();
             }
         }
+
+        private void selectAllCheckBox_Click(object sender, RoutedEventArgs e)
+        {
+            if((bool)(sender as CheckBox).IsChecked)
+            {
+                foreach (var download in vm.VideoList)
+                {
+                    download.ToDownload = true;
+                }
+            }
+            else
+            {
+                foreach (var download in vm.VideoList)
+                {
+                    download.ToDownload = false;
+                }
+            }
+        }
     }
     public class MasteredVideoDialogViewModel
     {
@@ -188,10 +236,19 @@ namespace BiliDownload.SearchDialogs
             public int Value { get; set; }
         }
     }
-    public class VideoInfo
+    public class VideoInfo : INotifyPropertyChanged
     {
         public BiliVideoInfo Info { get; set; }
-        public bool ToDownload { get; set; }
+        private bool toDownload;
+
+        public bool ToDownload
+        {
+            get { return toDownload; }
+            set { toDownload = value; this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ToDownload")); }
+        }
+
         public SolidColorBrush BackGroundColorBrush { get; set; }
+
+        public event PropertyChangedEventHandler PropertyChanged;
     }
 }

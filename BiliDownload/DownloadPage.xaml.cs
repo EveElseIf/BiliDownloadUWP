@@ -229,6 +229,11 @@ namespace BiliDownload
             var model = (sender as HyperlinkButton).DataContext as CompletedDownloadModel;
             this.completedDownloadList.Remove(model);
         }
+
+        private void clearAllCompleteBtn_Click(object sender, RoutedEventArgs e)
+        {
+            this.completedDownloadList.Clear();
+        }
     }
     public class DownloadViewModel : INotifyPropertyChanged
     {
@@ -408,6 +413,13 @@ namespace BiliDownload
                         fullProgress += part.Operation.Progress.TotalBytesToReceive;
                     }
                 }
+                if (currentProgress == 0)//防止进度条卡满
+                {
+                    this.FullProgress = 100;
+                    this.CurrentProgress = 0;
+                    await Task.Delay(1000);
+                    continue;
+                }
                 CurrentProgress = currentProgress;
                 FullProgress = fullProgress;
                 if (lastBytes != 0)
@@ -499,6 +511,8 @@ namespace BiliDownload
             var outputFile = await downloadFolder.CreateFileAsync($"{title} - {downloadName}.mp4", CreationCollisionOption.ReplaceExisting);
             await outputFile.DeleteAsync(StorageDeleteOption.PermanentDelete);//创建文件再删除获取写入权限
             ApplicationData.Current.LocalSettings.Values["currentCacheFolder"] = CacheFolder.Path;
+
+            while (VideoHelper.Locked) await Task.Delay(100);
             await VideoHelper.MakeVideoAsync(videoFile, audioFile, outputFile.Path);
             ChineseStatus = "已完成";
             IsCompleted = true;

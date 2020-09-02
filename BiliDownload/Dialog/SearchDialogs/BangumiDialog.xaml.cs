@@ -84,6 +84,12 @@ namespace BiliDownload.SearchDialogs
                 BackGroundColorBrush = bangumi.EpisodeList.IndexOf(v) % 2 == 0
                 ? new SolidColorBrush(Colors.WhiteSmoke) : new SolidColorBrush(Colors.White)
             }).ToList();
+            var i = 1;
+            foreach (var video in list)//添加序号
+            {
+                video.Info.Name = i + "." + video.Info.Name;
+                i++;
+            }
             model.VideoList = new ObservableCollection<VideoInfo>(list);
 
             return new BangumiDialog(model);
@@ -169,6 +175,24 @@ namespace BiliDownload.SearchDialogs
                 var dialog = new ErrorDialog(ex.Message);
                 dialog.PrimaryButtonText = "";
                 await dialog.ShowAsync();
+            }
+        }
+
+        private void selectAllCheckBox_Click(object sender, RoutedEventArgs e)
+        {
+            if ((bool)this.selectAllCheckBox.IsChecked)
+            {
+                foreach (var download in vm.VideoList)
+                {
+                    download.ToDownload = true;
+                }
+            }
+            else
+            {
+                foreach (var download in vm.VideoList)
+                {
+                    download.ToDownload = false;
+                }
             }
         }
     }

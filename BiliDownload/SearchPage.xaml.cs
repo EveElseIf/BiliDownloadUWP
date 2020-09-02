@@ -36,6 +36,31 @@ namespace BiliDownload
             NavigationCacheMode = NavigationCacheMode.Enabled;
             if (Current == null) Current = this;
         }
+        protected async override void OnNavigatedTo(NavigationEventArgs e)//首次打开给小提示
+        {
+            base.OnNavigatedTo(e);
+            if(ApplicationData.Current.LocalSettings.Values["searchPageFirstOpen"] == null)
+            {
+                var dialog = new ContentDialog()
+                {
+                    Title = "提示",
+                    Content = new TextBlock()
+                    {
+                        FontFamily = new FontFamily("Microsoft Yahei UI"),
+                        FontSize = 20,
+                        TextWrapping = TextWrapping.Wrap,
+                        Margin = new Thickness(10),
+                        Text = "搜索视频时，可以看到所有支持的清晰度，但是您的权限不足时，程序会自动为您选择可用的较高清晰度"
+                    },
+                    PrimaryButtonText = "明白了",
+                    IsPrimaryButtonEnabled = false
+                };
+                await dialog.ShowAsync();
+                await Task.Delay(3000);
+                dialog.IsPrimaryButtonEnabled = true;
+                ApplicationData.Current.LocalSettings.Values["searchPageFirstOpen"] = true;
+            }
+        }
 
         public async void searchBtn_Click(object sender, RoutedEventArgs e)
         {

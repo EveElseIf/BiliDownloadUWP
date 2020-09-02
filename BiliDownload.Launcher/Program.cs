@@ -16,10 +16,12 @@ namespace BiliDownload.Launcher
             var pi = new ProcessStartInfo("ffmpeg.exe", arg)
             {
                 UseShellExecute = false,
-                CreateNoWindow = true
+                CreateNoWindow = false
             };
             var p1 = Process.Start(pi);
             p1.WaitForExit();
+
+            ApplicationData.Current.LocalSettings.Values["lock"] = false;//解锁
 
             try
             {

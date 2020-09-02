@@ -26,7 +26,8 @@ namespace BiliDownload.Helper
         }
         public static void WriteXml(string content)
         {
-            var file = File.Open(XmlPath, FileMode.Open);
+            DeleteCurrentDownloads();
+            var file = File.Create(XmlPath);
             var bytes = Encoding.UTF8.GetBytes(content);
             file.Write(bytes, 0, bytes.Count());
             file.Close();

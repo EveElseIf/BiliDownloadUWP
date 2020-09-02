@@ -52,12 +52,9 @@ namespace BiliDownload
                         Margin = new Thickness(10),
                         Text = "搜索视频时，可以看到所有支持的清晰度，但是您的权限不足时，程序会自动为您选择可用的较高清晰度"
                     },
-                    PrimaryButtonText = "明白了",
-                    IsPrimaryButtonEnabled = false
+                    PrimaryButtonText = "明白了"
                 };
                 await dialog.ShowAsync();
-                await Task.Delay(3000);
-                dialog.IsPrimaryButtonEnabled = true;
                 ApplicationData.Current.LocalSettings.Values["searchPageFirstOpen"] = true;
             }
         }

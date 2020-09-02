@@ -10,7 +10,7 @@
   <Identity
     Name="10f77a87-63a6-46f4-aaae-87269261966a"
     Publisher="CN=EveElseIf"
-    Version="1.0.2.0" />
+    Version="1.1.0.0" />
 
   <Properties>
     <DisplayName>BiliDownload.Package</DisplayName>

@@ -41,6 +41,7 @@ namespace BiliDownload
         bool favLoaded { set; get; } = false;
         bool bangumiLoaded { set; get; } = false;
         bool userInitialized { set; get; } = false;
+        bool reLogined { set; get; } = false;
         public AppWindow LoginWindow { get; private set; }
         public static UserPage Current { get; private set; }
         public UserPage()
@@ -61,22 +62,48 @@ namespace BiliDownload
             else loginStatus = false;
 
             if (!loginStatus) this.realContentGrid.Visibility = Visibility.Collapsed;
+
             if (loginStatus)//如果登录了，就移除登录界面
             {
-                //contentGrid.Children.Remove(this.FindName("loginGrid") as UIElement);
-                this.realContentGrid.Visibility = Visibility.Visible;
-                this.loginGrid.Visibility = Visibility.Collapsed;
-                initializingProgressRing.Visibility = Visibility.Visible;
-                initializingProgressRing.IsActive = true;
+                if (reLogined)//重新登录了
+                {
+                    this.realContentGrid.Visibility = Visibility.Visible;
+                    this.loginGrid.Visibility = Visibility.Collapsed;
+                    initializingProgressRing.Visibility = Visibility.Visible;
 
-                if(!userInitialized)
-                    await InitializeUserAsync();//初始化用户信息
-                userInitialized = true;
+                    await InitializeUserAsync();
+                    userInitialized = true;
+                    bangumiLoaded = false;
+                    favLoaded = false;
+                    reLogined = false;
+                    this.favGridViewList.ItemsSource = null;
+                    this.bangumiListGridView.ItemsSource = null;
+                    this.favGridViewList_Loaded(this, null);
+                    this.bangumiListGridView_Loaded(this, null);
 
-                logoutBtn.Visibility = Visibility.Visible;
-                avatarAndNameGrid.Visibility = Visibility.Visible;
-                initializingProgressRing.Visibility = Visibility.Collapsed;
-                initializingProgressRing.IsActive = false;
+                    logoutBtn.Visibility = Visibility.Visible;
+                    avatarAndNameGrid.Visibility = Visibility.Visible;
+                    initializingProgressRing.Visibility = Visibility.Collapsed;
+                    initializingProgressRing.IsActive = false;
+                    return;
+                }
+                else
+                {
+                    //contentGrid.Children.Remove(this.FindName("loginGrid") as UIElement);
+                    this.realContentGrid.Visibility = Visibility.Visible;
+                    this.loginGrid.Visibility = Visibility.Collapsed;
+                    initializingProgressRing.Visibility = Visibility.Visible;
+                    initializingProgressRing.IsActive = true;
+
+                    if (!userInitialized)
+                        await InitializeUserAsync();//初始化用户信息
+                    userInitialized = true;
+
+                    logoutBtn.Visibility = Visibility.Visible;
+                    avatarAndNameGrid.Visibility = Visibility.Visible;
+                    initializingProgressRing.Visibility = Visibility.Collapsed;
+                    initializingProgressRing.IsActive = false;
+                }
             }
         }
         private void ResetAll()
@@ -151,6 +178,7 @@ namespace BiliDownload
             ApplicationData.Current.LocalSettings.Values["biliUserSESSDATA"] = string.Empty;
             ApplicationData.Current.LocalSettings.Values["biliUserUid"] = 0;
             this.loginStatus = false;
+            this.reLogined = true;
             this.Frame.Navigate(typeof(UserPage));
         }
 

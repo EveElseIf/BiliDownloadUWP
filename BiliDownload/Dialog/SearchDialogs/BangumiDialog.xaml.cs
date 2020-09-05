@@ -125,7 +125,7 @@ namespace BiliDownload.SearchDialogs
 
             try
             {
-                await MainHelper.CreateDownloadsAsync(list, quality, sESSDATA);
+                await DownloadHelper.CreateDownloadsAsync(list, quality, sESSDATA);
             }
             catch (ParsingVideoException ex)
             {

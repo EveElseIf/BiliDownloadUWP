@@ -127,6 +127,10 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Component\BiliDashDownload.cs" />
+    <Compile Include="Dialog\ExceptionDialog.xaml.cs">
+      <DependentUpon>ExceptionDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="DownloadPage.xaml.cs">
       <DependentUpon>DownloadPage.xaml</DependentUpon>
     </Compile>
@@ -144,7 +148,7 @@
     <Compile Include="Helper\BiliVideoHelper.cs" />
     <Compile Include="Helper\CompleteXmlHelper.cs" />
     <Compile Include="Helper\DownloadXmlHelper.cs" />
-    <Compile Include="Helper\MainHelper.cs" />
+    <Compile Include="Helper\DownloadHelper.cs" />
     <Compile Include="Helper\NetHelper.cs" />
     <Compile Include="Helper\VideoHelper.cs" />
     <Compile Include="Dialog\LoginDialogs\QRcodeLoginDialog.xaml.cs">
@@ -153,6 +157,8 @@
     <Compile Include="Dialog\LoginDialogs\SESSDATALoginDialog.xaml.cs">
       <DependentUpon>SESSDATALoginDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Interface\IBiliDownload.cs" />
+    <Compile Include="Interface\IBiliDownloadPart.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
@@ -215,6 +221,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="Dialog\ExceptionDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="DownloadPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

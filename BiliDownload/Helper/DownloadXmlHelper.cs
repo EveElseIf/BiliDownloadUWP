@@ -1,4 +1,6 @@
-﻿using BiliDownload.Model.Xml;
+﻿using BiliDownload.Component;
+using BiliDownload.Interface;
+using BiliDownload.Model.Xml;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -71,12 +73,16 @@ namespace BiliDownload.Helper
         }
         public static void StoreCurrentDownloads()
         {
-            var list = DownloadPage.Current.activeDownloadList;
+            var list = new List<BiliDashDownload>();
+            foreach (var item in DownloadPage.Current.activeDownloadList)
+            {
+                list.Add(item as BiliDashDownload);
+            }
             if (list?.Count < 1) return;//没有内容就不用储存了
-            var doc = CreateDownloadXDocument(list.ToList()).ToStringWithDeclaration();
+            var doc = CreateDownloadXDocument(list).ToStringWithDeclaration();
             WriteXml(doc);
         }
-        public static XDocument CreateDownloadXDocument(List<DownloadViewModel> models)//创建Xml文档
+        public static XDocument CreateDownloadXDocument(List<BiliDashDownload> models)//创建Xml文档
         {
             var list = new List<XElement>();
             foreach (var model in models)
@@ -86,7 +92,7 @@ namespace BiliDownload.Helper
             var xdoc = new XDocument(new XDeclaration("1.0", "utf-8", "yes"), new XElement("Downloads", list));
             return xdoc;
         }
-        public static XElement CreateSingleDownloadXElement(DownloadViewModel viewModel)//单个视频创建XElement
+        public static XElement CreateSingleDownloadXElement(BiliDashDownload viewModel)//单个视频创建XElement
         {
             var model = new DownloadXmlModel()
             {
@@ -94,20 +100,20 @@ namespace BiliDownload.Helper
                 Title = viewModel.Title,
                 VideoUrl = viewModel.VideoUrl,
                 AudioUrl = viewModel.AudioUrl,
-                CacheFolderPath = viewModel.CacheFolderPath,
+                CacheFolderPath = viewModel.CacheFolder.Path,
                 PartList = new DownloadPartXmlModel[]
                 {
                     new DownloadPartXmlModel()
                     {
                         OperationGuid = viewModel.PartList[0].OperationGuid,
                         Url = viewModel.PartList[0].Url,
-                        CacheFilePath = viewModel.PartList[0].CacheFilePath
+                        CacheFilePath = viewModel.PartList[0].CacheFile.Path
                     },
                     new DownloadPartXmlModel()
                     {
                         OperationGuid = viewModel.PartList[1].OperationGuid,
                         Url = viewModel.PartList[1].Url,
-                        CacheFilePath = viewModel.PartList[1].CacheFilePath
+                        CacheFilePath = viewModel.PartList[1].CacheFile.Path
                     }
                 }
             };//建立xml模型，用于储存

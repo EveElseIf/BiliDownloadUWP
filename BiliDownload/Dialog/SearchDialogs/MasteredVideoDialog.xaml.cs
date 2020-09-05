@@ -94,7 +94,8 @@ namespace BiliDownload.SearchDialogs
             return dialog;
         }
         private async void ContentDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
-        {//多个视频下载
+        {
+            //多个视频下载
             var sESSDATA = ApplicationData.Current.LocalSettings.Values["biliUserSESSDATA"] as string;
 
             var list = new List<BiliVideoInfo>();
@@ -124,7 +125,7 @@ namespace BiliDownload.SearchDialogs
 
             try
             {
-                await MainHelper.CreateDownloadsAsync(list, quality, sESSDATA);
+                await DownloadHelper.CreateDownloadsAsync(list, quality, sESSDATA);
             }
             catch (ParsingVideoException ex)
             {
@@ -137,7 +138,7 @@ namespace BiliDownload.SearchDialogs
                     MainPage.ContentFrame.Navigate(typeof(UserPage));
                 }
             }
-            catch (NullReferenceException ex)
+            catch (NullReferenceException)
             {
                 var dialog = new ContentDialog()
                 {
@@ -184,7 +185,7 @@ namespace BiliDownload.SearchDialogs
                     MainPage.ContentFrame.Navigate(typeof(UserPage));
                 }
             }
-            catch (NullReferenceException ex)
+            catch (NullReferenceException)
             {
                 var dialog = new ContentDialog()
                 {

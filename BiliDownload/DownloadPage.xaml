@@ -4,7 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:BiliDownload"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:interface="using:BiliDownload.Interface"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
@@ -26,7 +26,7 @@
                             </Style>
                         </ListView.ItemContainerStyle>
                         <ListView.ItemTemplate>
-                            <DataTemplate x:DataType="local:DownloadViewModel">
+                            <DataTemplate x:DataType="interface:IBiliDownload">
                                 <Grid Height="80">
                                     <Grid.RowDefinitions>
                                         <RowDefinition/>
@@ -54,7 +54,7 @@
                                            FontSize="15"
                                            FontWeight="Light"
                                            VerticalAlignment="Center" Margin="0,0,10,0"/>
-                                            <Button Click="pauseOrResumeBtn_Click" Content="&#xE103;" FontFamily="Segoe MDL2 Assets" Margin="0,0,10,0"/>
+                                            <Button x:Name="pauseOrResumeBtn" Click="pauseOrResumeBtn_Click" Content="&#xE103;" FontFamily="Segoe MDL2 Assets" Margin="0,0,10,0"/>
                                             <Button Click="cancelBtn_Click" Content="&#xE10A;" FontFamily="Segoe MDL2 Assets"/>
                                         </StackPanel>
                                     </Grid>

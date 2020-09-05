@@ -102,9 +102,10 @@ namespace BiliDownload.SearchDialogs
                 return;
             }
             this.needToClose = true;
+            this.Hide();
             try
             {
-                await MainHelper.CreateDownloadAsync
+                await DownloadHelper.CreateDownloadAsync
                     (vm.Bv, vm.Cid, this.QualitySelectionProperty, ApplicationData.Current.LocalSettings.Values["biliUserSESSDATA"] as string);
             }
             catch (ParsingVideoException ex)

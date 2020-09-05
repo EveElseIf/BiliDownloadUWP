@@ -79,7 +79,7 @@ namespace BiliDownload
                 };
                 var result = await dialog.ShowAsync();
                 if (result == ContentDialogResult.Primary)
-                { 
+                {
                     this.contentFrame.Navigate(typeof(SettingPage));
                     this.navView.SelectedItem = navView.SettingsItem;
                 }

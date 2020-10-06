@@ -102,7 +102,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Images\Wide310x150Logo.scale-400.png" />
-    <None Include="Package.StoreAssociation.xml" />
     <None Include="BiliDownload.Package_TemporaryKey.pfx" />
     <Content Include="Images\LargeTile.scale-100.png" />
     <Content Include="Images\LargeTile.scale-125.png" />

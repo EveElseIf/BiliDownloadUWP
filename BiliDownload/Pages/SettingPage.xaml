@@ -1,0 +1,79 @@
+﻿<Page
+    x:Class="BiliDownload.SettingPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:BiliDownload"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="100"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <TextBlock Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Left" Text="设置"
+                   FontFamily="Microsoft Yahei UI" FontSize="40" Margin="20,0,0,0"/>
+        <ScrollViewer Grid.Row="1">
+            <StackPanel Orientation="Vertical">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="402"/>
+                        <ColumnDefinition Width="50"/>
+                        <ColumnDefinition Width="5*"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Row="0" Text="下载储存位置" FontFamily="Microsoft Yahei UI" FontSize="30" Margin="20,20,0,20"/>
+                    <TextBox x:Name="locationTextBox" Grid.Row="1" Grid.Column="0" Margin="40,10,20,10" IsEnabled="False" Background="White"/>
+                    <Button x:Name="selectLocationBtn" Click="selectLocationBtn_Click" Grid.Row="1" Grid.Column="1" Content="浏览"/>
+                </Grid>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="405"/>
+                        <ColumnDefinition Width="50"/>
+                        <ColumnDefinition Width="5*"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Row="0" Text="转码CPU占用率" FontFamily="Microsoft Yahei UI" FontSize="30" Margin="20,20,0,20"/>
+                    <TextBlock Text="是否限制FFMpeg转码CPU占用率" FontFamily="Microsoft Yahei UI" FontSize="20" Grid.Row="1" Grid.Column="0" Margin="40,10,20,10"/>
+                    <ToggleSwitch x:Name="cpuLimitSwitch" Toggled="cpuLimitSwitch_Toggled" Grid.Row="1" Grid.Column="1"/>
+                </Grid>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="405"/>
+                        <ColumnDefinition Width="50"/>
+                        <ColumnDefinition Width="5*"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Row="0" Text="优先下载HEVC编码视频" FontFamily="Microsoft Yahei UI" FontSize="30" Margin="20,20,0,20"/>
+                    <TextBlock Text="是否优先下载HEVC(H.265)编码的视频" FontFamily="Microsoft Yahei UI" FontSize="20" Grid.Row="1" Grid.Column="0" Margin="40,10,20,10"/>
+                    <ToggleSwitch x:Name="hevcDownloadSwitch" Toggled="hevcDownloadSwitch_Toggled" Grid.Row="1" Grid.Column="1"/>
+                </Grid>
+                <!--<Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="4*"/>
+                        <ColumnDefinition Width="50"/>
+                        <ColumnDefinition Width="5*"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Row="0" Text="测试布局用的。。。" FontFamily="Microsoft Yahei UI" FontSize="30" Margin="20,20,0,20"/>
+                    <TextBox Grid.Row="1" Grid.Column="0" Margin="40,10,20,10"/>
+                    <Button Grid.Row="1" Grid.Column="1" Content="浏览"/>
+                </Grid>-->
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</Page>

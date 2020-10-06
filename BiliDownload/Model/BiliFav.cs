@@ -10,7 +10,7 @@ namespace BiliDownload.Model
     {
         public int Id { get; set; }
         public string Title { get; set; }
-        public int MediaCount { get => VideoList.Count; }
+        public int MediaCount { get; set; }
         public List<BiliVideoMaster> VideoList { get; set; }
     }
 }

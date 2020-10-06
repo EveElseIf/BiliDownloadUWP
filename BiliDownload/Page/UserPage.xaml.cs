@@ -2,26 +2,20 @@
 using BiliDownload.HelperPage;
 using BiliDownload.LoginDialogs;
 using BiliDownload.Model;
-using BiliDownload.Model.Json;
 using BiliDownload.SearchDialogs;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Windows.Storage;
 using Windows.UI.WindowManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Hosting;
-using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI.Xaml.Navigation;
@@ -155,7 +149,7 @@ namespace BiliDownload
         }
         public async Task PwdLoginOk()
         {
-            if(this.LoginWindow!=null)
+            if (this.LoginWindow != null)
             {
                 await this.LoginWindow.CloseAsync();
                 this.LoginWindow = null;
@@ -254,7 +248,7 @@ namespace BiliDownload
                     var result = await dialog.ShowAsync();
                     if (result == ContentDialogResult.Secondary) return;
                 }
-                catch(NullReferenceException ex)
+                catch (NullReferenceException ex)
                 {
                     var dialog = new ContentDialog()
                     {
@@ -447,7 +441,7 @@ namespace BiliDownload
 
             var fav = await BiliFavHelper.GetBiliFavAsync(this.Id, (count / 20) + 1, UserPage.SESSDATA);
 
-            if(fav == null)
+            if (fav == null)
             {
                 var dialog = new ErrorDialog("已经没有更多了")
                 {
@@ -479,7 +473,7 @@ namespace BiliDownload
     }
     public class FavVideoViewModel
     {
-        public static async Task<FavVideoViewModel> CreateAsync(string title,string bv,string coverUrl)
+        public static async Task<FavVideoViewModel> CreateAsync(string title, string bv, string coverUrl)
         {
             var model = new FavVideoViewModel();
             model.Title = title;
@@ -498,7 +492,7 @@ namespace BiliDownload
 
                 model.CoverImg = imgSource;
             }
-            catch(System.Exception ex)//封面下载不了的异常
+            catch (System.Exception ex)//封面下载不了的异常
             {
                 model.CoverImg = new BitmapImage(new Uri("ms-appx:///Assets/LockScreenLogo.scale-200.png"));
             }

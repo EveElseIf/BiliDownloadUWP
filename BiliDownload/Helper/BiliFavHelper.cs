@@ -45,6 +45,7 @@ namespace BiliDownload.Helper
             {
                 Id = json.data.info.id,
                 Title = json.data.info.title,
+                MediaCount = json.data.info.media_count,
                 VideoList = json.data.medias.Select(m => new BiliVideoMaster()
                 {
                     Bv = m.bvid,

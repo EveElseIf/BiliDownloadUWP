@@ -1,6 +1,7 @@
 ﻿using Base64Url;
 using BiliDownload.Helper;
 using BiliDownload.Model.Json;
+using BiliDownload.Pages;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -75,7 +76,7 @@ namespace BiliDownload.HelperPage
                         ApplicationData.Current.LocalSettings.Values["biliUserSESSDATA"] = sESSDATA;
                         ApplicationData.Current.LocalSettings.Values["biliUserUid"] = long.Parse(uid);
                         ApplicationData.Current.LocalSettings.Values["isLogined"] = true;
-                        await UserPage.Current.PwdLoginOk();
+                        await UserLoginPage.Current.PwdLoginOk();
                     }
                 });
         }
@@ -112,7 +113,7 @@ namespace BiliDownload.HelperPage
 
         private async void cancelBtn_Click(object sender, RoutedEventArgs e)
         {
-            await UserPage.Current.PwdLoginCancel();
+            await UserLoginPage.Current.PwdLoginCancel();
         }
         private async Task<string> GeneratePwdHash(string pwd)
         {

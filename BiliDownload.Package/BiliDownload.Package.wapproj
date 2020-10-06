@@ -56,7 +56,7 @@
     <DefaultLanguage>zh-CN</DefaultLanguage>
     <AppxPackageSigningEnabled>True</AppxPackageSigningEnabled>
     <EntryPointProjectUniqueName>..\BiliDownload\BiliDownload.csproj</EntryPointProjectUniqueName>
-    <PackageCertificateThumbprint>D4D92B6B7A7D54F1068B4B39EEEEC7ECF9011252</PackageCertificateThumbprint>
+    <PackageCertificateThumbprint>EF4D39C8C0684BC5FE3CA951D7136D3B1AC2AD51</PackageCertificateThumbprint>
     <GenerateAppInstallerFile>False</GenerateAppInstallerFile>
     <AppxPackageSigningTimestampDigestAlgorithm>SHA256</AppxPackageSigningTimestampDigestAlgorithm>
     <AppxAutoIncrementPackageRevision>False</AppxAutoIncrementPackageRevision>

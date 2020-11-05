@@ -1,4 +1,5 @@
-﻿using BiliDownload.Exception;
+﻿using BiliDownload.Dialog;
+using BiliDownload.Exception;
 using BiliDownload.Helper;
 using BiliDownload.Model;
 using BiliDownload.SearchDialogs;
@@ -35,6 +36,10 @@ namespace BiliDownload
             this.InitializeComponent();
             NavigationCacheMode = NavigationCacheMode.Enabled;
             if (Current == null) Current = this;
+            this.searchTextbox.KeyDown += (s, e) =>
+            {
+                if (e.Key == Windows.System.VirtualKey.Enter) this.searchBtn_Click(this, new RoutedEventArgs());
+            };
         }
         protected async override void OnNavigatedTo(NavigationEventArgs e)//首次打开给小提示
         {
@@ -71,7 +76,25 @@ namespace BiliDownload
             searchProgressRing.IsActive = true;
             searchProgressRing.Visibility = Visibility.Visible;
 
-            var info = await AnalyzeVideoUrlAsync(searchTextbox.Text, sESSDATA); //分析输入的url，提取bv或者av，是否指定分p
+            (string, long, UrlType, int) info = (null, 0, 0, 0);
+            try
+            {
+                info = await AnalyzeVideoUrlAsync(searchTextbox.Text, sESSDATA); //分析输入的url，提取bv或者av，是否指定分p
+            }
+            catch(NullReferenceException ex)
+            {
+                Reset();
+                var dialog = new ExceptionDialog("未找到视频");
+                await dialog.ShowAsync();
+                return;
+            }
+            catch (System.Exception ex)
+            {
+                Reset();
+                var dialog = new ExceptionDialog(ex.Message);
+                await dialog.ShowAsync();
+                return;
+            }
 
             if (info.Item3 == UrlType.BangumiEP)//下载ep番剧
             {

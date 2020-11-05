@@ -22,6 +22,7 @@ namespace BiliDownload.Dialog
         public ExceptionDialog(string Msg)
         {
             this.InitializeComponent();
+            this.PrimaryButtonText = "确定";
             this.msgTextBlock.Text = Msg;
         }
 

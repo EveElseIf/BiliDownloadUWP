@@ -25,6 +25,7 @@ namespace BiliDownload.HelperPages
     /// </summary>
     public sealed partial class MangaDownloadPage : Page
     {
+        public string SESSDATA { get => ApplicationData.Current.LocalSettings.Values["biliUserSESSDATA"] as string; }
         private BiliMangaMaster master;
         private ObservableCollection<MangaDownloadViewModel> downloadList = new ObservableCollection<MangaDownloadViewModel>();
         public MangaDownloadPage()
@@ -71,7 +72,7 @@ namespace BiliDownload.HelperPages
             };
             try
             {
-                download.UrlList = await MangaDownloadHelper.GetPicUrlsAsync(this.master.Mcid, vm.Epid);
+                download.UrlList = await MangaDownloadHelper.GetPicUrlsAsync(this.master.Mcid, vm.Epid, SESSDATA);
             }
             catch (MangaEpisodeNeedBuyException)
             {
@@ -101,7 +102,7 @@ namespace BiliDownload.HelperPages
                 };
                 try
                 {
-                    download.UrlList = await MangaDownloadHelper.GetPicUrlsAsync(this.master.Mcid, item.Epid);
+                    download.UrlList = await MangaDownloadHelper.GetPicUrlsAsync(this.master.Mcid, item.Epid, SESSDATA);
                 }
                 catch (MangaEpisodeNeedBuyException)
                 {

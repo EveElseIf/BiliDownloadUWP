@@ -1,4 +1,4 @@
-﻿using BiliDownload.Exception;
+﻿using BiliDownload.Exceptions;
 using BiliDownload.Helper;
 using BiliDownload.Model;
 using System;

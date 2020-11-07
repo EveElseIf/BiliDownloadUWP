@@ -1,4 +1,4 @@
-﻿using BiliDownload.Exception;
+﻿using BiliDownload.Exceptions;
 using BiliDownload.Model;
 using BiliDownload.Model.Json;
 using Newtonsoft.Json;

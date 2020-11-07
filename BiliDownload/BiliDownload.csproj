@@ -131,26 +131,33 @@
     <Compile Include="Dialog\ExceptionDialog.xaml.cs">
       <DependentUpon>ExceptionDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Exceptions\MangaNotFoundException.cs" />
+    <Compile Include="HelperPages\MangaDownloadPage.xaml.cs">
+      <DependentUpon>MangaDownloadPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Helpers\BiliMangaHelper.cs" />
+    <Compile Include="Model\BiliManga.cs" />
+    <Compile Include="Model\BiliMangaMaster.cs" />
     <Compile Include="Pages\DownloadPage.xaml.cs">
       <DependentUpon>DownloadPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Dialog\ErrorDialog.xaml.cs">
       <DependentUpon>ErrorDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Exception\ParsingVideoException.cs" />
-    <Compile Include="HelperPage\PwdLoginPage.xaml.cs">
+    <Compile Include="Exceptions\ParsingVideoException.cs" />
+    <Compile Include="HelperPages\PwdLoginPage.xaml.cs">
       <DependentUpon>PwdLoginPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Helper\BiliBangumiListHelper.cs" />
-    <Compile Include="Helper\BiliFavHelper.cs" />
-    <Compile Include="Helper\BiliLoginHelper.cs" />
-    <Compile Include="Helper\BiliUserHelper.cs" />
-    <Compile Include="Helper\BiliVideoHelper.cs" />
-    <Compile Include="Helper\CompleteXmlHelper.cs" />
-    <Compile Include="Helper\DownloadXmlHelper.cs" />
-    <Compile Include="Helper\DownloadHelper.cs" />
-    <Compile Include="Helper\NetHelper.cs" />
-    <Compile Include="Helper\VideoHelper.cs" />
+    <Compile Include="Helpers\BiliBangumiListHelper.cs" />
+    <Compile Include="Helpers\BiliFavHelper.cs" />
+    <Compile Include="Helpers\BiliLoginHelper.cs" />
+    <Compile Include="Helpers\BiliUserHelper.cs" />
+    <Compile Include="Helpers\BiliVideoHelper.cs" />
+    <Compile Include="Helpers\CompleteXmlHelper.cs" />
+    <Compile Include="Helpers\DownloadXmlHelper.cs" />
+    <Compile Include="Helpers\DownloadHelper.cs" />
+    <Compile Include="Helpers\NetHelper.cs" />
+    <Compile Include="Helpers\VideoHelper.cs" />
     <Compile Include="Dialog\LoginDialogs\QRcodeLoginDialog.xaml.cs">
       <DependentUpon>QRcodeLoginDialog.xaml</DependentUpon>
     </Compile>
@@ -231,6 +238,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="HelperPages\MangaDownloadPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Pages\DownloadPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -239,7 +250,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="HelperPage\PwdLoginPage.xaml">
+    <Page Include="HelperPages\PwdLoginPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -294,6 +305,9 @@
     </PackageReference>
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
       <Version>6.2.10</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Toolkit.Uwp.Notifications">
+      <Version>6.1.1</Version>
     </PackageReference>
     <PackageReference Include="Newtonsoft.Json">
       <Version>12.0.3</Version>

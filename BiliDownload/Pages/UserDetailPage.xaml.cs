@@ -32,10 +32,13 @@ namespace BiliDownload.Pages
     {
         public static string SESSDATA { get => ApplicationData.Current.LocalSettings.Values["biliUserSESSDATA"] as string; }
         public static long Uid { get => (long)ApplicationData.Current.LocalSettings.Values["biliUserUid"]; }
+        private bool favListViewLoaded = false;
+        private bool bangumiListViewLoaded = false;
 
         public UserDetailPage()
         {
             this.InitializeComponent();
+            NavigationCacheMode = NavigationCacheMode.Enabled;
             this.InitializeUserAsync();
         }
         private async Task InitializeUserAsync()
@@ -69,6 +72,8 @@ namespace BiliDownload.Pages
 
         private async void favListView_Loaded(object sender, RoutedEventArgs e)
         {
+            if (favListViewLoaded) return;
+            favListViewLoaded = true;
             this.StartLoadingAnimation();
             var favInfoList = await BiliFavHelper.GetUserFavListInfoAsync(Uid, SESSDATA);
             var favList = new List<FavViewModel>();
@@ -109,7 +114,7 @@ namespace BiliDownload.Pages
                     var result = await dialog.ShowAsync();
                     if (result == ContentDialogResult.Secondary) return;
                 }
-                catch (NullReferenceException ex)
+                catch (NullReferenceException)
                 {
                     var dialog = new ContentDialog()
                     {
@@ -123,6 +128,10 @@ namespace BiliDownload.Pages
                         PrimaryButtonText = "知道了"
                     };
                     await dialog.ShowAsync();
+                }
+                catch
+                {
+
                 }
             }
         }
@@ -241,6 +250,8 @@ namespace BiliDownload.Pages
 
         private async void bangumiListGridView_Loaded(object sender, RoutedEventArgs e)//加载番剧
         {
+            if (bangumiListViewLoaded) return;
+            bangumiListViewLoaded = true;
             this.StartLoadingAnimation();
             var list = new List<BangumiViewModel>();
             var infoList = await BiliBangumiListHelper.GetBangumiListAsync(1, Uid, SESSDATA);

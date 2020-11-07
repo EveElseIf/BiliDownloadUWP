@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.Storage.Streams;
@@ -69,6 +70,13 @@ namespace BiliDownload.Helper
             var resp = await req.GetResponseAsync();
             var stream = resp.GetResponseStream();
             return (await (new StreamReader(stream)).ReadToEndAsync(), resp.Headers);
+        }
+        public static async Task<string> HttpPostJsonAsync(string url,IEnumerable<(string,string)> cookies,string json)
+        {
+            var client = new HttpClient();
+            cookies.ToList().ForEach(c => client.DefaultRequestHeaders.Add(c.Item1, c.Item2));
+            var resp = await client.PostAsync(url, new StringContent(json, Encoding.UTF8, "application/json"));
+            return await resp.Content.ReadAsStringAsync();
         }
     }
 }

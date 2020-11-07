@@ -1,6 +1,8 @@
 ﻿using BiliDownload.Dialog;
-using BiliDownload.Exception;
+using BiliDownload.Exceptions;
 using BiliDownload.Helper;
+using BiliDownload.HelperPages;
+using BiliDownload.Helpers;
 using BiliDownload.Model;
 using BiliDownload.SearchDialogs;
 using System;
@@ -13,10 +15,12 @@ using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Storage;
+using Windows.UI.WindowManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
+using Windows.UI.Xaml.Hosting;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
@@ -31,6 +35,7 @@ namespace BiliDownload
     public sealed partial class SearchPage : Page
     {
         public static SearchPage Current { private set; get; }
+        private Dictionary<BiliMangaMaster, AppWindow> mangaWindowDic = new Dictionary<BiliMangaMaster, AppWindow>();
         public SearchPage()
         {
             this.InitializeComponent();
@@ -81,14 +86,14 @@ namespace BiliDownload
             {
                 info = await AnalyzeVideoUrlAsync(searchTextbox.Text, sESSDATA); //分析输入的url，提取bv或者av，是否指定分p
             }
-            catch(NullReferenceException ex)
+            catch(NullReferenceException)
             {
                 Reset();
                 var dialog = new ExceptionDialog("未找到视频");
                 await dialog.ShowAsync();
                 return;
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 Reset();
                 var dialog = new ExceptionDialog(ex.Message);
@@ -104,7 +109,7 @@ namespace BiliDownload
                 var result = await dialog.ShowAsync();
                 if (result == ContentDialogResult.Secondary) return;
             }
-            if (info.Item3 == UrlType.BangumiSS)//下载ss番剧
+            else if (info.Item3 == UrlType.BangumiSS)//下载ss番剧
             {
                 var bangumi = await BiliVideoHelper.GetBangumiInfoAsync(info.Item4, 1, sESSDATA);
                 var dialog = await BangumiDialog.CreateAsync(bangumi);
@@ -112,22 +117,33 @@ namespace BiliDownload
                 var result = await dialog.ShowAsync();
                 if (result == ContentDialogResult.Secondary) return;
             }
-
-            else if (info.Item3 == UrlType.SingelVideo) //指定了分p的时候
-            {
-                var dialog = await SingleVideoDialog.CreateAsync
-                    (await BiliVideoHelper.GetSingleVideoInfoAsync(info.Item1, info.Item2, 64, sESSDATA));
-                Reset();
-                var result = await dialog.ShowAsync();
-                if (result == ContentDialogResult.Secondary) return;
-            }
-            else if (info.Item3 == UrlType.MasteredVideo) //没有指定分p的时候
+            //else if (info.Item3 == UrlType.SingelVideo) //指定了分p的时候，废弃这种用法
+            //{
+            //    var dialog = await SingleVideoDialog.CreateAsync
+            //        (await BiliVideoHelper.GetSingleVideoInfoAsync(info.Item1, info.Item2, 64, sESSDATA));
+            //    Reset();
+            //    var result = await dialog.ShowAsync();
+            //    if (result == ContentDialogResult.Secondary) return;
+            //}
+            else if (info.Item3 == UrlType.MasteredVideo) //下载普通视频集合
             {
                 var master = await BiliVideoHelper.GetVideoMasterInfoAsync(info.Item1, sESSDATA);
                 var dialog = await MasteredVideoDialog.CreateAsync(master);
                 Reset();
                 var result = await dialog.ShowAsync();
                 if (result == ContentDialogResult.Secondary) return;
+            }
+            else if(info.Item3 == UrlType.MangaMC) //下载漫画
+            {
+                var master = await BiliMangaHelper.GetBiliMangaMasterAsync(info.Item4, sESSDATA);
+                Reset();
+                AppWindow mangaWindow = await AppWindow.TryCreateAsync();
+                mangaWindow.RequestSize(new Size(1024, 768));
+                Frame mangaFrame = new Frame();
+                mangaFrame.Navigate(typeof(MangaDownloadPage), master);
+                ElementCompositionPreview.SetAppWindowContent(mangaWindow, mangaFrame);
+                this.mangaWindowDic.Add(master, mangaWindow);
+                await mangaWindow.TryShowAsync();
             }
             else
             {
@@ -139,6 +155,10 @@ namespace BiliDownload
                 await dialog.ShowAsync();
             }
         }
+        public async Task CloseMangaWindow(BiliMangaMaster master)
+        {
+            await this.mangaWindowDic[master].CloseAsync();   
+        }
         public void Reset()
         {
             this.searchBtn.IsEnabled = true;
@@ -147,12 +167,13 @@ namespace BiliDownload
         }
         private enum UrlType
         {
-            SingelVideo,
+            //SingelVideo,
             MasteredVideo,
             BangumiEP,
-            BangumiSS
+            BangumiSS,
+            MangaMC
         }
-                           //bv     cid  类型    ep或ss
+                           //bv     cid  类型    ep或ss或mc
         private async Task<(string,long,UrlType,int)> AnalyzeVideoUrlAsync(string url,string sESSDATA)
             //分析输入的url，提取bv
         {
@@ -163,13 +184,14 @@ namespace BiliDownload
             long av;
             int ep = 0;
             int ss = 0;
+            int mc = 0;
             UrlType type = UrlType.MasteredVideo;
 
-            if (Regex.IsMatch(searchTextbox.Text, "\\?p=[0-9]*"))//判断分p
-            {
-                p = int.Parse(Regex.Match(searchTextbox.Text, "p=[0-9]*").Value.Remove(0, 2));
-                type = UrlType.SingelVideo;
-            };
+            //if (Regex.IsMatch(searchTextbox.Text, "\\?p=[0-9]*"))//判断分p
+            //{
+            //    p = int.Parse(Regex.Match(searchTextbox.Text, "p=[0-9]*").Value.Remove(0, 2));
+            //    type = UrlType.SingelVideo;
+            //};
 
             if (Regex.IsMatch(url, "[B|b][V|v][a-z|A-Z|0-9]*"))//判断bv
             {
@@ -181,19 +203,26 @@ namespace BiliDownload
                 av = long.Parse(Regex.Match(url, "[a|A][v|V][0-9]*").Value.Remove(0, 2));
                 master = await BiliVideoHelper.GetVideoMasterInfoAsync(av, sESSDATA);
             }
-            else if (Regex.IsMatch(url,"[e|E][p|P][0-9]*"))
+            else if (Regex.IsMatch(url,"[e|E][p|P][0-9]*"))//判断ep
             {
                 p = 0;
                 master = null;
                 type = UrlType.BangumiEP;
                 ep = int.Parse(Regex.Match(url, "[e|E][p|P][0-9]*").Value.Remove(0, 2));
             }
-            else if (Regex.IsMatch(url,"[s|S][s|S][0-9]*"))
+            else if (Regex.IsMatch(url,"[s|S][s|S][0-9]*"))//判断ss
             {
                 p = 0;
                 master = null;
                 type = UrlType.BangumiSS;
                 ss = int.Parse(Regex.Match(url, "[s|S][s|S][0-9]*").Value.Remove(0, 2));
+            }
+            else if (Regex.IsMatch(url, "[m|M][c|C][0-9]*"))
+            {
+                p = 0;
+                master = null;
+                type = UrlType.MangaMC;
+                mc = int.Parse(Regex.Match(url, "[m|M][c|C][0-9]*").Value.Remove(0, 2));
             }
             else
             {
@@ -203,11 +232,12 @@ namespace BiliDownload
             {
                 cid = (long)(master.VideoList.Where(v => v.P == p)?.FirstOrDefault().Cid);
             }
+            if (type == UrlType.MangaMC) return (null, 0, type, mc);
             if (type == UrlType.BangumiEP) return (null, 0, type, ep);
             if (type == UrlType.BangumiSS) return (null, 0, type, ss);
             if (master != null)//只要是番剧，就把master赋值为空
                 return (master.Bv, cid, type, 0);
-            else throw new System.Exception();
+            else throw new Exception();
         }
     }
 }

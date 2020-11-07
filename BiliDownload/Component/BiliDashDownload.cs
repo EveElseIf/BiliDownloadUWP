@@ -1,6 +1,7 @@
 ﻿using BiliDownload.Helper;
 using BiliDownload.Interface;
 using BiliDownload.Model.Xml;
+using Microsoft.Toolkit.Uwp.Notifications;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -11,6 +12,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Windows.Networking.BackgroundTransfer;
 using Windows.Storage;
+using Windows.UI.Notifications;
 
 namespace BiliDownload.Component
 {
@@ -122,6 +124,14 @@ namespace BiliDownload.Component
             await VideoHelper.MakeVideoAsync(videoFile, audioFile, outputFile.Path);
             ChineseStatus = "已完成";
             IsCompleted = true;
+            if ((bool)ApplicationData.Current.LocalSettings.Values["NeedNotice"])//如果需要通知，就发送下载完成通知
+            {
+                var content = new ToastContentBuilder().AddToastActivationInfo("downloadCompleted", ToastActivationType.Foreground)
+                    .AddText("下载完成")
+                    .AddText($"{title} - {downloadName}")
+                    .GetToastContent();
+                ToastNotificationManager.CreateToastNotifier().Show(new ToastNotification(content.GetXml()));
+            }
             CreateCompleted($"{DownloadName} - {title}", FullProgress, outputFile.Path);//添加到完成列表
         }
         private void CreateCompleted(string title, ulong size, string path)

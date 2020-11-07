@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BiliDownload.Exception
+namespace BiliDownload.Exceptions
 {
 
     [Serializable]
-    public class ParsingVideoException : System.Exception
+    public class ParsingVideoException : Exception
     {
         public ParsingVideoException() { }
         public ParsingVideoException(string message) : base(message) { }

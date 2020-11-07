@@ -7,20 +7,13 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Windows.Storage;
 using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
-using Windows.UI.Xaml.Navigation;
 
 // https://go.microsoft.com/fwlink/?LinkId=234238 上介绍了“内容对话框”项模板
 
@@ -157,7 +150,7 @@ namespace BiliDownload.SearchDialogs
                 var info = await BiliVideoHelper.GetSingleVideoInfoAsync(model.Info.Bv, model.Info.Cid, 64, sESSDATA);
                 var dialog = await SingleVideoDialog.CreateAsync(info);
                 var result = await dialog.ShowAsync();
-                if (result == ContentDialogResult.Secondary)  { this.needToClose = false; await this.ShowAsync(); }
+                if (result == ContentDialogResult.Secondary) { this.needToClose = false; await this.ShowAsync(); }
             }
             catch (ParsingVideoException ex)
             {
@@ -170,7 +163,7 @@ namespace BiliDownload.SearchDialogs
                     MainPage.ContentFrame.Navigate(typeof(UserPage));
                 }
             }
-            catch(System.Exception ex)
+            catch (System.Exception ex)
             {
                 var dialog = new ErrorDialog(ex.Message);
                 dialog.PrimaryButtonText = "";

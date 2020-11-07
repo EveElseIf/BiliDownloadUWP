@@ -1,14 +1,10 @@
 ﻿using BiliDownload.Component;
-using BiliDownload.Interface;
 using BiliDownload.Model.Xml;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using System.Xml;
 using System.Xml.Linq;
 using System.Xml.Serialization;
 using Windows.Storage;
@@ -38,7 +34,7 @@ namespace BiliDownload.Helper
         public static bool CheckXml()//xml不存在就创建，当xml内容为空时，直接返回false
         {
             if (!File.Exists(XmlPath))
-            { 
+            {
                 var file = File.Create(XmlPath);
                 file.Close();
                 file.Dispose();

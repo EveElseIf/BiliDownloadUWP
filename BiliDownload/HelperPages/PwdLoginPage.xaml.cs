@@ -1,28 +1,15 @@
-﻿using Base64Url;
-using BiliDownload.Helper;
-using BiliDownload.Model.Json;
+﻿using BiliDownload.Helper;
 using BiliDownload.Pages;
 using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using System.Web;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Windows.Storage;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using XC.RSAUtil;
 
@@ -56,32 +43,32 @@ namespace BiliDownload.HelperPage
             this.Validate = e.Value.Substring(0, e.Value.LastIndexOf('&'));
             this.Seccode = e.Value.Substring(e.Value.LastIndexOf('&') + 1);
             await this.Dispatcher.RunAsync
-                (CoreDispatcherPriority.High,async () =>
-                {
-                    this.loginWebView.Visibility = Visibility.Collapsed;
-                    this.progressRing.Visibility = Visibility.Collapsed;
-                    this.UserName = userNameTextBox.Text;
-                    this.PasswordHash = await GeneratePwdHash(this.pwdPasswordBox.Password);
+                (CoreDispatcherPriority.High, async () =>
+                 {
+                     this.loginWebView.Visibility = Visibility.Collapsed;
+                     this.progressRing.Visibility = Visibility.Collapsed;
+                     this.UserName = userNameTextBox.Text;
+                     this.PasswordHash = await GeneratePwdHash(this.pwdPasswordBox.Password);
 
-                    var postContent = $"captchaType=6&username={UrlEncode(UserName)}&keep=true&key={UrlEncode(this.Key)}&challenge={UrlEncode(Challenge)}&validate={UrlEncode(Validate)}&seccode={UrlEncode(Seccode)}&password={UrlEncode(PasswordHash)}";
+                     var postContent = $"captchaType=6&username={UrlEncode(UserName)}&keep=true&key={UrlEncode(this.Key)}&challenge={UrlEncode(Challenge)}&validate={UrlEncode(Validate)}&seccode={UrlEncode(Seccode)}&password={UrlEncode(PasswordHash)}";
 
-                    var result = await NetHelper.HttpPostAsync
-                        ("http://passport.bilibili.com/web/login/v2", null, postContent);
-                    var json = JsonConvert.DeserializeObject<LoginJson>(result.Item1);
-                    if (json.code != 0) { this.errorTextBlock.Text = json.code.ToString(); this.loginBtn.IsEnabled = true; }
-                    else if (json.code == 0)
-                    {
-                        var sESSDATA = Regex.Match(result.Item2.ToString(), "(?<=SESSDATA=)[%|a-z|A-Z|0-9|*]*")?.Value;
-                        var uid = Regex.Match(result.Item2.ToString(), "(?<=DedeUserID=)[0-9]*")?.Value;
-                        ApplicationData.Current.LocalSettings.Values["biliUserSESSDATA"] = sESSDATA;
-                        ApplicationData.Current.LocalSettings.Values["biliUserUid"] = long.Parse(uid);
-                        ApplicationData.Current.LocalSettings.Values["isLogined"] = true;
-                        await UserLoginPage.Current.PwdLoginOk();
-                    }
-                });
+                     var result = await NetHelper.HttpPostAsync
+                         ("http://passport.bilibili.com/web/login/v2", null, postContent);
+                     var json = JsonConvert.DeserializeObject<LoginJson>(result.Item1);
+                     if (json.code != 0) { this.errorTextBlock.Text = json.code.ToString(); this.loginBtn.IsEnabled = true; }
+                     else if (json.code == 0)
+                     {
+                         var sESSDATA = Regex.Match(result.Item2.ToString(), "(?<=SESSDATA=)[%|a-z|A-Z|0-9|*]*")?.Value;
+                         var uid = Regex.Match(result.Item2.ToString(), "(?<=DedeUserID=)[0-9]*")?.Value;
+                         ApplicationData.Current.LocalSettings.Values["biliUserSESSDATA"] = sESSDATA;
+                         ApplicationData.Current.LocalSettings.Values["biliUserUid"] = long.Parse(uid);
+                         ApplicationData.Current.LocalSettings.Values["isLogined"] = true;
+                         await UserLoginPage.Current.PwdLoginOk();
+                     }
+                 });
         }
 
-        private async Task<(string,string,string)> GetCaptchaCodeAsync()
+        private async Task<(string, string, string)> GetCaptchaCodeAsync()
         {
             var json = JsonConvert.DeserializeObject<CaptchaJson>(await NetHelper.HttpGet("http://passport.bilibili.com/web/captcha/combine?plat=6", null, null));
             return (json.data.result.gt, json.data.result.challenge, json.data.result.key);

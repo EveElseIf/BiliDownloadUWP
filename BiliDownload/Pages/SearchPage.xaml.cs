@@ -1,5 +1,4 @@
 ﻿using BiliDownload.Dialog;
-using BiliDownload.Exceptions;
 using BiliDownload.Helper;
 using BiliDownload.HelperPages;
 using BiliDownload.Helpers;
@@ -7,21 +6,15 @@ using BiliDownload.Model;
 using BiliDownload.SearchDialogs;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Windows.Storage;
 using Windows.UI.WindowManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Hosting;
-using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
@@ -49,7 +42,7 @@ namespace BiliDownload
         protected async override void OnNavigatedTo(NavigationEventArgs e)//首次打开给小提示
         {
             base.OnNavigatedTo(e);
-            if(ApplicationData.Current.LocalSettings.Values["searchPageFirstOpen"] == null)
+            if (ApplicationData.Current.LocalSettings.Values["searchPageFirstOpen"] == null)
             {
                 var dialog = new ContentDialog()
                 {
@@ -74,7 +67,7 @@ namespace BiliDownload
             //if (!Regex.IsMatch(searchTextbox.Text, "[a-zA-z]+://[^\\s]*")) return;
 
             if (string.IsNullOrWhiteSpace(searchTextbox.Text)) return;
-                        
+
             var sESSDATA = ApplicationData.Current.LocalSettings.Values["biliUserSESSDATA"] as string;
 
             searchBtn.IsEnabled = false;
@@ -86,7 +79,7 @@ namespace BiliDownload
             {
                 info = await AnalyzeVideoUrlAsync(searchTextbox.Text, sESSDATA); //分析输入的url，提取bv或者av，是否指定分p
             }
-            catch(NullReferenceException)
+            catch (NullReferenceException)
             {
                 Reset();
                 var dialog = new ExceptionDialog("未找到视频");
@@ -133,8 +126,24 @@ namespace BiliDownload
                 var result = await dialog.ShowAsync();
                 if (result == ContentDialogResult.Secondary) return;
             }
-            else if(info.Item3 == UrlType.MangaMC) //下载漫画
+            else if (info.Item3 == UrlType.MangaMC) //下载漫画
             {
+                if (ApplicationData.Current.LocalSettings.Values["downloadPath"] as string == null)//检查下载目录是否为空
+                {
+                    Reset();
+                    var dialog = new ErrorDialog("未设置下载储存文件夹，请前往设置以更改")
+                    {
+                        PrimaryButtonText = "前往设置"
+                    };
+                    var result = await dialog.ShowAsync();
+                    if (result == ContentDialogResult.Secondary) return;
+                    else
+                    {
+                        MainPage.ContentFrame.Navigate(typeof(SettingPage));
+                        MainPage.NavView.SelectedItem = MainPage.NavView.SettingsItem;
+                        return;
+                    }
+                }
                 var master = await BiliMangaHelper.GetBiliMangaMasterAsync(info.Item4, sESSDATA);
                 Reset();
                 AppWindow mangaWindow = await AppWindow.TryCreateAsync();
@@ -157,7 +166,7 @@ namespace BiliDownload
         }
         public async Task CloseMangaWindow(BiliMangaMaster master)
         {
-            await this.mangaWindowDic[master].CloseAsync();   
+            await this.mangaWindowDic[master].CloseAsync();
         }
         public void Reset()
         {
@@ -173,9 +182,9 @@ namespace BiliDownload
             BangumiSS,
             MangaMC
         }
-                           //bv     cid  类型    ep或ss或mc
-        private async Task<(string,long,UrlType,int)> AnalyzeVideoUrlAsync(string url,string sESSDATA)
-            //分析输入的url，提取bv
+        //bv     cid  类型    ep或ss或mc
+        private async Task<(string, long, UrlType, int)> AnalyzeVideoUrlAsync(string url, string sESSDATA)
+        //分析输入的url，提取bv
         {
             BiliVideoMaster master;
             long cid = 0;
@@ -198,19 +207,19 @@ namespace BiliDownload
                 bv = Regex.Match(url, "[B|b][V|v][a-z|A-Z|0-9]*").Value;
                 master = await BiliVideoHelper.GetVideoMasterInfoAsync(bv, sESSDATA);
             }
-            else if (Regex.IsMatch(url,"[a|A][v|V][0-9]*"))//判断av
+            else if (Regex.IsMatch(url, "[a|A][v|V][0-9]*"))//判断av
             {
                 av = long.Parse(Regex.Match(url, "[a|A][v|V][0-9]*").Value.Remove(0, 2));
                 master = await BiliVideoHelper.GetVideoMasterInfoAsync(av, sESSDATA);
             }
-            else if (Regex.IsMatch(url,"[e|E][p|P][0-9]*"))//判断ep
+            else if (Regex.IsMatch(url, "[e|E][p|P][0-9]*"))//判断ep
             {
                 p = 0;
                 master = null;
                 type = UrlType.BangumiEP;
                 ep = int.Parse(Regex.Match(url, "[e|E][p|P][0-9]*").Value.Remove(0, 2));
             }
-            else if (Regex.IsMatch(url,"[s|S][s|S][0-9]*"))//判断ss
+            else if (Regex.IsMatch(url, "[s|S][s|S][0-9]*"))//判断ss
             {
                 p = 0;
                 master = null;
@@ -228,7 +237,7 @@ namespace BiliDownload
             {
                 throw new ArgumentException("Url不合法");
             }
-            if (p!=0)
+            if (p != 0)
             {
                 cid = (long)(master.VideoList.Where(v => v.P == p)?.FirstOrDefault().Cid);
             }

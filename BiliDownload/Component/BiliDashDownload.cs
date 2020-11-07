@@ -7,7 +7,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.Networking.BackgroundTransfer;
@@ -74,7 +73,7 @@ namespace BiliDownload.Component
             await this.CacheFolder.DeleteAsync();
         }
 
-        public static async Task<IBiliDownload> CreateAsync(string bv,long cid,int quality,string sESSDATA)
+        public static async Task<IBiliDownload> CreateAsync(string bv, long cid, int quality, string sESSDATA)
         {
             var video = await BiliVideoHelper.GetSingleVideoAsync(bv, cid, quality, sESSDATA);
             var tokenSource = new CancellationTokenSource();

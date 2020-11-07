@@ -1,4 +1,6 @@
-﻿using BiliDownload.Helper;
+﻿using BiliDownload.Exceptions;
+using BiliDownload.Helper;
+using BiliDownload.Helpers;
 using BiliDownload.Model;
 using System;
 using System.Collections.Generic;
@@ -6,17 +8,11 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
+using System.Net.Http;
 using System.Threading.Tasks;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Windows.Storage;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI.Xaml.Navigation;
 
@@ -30,9 +26,11 @@ namespace BiliDownload.HelperPages
     public sealed partial class MangaDownloadPage : Page
     {
         private BiliMangaMaster master;
+        private ObservableCollection<MangaDownloadViewModel> downloadList = new ObservableCollection<MangaDownloadViewModel>();
         public MangaDownloadPage()
         {
             this.InitializeComponent();
+            this.mangaDownloadListView.ItemsSource = downloadList;
         }
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
@@ -61,14 +59,63 @@ namespace BiliDownload.HelperPages
             this.mangaCoverImage.Source = img;
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private async void Button_Click(object sender, RoutedEventArgs e)
         {
+            var vm = (sender as Button).DataContext as MangaViewModel;
+            var download = new MangaDownloadViewModel()
+            {
+                Epid = vm.Epid,
+                Mcid = this.master.Mcid,
+                Status = "准备中",
+                Title = vm.Title
+            };
+            try
+            {
+                download.UrlList = await MangaDownloadHelper.GetPicUrlsAsync(this.master.Mcid, vm.Epid);
+            }
+            catch (MangaEpisodeNeedBuyException)
+            {
+                download.UrlList = null;
+            }
+            catch
+            {
 
+            }
+            downloadList.Add(download);
+            this.pivot.SelectedIndex = 1;
+            await download.StartDownloadAsync();
         }
 
-        private void downloadSelectedBtn_Click(object sender, RoutedEventArgs e)
+        private async void downloadSelectedBtn_Click(object sender, RoutedEventArgs e)
         {
+            var taskList = new List<Task>();
+            foreach (var item in this.mangaListView.ItemsSource as ObservableCollection<MangaViewModel>)
+            {
+                if (!item.ToDownload) continue;
+                var download = new MangaDownloadViewModel()
+                {
+                    Epid = item.Epid,
+                    Mcid = this.master.Mcid,
+                    Status = "准备中",
+                    Title = item.Title
+                };
+                try
+                {
+                    download.UrlList = await MangaDownloadHelper.GetPicUrlsAsync(this.master.Mcid, item.Epid);
+                }
+                catch (MangaEpisodeNeedBuyException)
+                {
+                    download.UrlList = null;
+                }
+                catch
+                {
 
+                }
+                downloadList.Add(download);
+                taskList.Add(download.StartDownloadAsync());
+            }
+            this.pivot.SelectedIndex = 1;
+            await Task.WhenAll(taskList);
         }
 
         private async void cancelBtn_Click(object sender, RoutedEventArgs e)
@@ -93,10 +140,51 @@ namespace BiliDownload.HelperPages
         public bool ToDownload
         {
             get { return toDownload; }
-            set { toDownload = value;this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ToDownload")); }
+            set { toDownload = value; this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ToDownload")); }
         }
 
 
         public event PropertyChangedEventHandler PropertyChanged;
+    }
+    public class MangaDownloadViewModel : INotifyPropertyChanged
+    {
+        public event PropertyChangedEventHandler PropertyChanged;
+        public string Title { get; set; }
+        public int Epid { get; set; }
+        public int Mcid { get; set; }
+        public List<string> UrlList { get; set; }
+        private string status;
+
+        public string Status
+        {
+            get { return status; }
+            set { status = value; this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Status")); }
+        }
+        public async Task StartDownloadAsync()
+        {
+            if (UrlList == null)
+            {
+                this.Status = $"需要购买";
+                return;
+            }
+            var title = Title.Replace("\\", "").Replace("/", "").Replace(":", "").Replace("*", "")
+            .Replace("?", "").Replace("\"", "").Replace("<", "").Replace(">", "").Replace("|", "");
+            var parentfolder = await StorageFolder.GetFolderFromPathAsync(ApplicationData.Current.LocalSettings.Values["downloadPath"] as string);
+            var folder = await parentfolder.CreateFolderAsync($"{title}(mc{Mcid}.ep{Epid})", CreationCollisionOption.ReplaceExisting);
+            var client = new HttpClient();
+            var i = 0;
+            foreach (var item in UrlList)
+            {
+                this.Status = $"开始下载第{i}张图片";
+                var fileStream = await (await folder.CreateFileAsync
+                                    ($"{i}.jpg", CreationCollisionOption.ReplaceExisting)).OpenStreamForWriteAsync();
+                await (await client.GetStreamAsync(item)).CopyToAsync(fileStream);
+                fileStream.Dispose();
+                this.Status = $"第{i}张图片下载完成";
+                i++;
+            }
+            this.Status = "全部下载完成";
+        }
+
     }
 }

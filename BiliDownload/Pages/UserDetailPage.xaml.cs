@@ -6,17 +6,11 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Windows.Storage;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI.Xaml.Navigation;
@@ -80,7 +74,7 @@ namespace BiliDownload.Pages
             foreach (var info in favInfoList)
             {
                 var fav = await BiliFavHelper.GetBiliFavAsync(info.Id, 1, SESSDATA);
-                if (fav.MediaCount>0)
+                if (fav.MediaCount > 0)
                 {
                     favList.Add(new FavViewModel()
                     {
@@ -173,8 +167,8 @@ namespace BiliDownload.Pages
             });
         }
         #endregion
-            #region 下面是追番用的
-            private async void bangumiListGridView_ItemClick(object sender, ItemClickEventArgs e)
+        #region 下面是追番用的
+        private async void bangumiListGridView_ItemClick(object sender, ItemClickEventArgs e)
         {
             var bangumiInfo = e.ClickedItem as BangumiViewModel;
             if (bangumiInfo.SessonId == 0)//加载更多

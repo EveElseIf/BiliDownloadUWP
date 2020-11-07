@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Serialization;
+﻿using System.Xml.Serialization;
 
 namespace BiliDownload.Model.Xml
 {
-    [XmlRoot(Namespace = "",ElementName ="Files")]
+    [XmlRoot(Namespace = "", ElementName = "Files")]
     public class CompletedXmlModelCollection
     {
-        [XmlElement(ElementName ="File")]
+        [XmlElement(ElementName = "File")]
         public CompletedXmlModel[] XmlModels { get; set; }
     }
     [XmlRoot("File")]

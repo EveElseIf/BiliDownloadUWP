@@ -1,18 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using Windows.Storage.Streams;
 
 namespace BiliDownload.Helper
 {
     public static class NetHelper
     {
-        public static async Task<string> HttpGet(string url,IEnumerable<(string,string)> cookies,params string[] queryStrings)
+        public static async Task<string> HttpGet(string url, IEnumerable<(string, string)> cookies, params string[] queryStrings)
         {
             var stream = await HttpGetStreamAsync(url, cookies, queryStrings);
             return await new StreamReader(stream).ReadToEndAsync();
@@ -42,7 +40,7 @@ namespace BiliDownload.Helper
 
             return stream;
         }
-        public static async Task<(string,WebHeaderCollection)> HttpPostAsync(string url, IEnumerable<(string, string)> cookies,string postContent)
+        public static async Task<(string, WebHeaderCollection)> HttpPostAsync(string url, IEnumerable<(string, string)> cookies, string postContent)
         {
             var req = WebRequest.Create(url) as HttpWebRequest;
 
@@ -71,10 +69,11 @@ namespace BiliDownload.Helper
             var stream = resp.GetResponseStream();
             return (await (new StreamReader(stream)).ReadToEndAsync(), resp.Headers);
         }
-        public static async Task<string> HttpPostJsonAsync(string url,IEnumerable<(string,string)> cookies,string json)
+        public static async Task<string> HttpPostJsonAsync(string url, IEnumerable<(string, string)> cookies, string json)
         {
             var client = new HttpClient();
-            cookies.ToList().ForEach(c => client.DefaultRequestHeaders.Add(c.Item1, c.Item2));
+            if (cookies != null)
+                cookies.ToList().ForEach(c => client.DefaultRequestHeaders.Add(c.Item1, c.Item2));
             var resp = await client.PostAsync(url, new StringContent(json, Encoding.UTF8, "application/json"));
             return await resp.Content.ReadAsStringAsync();
         }

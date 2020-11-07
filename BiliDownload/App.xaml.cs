@@ -1,21 +1,13 @@
 ﻿using BiliDownload.Helper;
 using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Windows.Storage;
 using Windows.UI.Core.Preview;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
@@ -76,7 +68,7 @@ namespace BiliDownload
                 SystemNavigationManagerPreview.GetForCurrentView().CloseRequested += async (s, args) =>
                 {
                     var deferral = args.GetDeferral();
-                    if (DownloadPage.Current.activeDownloadList?.Count < 1) 
+                    if (DownloadPage.Current.activeDownloadList?.Count < 1)
                         DownloadXmlHelper.DeleteCurrentDownloads();//当下载列表没任务的时候，删除xml
                     if (DownloadPage.Current.activeDownloadList?.Count > 0)//当下载列表存在任务时
                     {

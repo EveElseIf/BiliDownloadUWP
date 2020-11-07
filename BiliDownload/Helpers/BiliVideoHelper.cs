@@ -2,10 +2,8 @@
 using BiliDownload.Model;
 using BiliDownload.Model.Json;
 using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Windows.Storage;
 
@@ -16,7 +14,7 @@ namespace BiliDownload.Helper
         public static async Task<BiliVideoMaster> GetVideoMasterInfoAsync(string bv, string sESSDATA)
         {
             List<(string, string)> cookies = null;
-            if (!string.IsNullOrWhiteSpace(sESSDATA)) 
+            if (!string.IsNullOrWhiteSpace(sESSDATA))
             {
                 cookies = new List<(string, string)>();
                 cookies.Add(("SESSDATA", sESSDATA));
@@ -85,7 +83,7 @@ namespace BiliDownload.Helper
         /// <param name="type">0是ep，其他随便一个数字是ss</param>
         /// <param name="sESSDATA"></param>
         /// <returns></returns>
-        public static async Task<BiliBangumi> GetBangumiInfoAsync(int eporss,int type,string sESSDATA)
+        public static async Task<BiliBangumi> GetBangumiInfoAsync(int eporss, int type, string sESSDATA)
         {
             List<(string, string)> cookies = null;
             if (!string.IsNullOrWhiteSpace(sESSDATA))
@@ -164,7 +162,7 @@ namespace BiliDownload.Helper
                 {
                     video.VideoUrl = json.data.dash.video.Where(v => v.id == quality && v.codecs.Contains("hev")).FirstOrDefault().baseUrl;
                 }
-                else if(json.data.dash.video.Where(v => v.codecs.Contains("hev")).Count() > 0)
+                else if (json.data.dash.video.Where(v => v.codecs.Contains("hev")).Count() > 0)
                 {
                     var list = json.data.dash.video.Where(v => v.codecs.Contains("hev")).OrderByDescending(v => v.id).ToList();
                     video.VideoUrl = list.First().baseUrl;

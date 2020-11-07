@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace BiliDownload.Model.Json
 {
@@ -32,7 +28,7 @@ namespace BiliDownload.Model.Json
             public int id { get; set; }//音频质量相关代码，不懂为啥是id
             public string baseUrl { get; set; }
             public long bandwidth { get; set; }
-            public string  codecs { get; set; }
+            public string codecs { get; set; }
         }
     }
 }

@@ -2,30 +2,18 @@
 using BiliDownload.Dialog;
 using BiliDownload.Helper;
 using BiliDownload.Interface;
-using BiliDownload.Model.Xml;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using System.Threading;
 using System.Threading.Tasks;
-using System.Xml.Linq;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Windows.Networking.BackgroundTransfer;
 using Windows.Storage;
 using Windows.System;
-using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Navigation;
 
 // https://go.microsoft.com/fwlink/?LinkId=234238 上介绍了“空白页”项模板
@@ -97,7 +85,7 @@ namespace BiliDownload
                     };
                     await dialog.ShowAsync();
                 }
-                catch(System.Exception ex)
+                catch (System.Exception ex)
                 {
                     var dialog = new ExceptionDialog(ex.Message);
                     await dialog.ShowAsync();
@@ -133,14 +121,14 @@ namespace BiliDownload
         protected async override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            if (!IsResumed) 
+            if (!IsResumed)
             {
                 IsResumed = true;
                 await CheckDownloadAsync();
                 CheckComplete();
             }//检查是否有未完成的任务，有就重建
-            //检查是否有已完成的任务，有就添加到完成列表
-            
+             //检查是否有已完成的任务，有就添加到完成列表
+
             //if (!(e.Parameter is DownloadNavigateModel)) return;
 
             //var model = e.Parameter as DownloadNavigateModel;
@@ -159,7 +147,7 @@ namespace BiliDownload
             //};
             //await Task.WhenAll(tasks);
         }
-        
+
         public void PauseAll()
         {
             var list = this.activeDownloadList;
@@ -194,7 +182,7 @@ namespace BiliDownload
             var result = await dialog.ShowAsync();
             if (result == ContentDialogResult.Secondary) return;
             var download = (sender as Button)?.DataContext as IBiliDownload;
-            if(!download.IsCompleted)
+            if (!download.IsCompleted)
                 await download.CancelAsync();
         }
 
@@ -202,7 +190,7 @@ namespace BiliDownload
         {
             var model = (sender as Button)?.DataContext as CompletedDownloadModel;
             var path = ApplicationData.Current.LocalSettings.Values["downloadPath"] as string;
-            if( path == null)
+            if (path == null)
             {
                 var dialog = new ErrorDialog("未设置下载储存文件夹，请前往设置以更改")
                 {
@@ -566,7 +554,7 @@ namespace BiliDownload
     //            await task;
     //        }
     //        IsComplete = true;
-            
+
     //    }
     //    public void PauseOrResume()
     //    {

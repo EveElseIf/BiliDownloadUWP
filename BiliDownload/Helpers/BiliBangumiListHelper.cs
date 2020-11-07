@@ -1,16 +1,13 @@
 ﻿using BiliDownload.Model.Json;
 using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace BiliDownload.Helper
 {
     public static class BiliBangumiListHelper
     {
-        public static async Task<List<BiliBangumi>> GetBangumiListAsync(int page,long uid,string sESSDATA)
+        public static async Task<List<BiliBangumi>> GetBangumiListAsync(int page, long uid, string sESSDATA)
         {
             List<(string, string)> cookies = null;
             if (!string.IsNullOrWhiteSpace(sESSDATA))

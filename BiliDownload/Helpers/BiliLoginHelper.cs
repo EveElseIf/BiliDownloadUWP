@@ -1,16 +1,11 @@
 ﻿using Newtonsoft.Json;
 using QRCoder;
 using System;
-using System.Collections.Generic;
-using System.Drawing.Imaging;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.Storage;
-using Windows.Storage.Streams;
 using Windows.UI.Core;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
@@ -20,7 +15,7 @@ namespace BiliDownload.Helper
 {
     public static class BiliLoginHelper
     {
-        public static async Task<string[]> LoginUseQRCodeAsync(Image qRCodeImage,CancellationToken token)
+        public static async Task<string[]> LoginUseQRCodeAsync(Image qRCodeImage, CancellationToken token)
         {
             var getJson = JsonConvert.DeserializeObject<GetQRCodeJson>(await NetHelper.HttpGet("https://passport.bilibili.com/qrcode/getLoginUrl", null, null));
             var QRcodeUrl = getJson.data.url;
@@ -53,7 +48,7 @@ namespace BiliDownload.Helper
         {
             var file = await ApplicationData.Current.LocalCacheFolder.CreateFileAsync("QRCode.png", CreationCollisionOption.ReplaceExisting);
             var fileStream = (await file.OpenStreamForWriteAsync());
-            
+
             var generator = new QRCodeGenerator();
             var qrCodeData = generator.CreateQrCode(content, QRCodeGenerator.ECCLevel.Q);
             var qrCode = new PngByteQRCode(qrCodeData);

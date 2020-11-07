@@ -14,7 +14,7 @@
             <RowDefinition/>
         </Grid.RowDefinitions>
         <TextBlock Grid.Row="0" Text="漫画下载" FontFamily="Microsoft Yahei UI" FontSize="50" VerticalAlignment="Center" Margin="20,0,0,0"/>
-        <Pivot Grid.Row="1">
+        <Pivot Grid.Row="1" x:Name="pivot">
             <PivotItem Header="漫画搜索">
                 <Grid>
                     <Grid.ColumnDefinitions>
@@ -74,7 +74,28 @@
                     </Grid>
                 </Grid>
             </PivotItem>
-            <PivotItem Header="下载列表"></PivotItem>
+            <PivotItem Header="下载列表">
+                <ListView x:Name="mangaDownloadListView" SelectionMode="None">
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="ListViewItem">
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                            <Setter Property="VerticalContentAlignment" Value="Stretch"/>
+                        </Style>
+                    </ListView.ItemContainerStyle>
+                    <ListView.ItemTemplate>
+                        <DataTemplate x:DataType="local:MangaDownloadViewModel">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                </Grid.RowDefinitions>
+                                <TextBlock Text="{x:Bind Title}" FontFamily="Microsoft Yahei UI" FontSize="20"/>
+                                <TextBlock Grid.Row="1" Text="{x:Bind Status,Mode=OneWay}" FontFamily="Microsoft Yahei UI" FontSize="18"/>
+                            </Grid>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </PivotItem>
         </Pivot>
     </Grid>
 </Page>

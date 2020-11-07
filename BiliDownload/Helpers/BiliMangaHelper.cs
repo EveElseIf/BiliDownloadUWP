@@ -2,17 +2,14 @@
 using BiliDownload.Helper;
 using BiliDownload.Model;
 using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace BiliDownload.Helpers
 {
     public static class BiliMangaHelper
     {
-        public static async Task<BiliMangaMaster> GetBiliMangaMasterAsync(int mcid,string sESSDATA)
+        public static async Task<BiliMangaMaster> GetBiliMangaMasterAsync(int mcid, string sESSDATA)
         {
             List<(string, string)> cookies = null;
             if (!string.IsNullOrWhiteSpace(sESSDATA))

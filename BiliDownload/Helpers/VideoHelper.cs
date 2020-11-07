@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using Windows.ApplicationModel;
 using Windows.Foundation.Metadata;
@@ -15,7 +10,7 @@ namespace BiliDownload.Helper
     {
         public static bool Locked { get; set; } = false;
         private static readonly object locker = new object();
-        public static async Task MakeVideoAsync(StorageFile video,StorageFile audio,string outputPath)
+        public static async Task MakeVideoAsync(StorageFile video, StorageFile audio, string outputPath)
         {
             lock (locker)//使用锁来防止ffmpeg卡bug
             {

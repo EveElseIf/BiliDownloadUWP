@@ -1,17 +1,15 @@
 ﻿using BiliDownload.Model;
 using BiliDownload.Model.Json;
 using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace BiliDownload.Helper
 {
     public static class BiliFavHelper
     {
-        public static async Task<List<BiliFav>> GetUserFavListInfoAsync(long uid,string sESSDATA)
+        public static async Task<List<BiliFav>> GetUserFavListInfoAsync(long uid, string sESSDATA)
         {
             List<(string, string)> cookies = null;
             if (!string.IsNullOrWhiteSpace(sESSDATA))
@@ -29,7 +27,7 @@ namespace BiliDownload.Helper
             }).ToList();
             return list;
         }
-        public static async Task<BiliFav> GetBiliFavAsync(int id,int pn,string sESSDATA)
+        public static async Task<BiliFav> GetBiliFavAsync(int id, int pn, string sESSDATA)
         {
             List<(string, string)> cookies = null;
             if (!string.IsNullOrWhiteSpace(sESSDATA))

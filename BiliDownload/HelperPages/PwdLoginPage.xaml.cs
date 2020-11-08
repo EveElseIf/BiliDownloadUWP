@@ -31,11 +31,14 @@ namespace BiliDownload.HelperPage
         public PwdLoginPage()
         {
             this.InitializeComponent();
+            this.pwdPasswordBox.KeyDown += (s, e) => //回车登录
+            {
+                if (e.Key == Windows.System.VirtualKey.Enter) loginBtn_Click(loginBtn, new RoutedEventArgs());
+            };
         }
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-
         }
 
         private async void LoginWebView_ScriptNotify(object sender, NotifyEventArgs e)//验证成功时触发

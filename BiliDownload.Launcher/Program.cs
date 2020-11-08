@@ -10,24 +10,40 @@ namespace BiliDownload.Launcher
     {
         static void Main(string[] args)
         {
-            var arg = ApplicationData.Current.LocalSettings.Values["para"] as string;
-            var cacheFolder = ApplicationData.Current.LocalSettings.Values["currentCacheFolder"] as string;
-
-            var pi = new ProcessStartInfo("ffmpeg.exe", arg)
+            if (args[2] == "videoConverter")
             {
-                UseShellExecute = false,
-                CreateNoWindow = true
-            };
-            var p1 = Process.Start(pi);
-            p1.WaitForExit();
+                var arg = ApplicationData.Current.LocalSettings.Values["para"] as string;
+                var cacheFolder = ApplicationData.Current.LocalSettings.Values["currentCacheFolder"] as string;
 
-            ApplicationData.Current.LocalSettings.Values["lock"] = false;//解锁
+                var pi = new ProcessStartInfo("ffmpeg.exe", arg)
+                {
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                };
+                var p1 = Process.Start(pi);
+                p1.WaitForExit();
 
-            try
-            {
-                Directory.Delete(cacheFolder, true);
+                ApplicationData.Current.LocalSettings.Values["lock"] = false;//解锁
+
+                try
+                {
+                    Directory.Delete(cacheFolder, true);
+                }
+                catch { }
             }
-            catch { }
+            else if (args[2] == "xmlConverter")
+            {
+                var arg = ApplicationData.Current.LocalSettings.Values["para2"] as string;
+                var pi = new ProcessStartInfo("Kaedei.Danmu2Ass.exe", arg)
+                {
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                };
+                var p1 = Process.Start(pi);
+                p1.WaitForExit();
+
+                ApplicationData.Current.LocalSettings.Values["lock2"] = false;//解锁
+            }
         }
     }
 }

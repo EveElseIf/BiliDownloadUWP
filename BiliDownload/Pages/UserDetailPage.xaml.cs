@@ -74,6 +74,17 @@ namespace BiliDownload.Pages
             foreach (var info in favInfoList)
             {
                 var fav = await BiliFavHelper.GetBiliFavAsync(info.Id, 1, SESSDATA);
+                if (fav == null)
+                {
+                    favList.Add(new FavViewModel()
+                    {
+                        Id = info.Id,
+                        Title = info.Title,
+                        VideoCount = 0,
+                        VideoList = new ObservableCollection<FavVideoViewModel>()
+                    });
+                    continue;
+                }
                 if (fav.MediaCount > 0)
                 {
                     favList.Add(new FavViewModel()

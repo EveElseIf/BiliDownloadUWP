@@ -136,7 +136,9 @@
     <Compile Include="HelperPages\MangaDownloadPage.xaml.cs">
       <DependentUpon>MangaDownloadPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\BiliDanmakuHelper.cs" />
     <Compile Include="Helpers\BiliMangaHelper.cs" />
+    <Compile Include="Helpers\DanmakuHelper.cs" />
     <Compile Include="Helpers\MangaDownloadHelper.cs" />
     <Compile Include="Model\BiliManga.cs" />
     <Compile Include="Model\BiliMangaMaster.cs" />

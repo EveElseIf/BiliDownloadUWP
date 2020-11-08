@@ -1,5 +1,6 @@
 ﻿using BiliDownload.Exceptions;
 using BiliDownload.Helper;
+using BiliDownload.Helpers;
 using BiliDownload.Model;
 using System;
 using System.Collections.Generic;
@@ -210,6 +211,79 @@ namespace BiliDownload.SearchDialogs
                 {
                     download.ToDownload = false;
                 }
+            }
+        }
+        private async void DanmakuDownloadButton_Click(object sender, RoutedEventArgs e)
+        {
+            var btn = sender as Button;
+            var model = btn?.DataContext as VideoInfo;
+            btn.Content = new ProgressRing()
+            {
+                IsActive = true
+            };
+
+            if(string.IsNullOrWhiteSpace(ApplicationData.Current.LocalSettings.Values["downloadPath"] as string))
+            {
+                this.needToClose = true;
+                this.Hide();
+                var dialog = new ErrorDialog("未设置下载储存文件夹，请前往设置以更改")
+                {
+                    PrimaryButtonText = "前往设置"
+                };
+                var result = await dialog.ShowAsync();
+                if (result == ContentDialogResult.Secondary) return;
+                else
+                {
+                    MainPage.ContentFrame.Navigate(typeof(SettingPage));
+                    MainPage.NavView.SelectedItem = MainPage.NavView.SettingsItem;
+                    return;
+                }
+            }
+
+            var title = this.vm.VideoTitle.Replace("\\", "").Replace("/", "").Replace(":", "").Replace("*", "")
+                .Replace("?", "").Replace("\"", "").Replace("<", "").Replace(">", "").Replace("|", "");
+            var name = model.Info.Name.Replace("\\", "").Replace("/", "").Replace(":", "").Replace("*", "")
+                .Replace("?", "").Replace("\"", "").Replace("<", "").Replace(">", "").Replace("|", "");
+
+            try
+            {
+                await BiliDanmakuHelper.DownloadDanmakuAsync(title, name, model.Info.Cid);
+                btn.Content = "下载完成";
+                btn.IsEnabled = false;
+            }
+            catch (NullReferenceException)
+            {
+                this.needToClose = true;
+                this.Hide();
+                var dialog = new ContentDialog()
+                {
+                    Title = "错误",
+                    Content = new TextBlock()
+                    {
+                        Text = "未知错误",
+                        FontFamily = new FontFamily("Microsoft Yahei UI"),
+                        FontSize = 20
+                    },
+                    PrimaryButtonText = "知道了"
+                };
+                await dialog.ShowAsync();
+            }
+            catch(Exception ex)
+            {
+                this.needToClose = true;
+                this.Hide();
+                var dialog = new ContentDialog()
+                {
+                    Title = "错误",
+                    Content = new TextBlock()
+                    {
+                        Text = ex.Message,
+                        FontFamily = new FontFamily("Microsoft Yahei UI"),
+                        FontSize = 20
+                    },
+                    PrimaryButtonText = "知道了"
+                };
+                await dialog.ShowAsync();
             }
         }
     }

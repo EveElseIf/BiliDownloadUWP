@@ -22,7 +22,7 @@ namespace BiliDownload.Helper
         /// <returns></returns>
         public static async Task CreateDownloadAsync(string bv, long cid, int quality, string sESSDATA) //创建下载
         {
-            if (ApplicationData.Current.LocalSettings.Values["downloadPath"] as string == null)//检查下载目录是否为空
+            if (string.IsNullOrWhiteSpace(ApplicationData.Current.LocalSettings.Values["downloadPath"] as string))//检查下载目录是否为空
             {
                 var dialog = new ErrorDialog("未设置下载储存文件夹，请前往设置以更改")
                 {
@@ -47,7 +47,7 @@ namespace BiliDownload.Helper
                 MainPage.ContentFrame.Navigate(typeof(DownloadPage));
                 await task;
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 var dialog = new ExceptionDialog(ex.Message);
                 await dialog.ShowAsync();
@@ -111,9 +111,5 @@ namespace BiliDownload.Helper
                 await dialog.ShowAsync();
             }
         }
-    }
-    public class DownloadNavigateModel
-    {
-        public List<BiliVideo> VideoList { get; set; }
     }
 }

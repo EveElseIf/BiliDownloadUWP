@@ -37,7 +37,7 @@ namespace BiliDownload.Helpers
                 while ((bool)ApplicationData.Current.LocalSettings.Values["lock2"]) Thread.Sleep(100);
                 Locked = false;
             }
-            await xmlFile.DeleteAsync();//删除xml
+            await xmlFile.DeleteAsync(StorageDeleteOption.PermanentDelete);//删除xml
         }
         public static async Task MakeMultiAssAsync(Dictionary<string,string> fileName_xmlDic,string outputPath)
         {
@@ -67,7 +67,7 @@ namespace BiliDownload.Helpers
                 while ((bool)ApplicationData.Current.LocalSettings.Values["lock2"]) Thread.Sleep(100);
                 Locked = false;
             }
-            xmlFileList.ForEach(async f => await f.DeleteAsync());
+            xmlFileList.ForEach(async f => await f.DeleteAsync(StorageDeleteOption.PermanentDelete));
         }
         private static string MakeParam(List<string> names,string outputPath)
         {

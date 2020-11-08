@@ -9,8 +9,8 @@
 
   <Identity
     Name="27274EveElseIf.bilibilidownloadtool"
-    Publisher="CN=EveElseIf"
-    Version="1.0.0.0" />
+    Publisher="CN=E8A87D1A-6712-47FF-877A-086B526DECC4"
+    Version="1.1.1.0" />
 
   <Properties>
     <DisplayName>bilibili download tool 早期测试</DisplayName>

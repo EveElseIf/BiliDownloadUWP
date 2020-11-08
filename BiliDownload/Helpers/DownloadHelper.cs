@@ -1,9 +1,12 @@
 ﻿using BiliDownload.Component;
 using BiliDownload.Dialog;
+using BiliDownload.Helpers;
 using BiliDownload.Interface;
 using BiliDownload.Model;
+using BiliDownload.Others;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Windows.Storage;
 using Windows.UI.Xaml.Controls;
@@ -36,6 +39,12 @@ namespace BiliDownload.Helper
                     MainPage.NavView.SelectedItem = MainPage.NavView.SettingsItem;
                     return;
                 }
+            }
+
+            if (Settings.AutoDownloadDanmaku)
+            {
+                var video = await BiliVideoHelper.GetSingleVideoAsync(bv, cid, quality, sESSDATA);
+                _ = BiliDanmakuHelper.DownloadDanmakuAsync(video.Title, video.Name, cid);
             }
 
             try
@@ -82,6 +91,11 @@ namespace BiliDownload.Helper
             foreach (var video in videos)
             {
                 videoList.Add(await BiliVideoHelper.GetSingleVideoAsync(video.Bv, video.Cid, quality, sESSDATA));
+            }
+
+            if (Settings.AutoDownloadDanmaku)
+            {
+                _ = BiliDanmakuHelper.DownloadMultiDanmakuAsync(videoList);
             }
 
             var downloadList = new List<IBiliDownload>();

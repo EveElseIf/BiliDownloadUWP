@@ -43,7 +43,10 @@ namespace BiliDownload
                 ApplicationData.Current.LocalSettings.Values["HEVC"] = false;
             if (ApplicationData.Current.LocalSettings.Values["NeedNotice"] == null)//是否通知
                 ApplicationData.Current.LocalSettings.Values["NeedNotice"] = true;
+            if (ApplicationData.Current.LocalSettings.Values["autoDownloadDanmaku"] == null)//是否自动下载弹幕
+                ApplicationData.Current.LocalSettings.Values["autoDownloadDanmaku"] = false;
             ApplicationData.Current.LocalSettings.Values["lock"] = false;//创建锁
+            ApplicationData.Current.LocalSettings.Values["lock2"] = false;//创建锁
         }
         protected async override void OnNavigatedTo(NavigationEventArgs e)
         {

@@ -142,6 +142,7 @@
     <Compile Include="Helpers\MangaDownloadHelper.cs" />
     <Compile Include="Model\BiliManga.cs" />
     <Compile Include="Model\BiliMangaMaster.cs" />
+    <Compile Include="Others\Settings.cs" />
     <Compile Include="Pages\DownloadPage.xaml.cs">
       <DependentUpon>DownloadPage.xaml</DependentUpon>
     </Compile>
@@ -331,9 +332,7 @@
       <Name>Windows Desktop Extensions for the UWP</Name>
     </SDKReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Other\" />
-  </ItemGroup>
+  <ItemGroup />
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
   </PropertyGroup>

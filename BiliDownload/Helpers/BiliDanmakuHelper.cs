@@ -1,4 +1,6 @@
 ﻿using BiliDownload.Helper;
+using BiliDownload.Model;
+using BiliDownload.Others;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -27,6 +29,26 @@ namespace BiliDownload.Helpers
             var xml = await GetDanmakuXmlAsync(cid);
             var fileName = $"{videoTitle} - {videoName}.xml";
             await DanmakuHelper.MakeAssAsync(xml, fileName, ApplicationData.Current.LocalSettings.Values["downloadPath"] as string);
+        }
+        public static async Task DownloadMultiDanmakuAsync(List<BiliVideo> videoList)
+        {
+            var dicTask = new Dictionary<BiliVideo, Task<string>>();
+            foreach (var v in videoList)
+            {
+                dicTask.Add(v, GetDanmakuXmlAsync(v.Cid));
+            }
+            var dic = new Dictionary<string, string>();
+            await Task.WhenAll(dicTask.Values);
+            foreach (var item in dicTask)
+            {
+                var title = item.Key.Title.Replace("\\", "").Replace("/", "").Replace(":", "").Replace("*", "")
+                .Replace("?", "").Replace("\"", "").Replace("<", "").Replace(">", "").Replace("|", "");
+                var name = item.Key.Name.Replace("\\", "").Replace("/", "").Replace(":", "").Replace("*", "")
+                .Replace("?", "").Replace("\"", "").Replace("<", "").Replace(">", "").Replace("|", "");
+                dic.Add($"{title} - {name}.xml", item.Value.Result);
+            }
+            //var dic = videoList.ToDictionary(v => $"{v.Title.Replace("\\", "").Replace("/", "").Replace(":", "").Replace("*", "").Replace("?", "").Replace("\"", "").Replace("<", "").Replace(">", "").Replace("|", "")} - {v.Name.Replace("\\", "").Replace("/", "").Replace(":", "").Replace("*", "").Replace("?", "").Replace("\"", "").Replace("<", "").Replace(">", "").Replace("|", "")}", v => v.Cid);
+            await DanmakuHelper.MakeMultiAssAsync(dic, Settings.DownloadPath);
         }
     }
 }

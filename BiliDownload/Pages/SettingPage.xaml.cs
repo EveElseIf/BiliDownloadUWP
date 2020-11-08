@@ -23,6 +23,7 @@ namespace BiliDownload
             if ((bool)ApplicationData.Current.LocalSettings.Values["cpuLimit"]) this.cpuLimitSwitch.IsOn = true;
             if ((bool)ApplicationData.Current.LocalSettings.Values["HEVC"]) this.hevcDownloadSwitch.IsOn = true;
             if ((bool)ApplicationData.Current.LocalSettings.Values["NeedNotice"]) this.needNoticeSwitch.IsOn = true;
+            if ((bool)ApplicationData.Current.LocalSettings.Values["autoDownloadDanmaku"]) this.autoDownloadDanmakuSwitch.IsOn = true;
         }
 
         private async void selectLocationBtn_Click(object sender, RoutedEventArgs e)
@@ -50,6 +51,11 @@ namespace BiliDownload
         private void needNoticeSwitch_Toggled(object sender, RoutedEventArgs e)
         {
             ApplicationData.Current.LocalSettings.Values["NeedNotice"] = needNoticeSwitch.IsOn;
+        }
+
+        private void autoDownloadDanmakuSwitch_Toggled(object sender, RoutedEventArgs e)
+        {
+            ApplicationData.Current.LocalSettings.Values["autoDownloadDanmaku"] = autoDownloadDanmakuSwitch.IsOn;
         }
     }
 }

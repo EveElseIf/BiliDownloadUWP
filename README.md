@@ -32,7 +32,7 @@ Base64Url
 
 XC.RSAUtil
 
-https://github.com/kaedei/danmu2ass
+https://github.com/EveElseIf/DanmakuToAss
 
 参考了 https://github.com/SocialSisterYi/bilibili-API-collect 的文档
 

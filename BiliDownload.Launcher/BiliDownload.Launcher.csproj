@@ -7,38 +7,10 @@
 
   <ItemGroup>
     <None Remove="ffmpeg.exe" />
-    <None Remove="IronPython.dll" />
-    <None Remove="IronPython.Modules.dll" />
-    <None Remove="Kaedei.Danmu2Ass.exe" />
-    <None Remove="Microsoft.Dynamic.dll" />
-    <None Remove="Microsoft.Scripting.AspNet.dll" />
-    <None Remove="Microsoft.Scripting.dll" />
-    <None Remove="Microsoft.Scripting.Metadata.dll" />
   </ItemGroup>
 
   <ItemGroup>
     <Content Include="ffmpeg.exe">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="IronPython.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="IronPython.Modules.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Kaedei.Danmu2Ass.exe">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Microsoft.Dynamic.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Microsoft.Scripting.AspNet.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Microsoft.Scripting.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Microsoft.Scripting.Metadata.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

@@ -14,7 +14,7 @@ namespace BiliDownload.Helpers
     public static class MangaDownloadHelper
     {
         private static HttpClient client = new HttpClient();
-        public static async Task<List<string>> GetPicUrlsAsync(int mcid, int epid,string sESSDATA)
+        public static async Task<List<string>> GetPicUrlsAsync(int mcid, int epid, string sESSDATA)
         {
             if (!string.IsNullOrWhiteSpace(sESSDATA)) client.DefaultRequestHeaders.Add("SESSDATA", sESSDATA);
             var resp1 = await client.PostAsync("https://manga.bilibili.com/twirp/comic.v1.Comic/GetImageIndex?device=pc&platform=web",

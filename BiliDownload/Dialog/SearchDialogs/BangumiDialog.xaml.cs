@@ -1,4 +1,5 @@
-﻿using BiliDownload.Exceptions;
+﻿using BiliDownload.Dialog;
+using BiliDownload.Exceptions;
 using BiliDownload.Helper;
 using BiliDownload.Model;
 using BiliDownload.Model.Json;
@@ -120,6 +121,11 @@ namespace BiliDownload.SearchDialogs
             {
                 await DownloadHelper.CreateDownloadsAsync(list, quality, sESSDATA);
             }
+            catch (DirectoryNotFoundException ex)
+            {
+                var dialog = new ExceptionDialog(ex.Message);
+                _ = await dialog.ShowAsync();
+            }
             catch (ParsingVideoException ex)
             {
                 var dialog = new ErrorDialog(ex.Message);
@@ -151,6 +157,11 @@ namespace BiliDownload.SearchDialogs
                 var dialog = await SingleVideoDialog.CreateAsync(info);
                 var result = await dialog.ShowAsync();
                 if (result == ContentDialogResult.Secondary) { this.needToClose = false; await this.ShowAsync(); }
+            }
+            catch (DirectoryNotFoundException ex)
+            {
+                var dialog = new ExceptionDialog(ex.Message);
+                await dialog.ShowAsync();
             }
             catch (ParsingVideoException ex)
             {

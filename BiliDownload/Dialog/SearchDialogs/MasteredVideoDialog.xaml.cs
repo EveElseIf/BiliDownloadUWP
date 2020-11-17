@@ -1,7 +1,9 @@
-﻿using BiliDownload.Exceptions;
+﻿using BiliDownload.Dialog;
+using BiliDownload.Exceptions;
 using BiliDownload.Helper;
 using BiliDownload.Helpers;
 using BiliDownload.Model;
+using BiliDownload.Others;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -222,7 +224,7 @@ namespace BiliDownload.SearchDialogs
                 IsActive = true
             };
 
-            if(string.IsNullOrWhiteSpace(ApplicationData.Current.LocalSettings.Values["downloadPath"] as string))
+            if (string.IsNullOrWhiteSpace(Settings.DownloadPath))
             {
                 this.needToClose = true;
                 this.Hide();
@@ -240,14 +242,9 @@ namespace BiliDownload.SearchDialogs
                 }
             }
 
-            var title = this.vm.VideoTitle.Replace("\\", "").Replace("/", "").Replace(":", "").Replace("*", "")
-                .Replace("?", "").Replace("\"", "").Replace("<", "").Replace(">", "").Replace("|", "");
-            var name = model.Info.Name.Replace("\\", "").Replace("/", "").Replace(":", "").Replace("*", "")
-                .Replace("?", "").Replace("\"", "").Replace("<", "").Replace(">", "").Replace("|", "");
-
             try
             {
-                await BiliDanmakuHelper.DownloadDanmakuAsync(title, name, model.Info.Cid);
+                await BiliDanmakuHelper.DownloadDanmakuAsync(this.vm.VideoTitle, model.Info.Name, model.Info.Cid);
                 btn.Content = "下载完成";
                 btn.IsEnabled = false;
             }
@@ -268,7 +265,14 @@ namespace BiliDownload.SearchDialogs
                 };
                 await dialog.ShowAsync();
             }
-            catch(Exception ex)
+            catch (DirectoryNotFoundException ex)
+            {
+                this.needToClose = true;
+                this.Hide();
+                var dialog = new ExceptionDialog(ex.Message);
+                _ = await dialog.ShowAsync();
+            }
+            catch (Exception ex)
             {
                 this.needToClose = true;
                 this.Hide();

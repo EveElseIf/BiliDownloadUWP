@@ -1,15 +1,10 @@
-﻿using BiliDownload.Helper;
-using BiliDownload.Model;
+﻿using BiliDownload.Model;
 using BiliDownload.Others;
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
-using System.Linq;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
-using Windows.Storage;
 
 namespace BiliDownload.Helpers
 {
@@ -26,9 +21,13 @@ namespace BiliDownload.Helpers
         }
         public static async Task DownloadDanmakuAsync(string videoTitle, string videoName, long cid)
         {
+            var title = videoTitle.Replace("\\", "").Replace("/", "").Replace(":", "").Replace("*", "")
+            .Replace("?", "").Replace("\"", "").Replace("<", "").Replace(">", "").Replace("|", "");
+            var name = videoName.Replace("\\", "").Replace("/", "").Replace(":", "").Replace("*", "")
+            .Replace("?", "").Replace("\"", "").Replace("<", "").Replace(">", "").Replace("|", "");
             var xml = await GetDanmakuXmlAsync(cid);
-            var fileName = $"{videoTitle} - {videoName}.xml";
-            await DanmakuHelper.MakeAssAsync(xml, fileName, ApplicationData.Current.LocalSettings.Values["downloadPath"] as string);
+            var fileName = $"{title} - {name}.ass";
+            await DanmakuHelper.MakeAssAsync(xml, fileName, Settings.DownloadPath);
         }
         public static async Task DownloadMultiDanmakuAsync(List<BiliVideo> videoList)
         {
@@ -45,9 +44,8 @@ namespace BiliDownload.Helpers
                 .Replace("?", "").Replace("\"", "").Replace("<", "").Replace(">", "").Replace("|", "");
                 var name = item.Key.Name.Replace("\\", "").Replace("/", "").Replace(":", "").Replace("*", "")
                 .Replace("?", "").Replace("\"", "").Replace("<", "").Replace(">", "").Replace("|", "");
-                dic.Add($"{title} - {name}.xml", item.Value.Result);
+                dic.Add($"{title} - {name}.ass", item.Value.Result);
             }
-            //var dic = videoList.ToDictionary(v => $"{v.Title.Replace("\\", "").Replace("/", "").Replace(":", "").Replace("*", "").Replace("?", "").Replace("\"", "").Replace("<", "").Replace(">", "").Replace("|", "")} - {v.Name.Replace("\\", "").Replace("/", "").Replace(":", "").Replace("*", "").Replace("?", "").Replace("\"", "").Replace("<", "").Replace(">", "").Replace("|", "")}", v => v.Cid);
             await DanmakuHelper.MakeMultiAssAsync(dic, Settings.DownloadPath);
         }
     }

@@ -1,7 +1,5 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.IO;
-using System.Threading;
 using Windows.Storage;
 
 namespace BiliDownload.Launcher
@@ -31,19 +29,20 @@ namespace BiliDownload.Launcher
                 }
                 catch { }
             }
-            else if (args[2] == "xmlConverter")
-            {
-                var arg = ApplicationData.Current.LocalSettings.Values["para2"] as string;
-                var pi = new ProcessStartInfo("Kaedei.Danmu2Ass.exe", arg)
-                {
-                    UseShellExecute = false,
-                    CreateNoWindow = true
-                };
-                var p1 = Process.Start(pi);
-                p1.WaitForExit();
+            //已经不再使用Kaedei.Danmu2Ass.exe
+            //else if (args[2] == "xmlConverter")
+            //{
+            //    var arg = ApplicationData.Current.LocalSettings.Values["para2"] as string;
+            //    var pi = new ProcessStartInfo("Kaedei.Danmu2Ass.exe", arg)
+            //    {
+            //        UseShellExecute = false,
+            //        CreateNoWindow = true
+            //    };
+            //    var p1 = Process.Start(pi);
+            //    p1.WaitForExit();
 
-                ApplicationData.Current.LocalSettings.Values["lock2"] = false;//解锁
-            }
+            //    ApplicationData.Current.LocalSettings.Values["lock2"] = false;//解锁
+            //}
         }
     }
 }

@@ -15,7 +15,7 @@
         </Grid.RowDefinitions>
         <TextBlock Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Left" Text="下载列表"
                    FontFamily="Microsoft Yahei UI" FontSize="40" Margin="20,0,0,0"/>
-        <Pivot Grid.Row="1">
+        <Pivot Grid.Row="1" x:Name="pivot" x:FieldModifier="public">
             <PivotItem Header="进行中">
                 <ScrollViewer>
                     <ListView x:Name="downloadList" SelectionMode="None">

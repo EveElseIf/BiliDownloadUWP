@@ -6,7 +6,7 @@ using BiliDownload.Model;
 using BiliDownload.Others;
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.IO;
 using System.Threading.Tasks;
 using Windows.Storage;
 using Windows.UI.Xaml.Controls;
@@ -25,7 +25,7 @@ namespace BiliDownload.Helper
         /// <returns></returns>
         public static async Task CreateDownloadAsync(string bv, long cid, int quality, string sESSDATA) //创建下载
         {
-            if (string.IsNullOrWhiteSpace(ApplicationData.Current.LocalSettings.Values["downloadPath"] as string))//检查下载目录是否为空
+            if (string.IsNullOrWhiteSpace(Settings.DownloadPath))//检查下载目录是否为空
             {
                 var dialog = new ErrorDialog("未设置下载储存文件夹，请前往设置以更改")
                 {
@@ -39,6 +39,14 @@ namespace BiliDownload.Helper
                     MainPage.NavView.SelectedItem = MainPage.NavView.SettingsItem;
                     return;
                 }
+            }
+            try
+            {
+                await StorageFolder.GetFolderFromPathAsync(Settings.DownloadPath);
+            }
+            catch (FileNotFoundException)
+            {
+                throw new DirectoryNotFoundException("找不到指定下载目录:" + Settings.DownloadPath);
             }
 
             if (Settings.AutoDownloadDanmaku)
@@ -54,6 +62,7 @@ namespace BiliDownload.Helper
                 var task = download.StartAsync();
                 MainPage.NavView.SelectedItem = MainPage.NavViewItems[0];
                 MainPage.ContentFrame.Navigate(typeof(DownloadPage));
+                DownloadPage.Current.pivot.SelectedIndex = 0;
                 await task;
             }
             catch (Exception ex)
@@ -87,6 +96,15 @@ namespace BiliDownload.Helper
                 }
             }
 
+            try
+            {
+                await StorageFolder.GetFolderFromPathAsync(Settings.DownloadPath);
+            }
+            catch (FileNotFoundException)
+            {
+                throw new DirectoryNotFoundException("找不到指定下载目录:" + Settings.DownloadPath);
+            }
+
             var videoList = new List<BiliVideo>();
             foreach (var video in videos)
             {
@@ -108,6 +126,7 @@ namespace BiliDownload.Helper
 
             MainPage.NavView.SelectedItem = MainPage.NavViewItems[0];
             MainPage.ContentFrame.Navigate(typeof(DownloadPage));
+            DownloadPage.Current.pivot.SelectedIndex = 0;
 
             var tasks = new List<Task>();
             foreach (var download in downloadList)
@@ -119,7 +138,7 @@ namespace BiliDownload.Helper
             {
                 await Task.WhenAll(tasks);
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 var dialog = new ExceptionDialog(ex.Message);
                 await dialog.ShowAsync();

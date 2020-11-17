@@ -1,4 +1,5 @@
-﻿using BiliDownload.Exceptions;
+﻿using BiliDownload.Dialog;
+using BiliDownload.Exceptions;
 using BiliDownload.Helper;
 using BiliDownload.Model;
 using System;
@@ -110,6 +111,11 @@ namespace BiliDownload.SearchDialogs
                     MainPage.ContentFrame.Navigate(typeof(UserPage));
                     MainPage.NavView.SelectedItem = MainPage.NavViewItems[2];
                 }
+            }
+            catch (DirectoryNotFoundException ex)
+            {
+                var dialog = new ExceptionDialog(ex.Message);
+                _ = await dialog.ShowAsync();
             }
         }
 

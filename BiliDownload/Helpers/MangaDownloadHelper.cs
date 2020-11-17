@@ -20,7 +20,7 @@ namespace BiliDownload.Helpers
             var resp1 = await client.PostAsync("https://manga.bilibili.com/twirp/comic.v1.Comic/GetImageIndex?device=pc&platform=web",
                 new StringContent(JsonConvert.SerializeObject(new { ep_id = epid }), Encoding.UTF8, "application/json"));
             var json1 = JsonConvert.DeserializeObject<dynamic>(await resp1.Content.ReadAsStringAsync());
-            if (json1.msg == "episode need buy") throw new MangaEpisodeNeedBuyException();
+            if (json1.code == 1) throw new MangaEpisodeNeedBuyException();
             string url = json1.data.host + json1.data.path;
             var resp2 = await client.GetAsync(url);
             var stream = await resp2.Content.ReadAsStreamAsync();

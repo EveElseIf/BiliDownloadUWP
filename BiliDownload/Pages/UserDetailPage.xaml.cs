@@ -1,5 +1,6 @@
-﻿using BiliDownload.Helper;
-using BiliDownload.Model;
+﻿using BiliDownload.Dialogs;
+using BiliDownload.Helper;
+using BiliDownload.Models;
 using BiliDownload.SearchDialogs;
 using System;
 using System.Collections.Generic;

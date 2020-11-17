@@ -1,4 +1,4 @@
-﻿using BiliDownload.Model.Xml;
+﻿using BiliDownload.Models.Xml;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;

@@ -1,4 +1,4 @@
-﻿using BiliDownload.Model.Json;
+﻿using BiliDownload.Models.Json;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Threading.Tasks;

@@ -1,5 +1,5 @@
-﻿using BiliDownload.Component;
-using BiliDownload.Model.Xml;
+﻿using BiliDownload.Components;
+using BiliDownload.Models.Xml;
 using System;
 using System.Collections.Generic;
 using System.IO;

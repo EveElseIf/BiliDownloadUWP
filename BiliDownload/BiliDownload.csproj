@@ -127,8 +127,8 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Component\BiliDashDownload.cs" />
-    <Compile Include="Dialog\ExceptionDialog.xaml.cs">
+    <Compile Include="Components\BiliDashDownload.cs" />
+    <Compile Include="Dialogs\ExceptionDialog.xaml.cs">
       <DependentUpon>ExceptionDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Exceptions\MangaEpisodeNeedBuyException.cs" />
@@ -140,13 +140,13 @@
     <Compile Include="Helpers\BiliMangaHelper.cs" />
     <Compile Include="Helpers\DanmakuHelper.cs" />
     <Compile Include="Helpers\MangaDownloadHelper.cs" />
-    <Compile Include="Model\BiliManga.cs" />
-    <Compile Include="Model\BiliMangaMaster.cs" />
+    <Compile Include="Models\BiliManga.cs" />
+    <Compile Include="Models\BiliMangaMaster.cs" />
     <Compile Include="Others\Settings.cs" />
     <Compile Include="Pages\DownloadPage.xaml.cs">
       <DependentUpon>DownloadPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Dialog\ErrorDialog.xaml.cs">
+    <Compile Include="Dialogs\ErrorDialog.xaml.cs">
       <DependentUpon>ErrorDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Exceptions\ParsingVideoException.cs" />
@@ -163,35 +163,35 @@
     <Compile Include="Helpers\DownloadHelper.cs" />
     <Compile Include="Helpers\NetHelper.cs" />
     <Compile Include="Helpers\VideoHelper.cs" />
-    <Compile Include="Dialog\LoginDialogs\QRcodeLoginDialog.xaml.cs">
+    <Compile Include="Dialogs\LoginDialogs\QRcodeLoginDialog.xaml.cs">
       <DependentUpon>QRcodeLoginDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Dialog\LoginDialogs\SESSDATALoginDialog.xaml.cs">
+    <Compile Include="Dialogs\LoginDialogs\SESSDATALoginDialog.xaml.cs">
       <DependentUpon>SESSDATALoginDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Interface\IBiliDownload.cs" />
-    <Compile Include="Interface\IBiliDownloadPart.cs" />
+    <Compile Include="Interfaces\IBiliDownload.cs" />
+    <Compile Include="Interfaces\IBiliDownloadPart.cs" />
     <Compile Include="Pages\MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Model\BiliFav.cs" />
-    <Compile Include="Model\BiliUser.cs" />
-    <Compile Include="Model\BiliVideo.cs" />
-    <Compile Include="Model\BiliVideoInfo.cs" />
-    <Compile Include="Model\BiliVideoMaster.cs" />
-    <Compile Include="Model\BiliVideoPart.cs" />
-    <Compile Include="Model\BiliBangumi.cs" />
-    <Compile Include="Model\Json\BiliBangumiInfoJson.cs" />
-    <Compile Include="Model\Json\BiliBangumiListJson.cs" />
-    <Compile Include="Model\Json\BiliJsonBase.cs" />
-    <Compile Include="Model\Json\FavJson.cs" />
-    <Compile Include="Model\Json\FavListJson.cs" />
-    <Compile Include="Model\Json\SelfInfoJson.cs" />
-    <Compile Include="Model\Json\VideoInfoJson.cs" />
-    <Compile Include="Model\Json\OldVideoStreamJson.cs" />
-    <Compile Include="Model\Json\VideoStreamJson.cs" />
-    <Compile Include="Model\Xml\CompletedXmlModel.cs" />
-    <Compile Include="Model\Xml\DownloadXmlModel.cs" />
+    <Compile Include="Models\BiliFav.cs" />
+    <Compile Include="Models\BiliUser.cs" />
+    <Compile Include="Models\BiliVideo.cs" />
+    <Compile Include="Models\BiliVideoInfo.cs" />
+    <Compile Include="Models\BiliVideoMaster.cs" />
+    <Compile Include="Models\BiliVideoPart.cs" />
+    <Compile Include="Models\BiliBangumi.cs" />
+    <Compile Include="Models\Json\BiliBangumiInfoJson.cs" />
+    <Compile Include="Models\Json\BiliBangumiListJson.cs" />
+    <Compile Include="Models\Json\BiliJsonBase.cs" />
+    <Compile Include="Models\Json\FavJson.cs" />
+    <Compile Include="Models\Json\FavListJson.cs" />
+    <Compile Include="Models\Json\SelfInfoJson.cs" />
+    <Compile Include="Models\Json\VideoInfoJson.cs" />
+    <Compile Include="Models\Json\OldVideoStreamJson.cs" />
+    <Compile Include="Models\Json\VideoStreamJson.cs" />
+    <Compile Include="Models\Xml\CompletedXmlModel.cs" />
+    <Compile Include="Models\Xml\DownloadXmlModel.cs" />
     <Compile Include="Pages\UserDetailPage.xaml.cs">
       <DependentUpon>UserDetailPage.xaml</DependentUpon>
     </Compile>
@@ -199,13 +199,13 @@
       <DependentUpon>UserLoginPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Dialog\SearchDialogs\BangumiDialog.xaml.cs">
+    <Compile Include="Dialogs\SearchDialogs\BangumiDialog.xaml.cs">
       <DependentUpon>BangumiDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Dialog\SearchDialogs\MasteredVideoDialog.xaml.cs">
+    <Compile Include="Dialogs\SearchDialogs\MasteredVideoDialog.xaml.cs">
       <DependentUpon>MasteredVideoDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Dialog\SearchDialogs\SingleVideoDialog.xaml.cs">
+    <Compile Include="Dialogs\SearchDialogs\SingleVideoDialog.xaml.cs">
       <DependentUpon>SingleVideoDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\SearchPage.xaml.cs">
@@ -239,7 +239,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Include="Dialog\ExceptionDialog.xaml">
+    <Page Include="Dialogs\ExceptionDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -251,7 +251,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Dialog\ErrorDialog.xaml">
+    <Page Include="Dialogs\ErrorDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -259,11 +259,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Dialog\LoginDialogs\QRcodeLoginDialog.xaml">
+    <Page Include="Dialogs\LoginDialogs\QRcodeLoginDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Dialog\LoginDialogs\SESSDATALoginDialog.xaml">
+    <Page Include="Dialogs\LoginDialogs\SESSDATALoginDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -271,15 +271,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Dialog\SearchDialogs\BangumiDialog.xaml">
+    <Page Include="Dialogs\SearchDialogs\BangumiDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Dialog\SearchDialogs\MasteredVideoDialog.xaml">
+    <Page Include="Dialogs\SearchDialogs\MasteredVideoDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Dialog\SearchDialogs\SingleVideoDialog.xaml">
+    <Page Include="Dialogs\SearchDialogs\SingleVideoDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

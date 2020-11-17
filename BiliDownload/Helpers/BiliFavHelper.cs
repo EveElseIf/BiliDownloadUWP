@@ -1,5 +1,5 @@
-﻿using BiliDownload.Model;
-using BiliDownload.Model.Json;
+﻿using BiliDownload.Models;
+using BiliDownload.Models.Json;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;

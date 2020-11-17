@@ -1,7 +1,7 @@
-﻿using BiliDownload.Component;
-using BiliDownload.Dialog;
+﻿using BiliDownload.Components;
+using BiliDownload.Dialogs;
 using BiliDownload.Helper;
-using BiliDownload.Interface;
+using BiliDownload.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;

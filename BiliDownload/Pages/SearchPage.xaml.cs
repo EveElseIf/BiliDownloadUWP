@@ -1,11 +1,13 @@
-﻿using BiliDownload.Dialog;
+﻿using BiliDownload.Dialogs;
 using BiliDownload.Helper;
 using BiliDownload.HelperPages;
 using BiliDownload.Helpers;
-using BiliDownload.Model;
+using BiliDownload.Models;
+using BiliDownload.Others;
 using BiliDownload.SearchDialogs;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -64,8 +66,6 @@ namespace BiliDownload
 
         public async void searchBtn_Click(object sender, RoutedEventArgs e)
         {
-            //if (!Regex.IsMatch(searchTextbox.Text, "[a-zA-z]+://[^\\s]*")) return;
-
             if (string.IsNullOrWhiteSpace(searchTextbox.Text)) return;
 
             var sESSDATA = ApplicationData.Current.LocalSettings.Values["biliUserSESSDATA"] as string;
@@ -128,7 +128,7 @@ namespace BiliDownload
             }
             else if (info.Item3 == UrlType.MangaMC) //下载漫画
             {
-                if (ApplicationData.Current.LocalSettings.Values["downloadPath"] as string == null)//检查下载目录是否为空
+                if (Settings.DownloadPath == null)//检查下载目录是否为空
                 {
                     Reset();
                     var dialog = new ErrorDialog("未设置下载储存文件夹，请前往设置以更改")
@@ -143,6 +143,17 @@ namespace BiliDownload
                         MainPage.NavView.SelectedItem = MainPage.NavView.SettingsItem;
                         return;
                     }
+                }
+                try
+                {
+                    await StorageFolder.GetFolderFromPathAsync(Settings.DownloadPath);
+                }
+                catch (FileNotFoundException)
+                {
+                    Reset();
+                    var dialog = new ExceptionDialog("找不到指定下载目录:" + Settings.DownloadPath);
+                    await dialog.ShowAsync();
+                    return;
                 }
                 var master = await BiliMangaHelper.GetBiliMangaMasterAsync(info.Item4, sESSDATA);
                 Reset();

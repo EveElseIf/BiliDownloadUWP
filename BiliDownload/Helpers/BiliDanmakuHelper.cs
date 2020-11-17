@@ -1,4 +1,4 @@
-﻿using BiliDownload.Model;
+﻿using BiliDownload.Models;
 using BiliDownload.Others;
 using System.Collections.Generic;
 using System.IO;

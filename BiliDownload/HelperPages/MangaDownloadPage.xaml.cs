@@ -1,7 +1,8 @@
 ﻿using BiliDownload.Exceptions;
 using BiliDownload.Helper;
 using BiliDownload.Helpers;
-using BiliDownload.Model;
+using BiliDownload.Models;
+using BiliDownload.Others;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -38,11 +39,13 @@ namespace BiliDownload.HelperPages
             base.OnNavigatedTo(e);
             if (!(e.Parameter is BiliMangaMaster)) return;
             this.master = e.Parameter as BiliMangaMaster;
+            var i = 1;
             this.mangaListView.ItemsSource = new ObservableCollection<MangaViewModel>(master.EpList.OrderBy(m => m.Order).Select(m => new MangaViewModel()
             {
                 Epid = m.Epid,
                 Title = m.Title,
                 CoverUrl = m.CoverUrl,
+                Order = i++,
                 ToDownload = false
             }));
             _ = SetCoverImage(this.master.VerticalCoverUrl);
@@ -68,6 +71,9 @@ namespace BiliDownload.HelperPages
                 Epid = vm.Epid,
                 Mcid = this.master.Mcid,
                 Status = "准备中",
+                Master = this.master,
+                Vm = vm,
+                Index = vm.Order,
                 Title = vm.Title
             };
             try
@@ -80,7 +86,8 @@ namespace BiliDownload.HelperPages
             }
             catch
             {
-
+                //由于暂时不知道怎么在新打开的appwindow上显示对话框，故直接无视错误
+                return;
             }
             downloadList.Add(download);
             this.pivot.SelectedIndex = 1;
@@ -98,6 +105,9 @@ namespace BiliDownload.HelperPages
                     Epid = item.Epid,
                     Mcid = this.master.Mcid,
                     Status = "准备中",
+                    Master = this.master,
+                    Vm = item,
+                    Index = item.Order,
                     Title = item.Title
                 };
                 try
@@ -110,7 +120,7 @@ namespace BiliDownload.HelperPages
                 }
                 catch
                 {
-
+                    return;
                 }
                 downloadList.Add(download);
                 taskList.Add(download.StartDownloadAsync());
@@ -136,7 +146,9 @@ namespace BiliDownload.HelperPages
         public string Title { get; set; }
         public int Epid { get; set; }
         public string CoverUrl { get; set; }
+        public int Order { get; set; }
         private bool toDownload;
+        public bool downloadStarted = false;
 
         public bool ToDownload
         {
@@ -153,7 +165,16 @@ namespace BiliDownload.HelperPages
         public string Title { get; set; }
         public int Epid { get; set; }
         public int Mcid { get; set; }
+        /// <summary>
+        /// 这个master只是为了获取title
+        /// </summary>
+        public BiliMangaMaster Master { get; set; }
+        /// <summary>
+        /// 这个viewmodel只是为了检测是否已经开始过下载
+        /// </summary>
+        public MangaViewModel Vm { get; set; }
         public List<string> UrlList { get; set; }
+        public int Index { get; set; }
         private string status;
 
         public string Status
@@ -163,15 +184,23 @@ namespace BiliDownload.HelperPages
         }
         public async Task StartDownloadAsync()
         {
+            if (Vm.downloadStarted)
+            {
+                this.Status = "下载已经开始，无法重复下载";
+                return;
+            }
             if (UrlList == null)
             {
                 this.Status = $"需要购买";
                 return;
             }
+            Vm.downloadStarted = true;
             var title = Title.Replace("\\", "").Replace("/", "").Replace(":", "").Replace("*", "")
             .Replace("?", "").Replace("\"", "").Replace("<", "").Replace(">", "").Replace("|", "");
-            var parentfolder = await StorageFolder.GetFolderFromPathAsync(ApplicationData.Current.LocalSettings.Values["downloadPath"] as string);
-            var folder = await parentfolder.CreateFolderAsync($"{title}(mc{Mcid}.ep{Epid})", CreationCollisionOption.ReplaceExisting);
+            var parentfolder = await StorageFolder.GetFolderFromPathAsync(Settings.DownloadPath);
+            var titleFolder = await parentfolder.CreateFolderAsync(this.Master.Title.Replace("\\", "").Replace("/", "").Replace(":", "").Replace("*", "")
+            .Replace("?", "").Replace("\"", "").Replace("<", "").Replace(">", "").Replace("|", ""), CreationCollisionOption.OpenIfExists);
+            var folder = await titleFolder.CreateFolderAsync($"{Index}.{title}(mc{Mcid}.ep{Epid})", CreationCollisionOption.ReplaceExisting);
             var client = new HttpClient();
             var i = 0;
             foreach (var item in UrlList)

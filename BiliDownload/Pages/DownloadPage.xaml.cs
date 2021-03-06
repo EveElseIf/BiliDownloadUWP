@@ -40,8 +40,10 @@ namespace BiliDownload
             if (completedDownloadList == null) completedDownloadList = new ObservableCollection<CompletedDownloadModel>();
             completedList.ItemsSource = completedDownloadList;
 
-            if (ApplicationData.Current.LocalSettings.Values["cpuLimit"] == null)//设置cpu限制默认值
-                ApplicationData.Current.LocalSettings.Values["cpuLimit"] = false;
+            //if (ApplicationData.Current.LocalSettings.Values["cpuLimit"] == null)//设置cpu限制默认值
+            //    ApplicationData.Current.LocalSettings.Values["cpuLimit"] = false;
+            if (ApplicationData.Current.LocalSettings.Values["ignoreEx"] == null)
+                ApplicationData.Current.LocalSettings.Values["ignoreEx"] = false;
 
             IsResumed = false;//未恢复未完成的任务
         }

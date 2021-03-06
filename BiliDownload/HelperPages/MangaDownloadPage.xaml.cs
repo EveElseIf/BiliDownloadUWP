@@ -52,14 +52,15 @@ namespace BiliDownload.HelperPages
         }
         private async Task SetCoverImage(string url)
         {
-            var stream = await NetHelper.HttpGetStreamAsync(url, null, null);
-            var file = await ApplicationData.Current.LocalCacheFolder.CreateFileAsync("mangacovercache", CreationCollisionOption.GenerateUniqueName);
-            var fileStream = await file.OpenStreamForWriteAsync();
-            await stream.CopyToAsync(fileStream);
-            stream.Close();
-            fileStream.Close();
-            var img = new BitmapImage();
-            await img.SetSourceAsync((await file.OpenStreamForReadAsync()).AsRandomAccessStream());
+            //var stream = await NetHelper.HttpGetStreamAsync(url, null, null);
+            //var file = await ApplicationData.Current.LocalCacheFolder.CreateFileAsync("mangacovercache", CreationCollisionOption.GenerateUniqueName);
+            //var fileStream = await file.OpenStreamForWriteAsync();
+            //await stream.CopyToAsync(fileStream);
+            //stream.Close();
+            //fileStream.Close();
+            //var img = new BitmapImage();
+            //await img.SetSourceAsync((await file.OpenStreamForReadAsync()).AsRandomAccessStream());
+            var img = new BitmapImage(new Uri(url));
             this.mangaCoverImage.Source = img;
         }
 

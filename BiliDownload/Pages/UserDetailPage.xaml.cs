@@ -220,14 +220,15 @@ namespace BiliDownload.Pages
                     };
                     try
                     {
-                        var file = await ApplicationData.Current.LocalCacheFolder.CreateFileAsync("VideoCoverCache", CreationCollisionOption.GenerateUniqueName);
-                        var imgStream = await NetHelper.HttpGetStreamAsync(bangumi.Cover, null, null);
-                        var fileStream = await file.OpenStreamForWriteAsync();
-                        await imgStream.CopyToAsync(fileStream);
-                        imgStream.Close();
-                        fileStream.Close();
-                        var imgSource = new BitmapImage();
-                        await imgSource.SetSourceAsync((await file.OpenStreamForReadAsync()).AsRandomAccessStream());
+                        //var file = await ApplicationData.Current.LocalCacheFolder.CreateFileAsync("VideoCoverCache", CreationCollisionOption.GenerateUniqueName);
+                        //var imgStream = await NetHelper.HttpGetStreamAsync(bangumi.Cover, null, null);
+                        //var fileStream = await file.OpenStreamForWriteAsync();
+                        //await imgStream.CopyToAsync(fileStream);
+                        //imgStream.Close();
+                        //fileStream.Close();
+                        //var imgSource = new BitmapImage();
+                        //await imgSource.SetSourceAsync((await file.OpenStreamForReadAsync()).AsRandomAccessStream());
+                        var imgSource = new BitmapImage(new Uri(bangumi.Cover));
 
                         model.CoverImg = imgSource;
                     }
@@ -280,14 +281,15 @@ namespace BiliDownload.Pages
                     };
                     try
                     {
-                        var file = await ApplicationData.Current.LocalCacheFolder.CreateFileAsync("VideoCoverCache", CreationCollisionOption.GenerateUniqueName);
-                        var imgStream = await NetHelper.HttpGetStreamAsync(bangumi.Cover, null, null);
-                        var fileStream = await file.OpenStreamForWriteAsync();
-                        await imgStream.CopyToAsync(fileStream);
-                        imgStream.Close();
-                        fileStream.Close();
-                        var imgSource = new BitmapImage();
-                        await imgSource.SetSourceAsync((await file.OpenStreamForReadAsync()).AsRandomAccessStream());
+                        //var file = await ApplicationData.Current.LocalCacheFolder.CreateFileAsync("VideoCoverCache", CreationCollisionOption.GenerateUniqueName);
+                        //var imgStream = await NetHelper.HttpGetStreamAsync(bangumi.Cover, null, null);
+                        //var fileStream = await file.OpenStreamForWriteAsync();
+                        //await imgStream.CopyToAsync(fileStream);
+                        //imgStream.Close();
+                        //fileStream.Close();
+                        //var imgSource = new BitmapImage();
+                        //await imgSource.SetSourceAsync((await file.OpenStreamForReadAsync()).AsRandomAccessStream());
+                        var imgSource = new BitmapImage(new Uri(bangumi.Cover));
 
                         model.CoverImg = imgSource;
                     }
@@ -395,14 +397,15 @@ namespace BiliDownload.Pages
 
             try
             {
-                var file = await ApplicationData.Current.LocalCacheFolder.CreateFileAsync("VideoCoverCache", CreationCollisionOption.GenerateUniqueName);
-                var imgStream = await NetHelper.HttpGetStreamAsync(coverUrl, null, null);
-                var fileStream = await file.OpenStreamForWriteAsync();
-                await imgStream.CopyToAsync(fileStream);
-                imgStream.Close();
-                fileStream.Close();
-                var imgSource = new BitmapImage();
-                await imgSource.SetSourceAsync((await file.OpenStreamForReadAsync()).AsRandomAccessStream());
+                //var file = await ApplicationData.Current.LocalCacheFolder.CreateFileAsync("VideoCoverCache", CreationCollisionOption.GenerateUniqueName);
+                //var imgStream = await NetHelper.HttpGetStreamAsync(coverUrl, null, null);
+                //var fileStream = await file.OpenStreamForWriteAsync();
+                //await imgStream.CopyToAsync(fileStream);
+                //imgStream.Close();
+                //fileStream.Close();
+                //var imgSource = new BitmapImage();
+                //await imgSource.SetSourceAsync((await file.OpenStreamForReadAsync()).AsRandomAccessStream());
+                var imgSource = new BitmapImage(new Uri(coverUrl));
 
                 model.CoverImg = imgSource;
             }

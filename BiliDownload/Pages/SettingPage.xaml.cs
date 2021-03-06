@@ -20,10 +20,11 @@ namespace BiliDownload
             this.InitializeComponent();
             NavigationCacheMode = NavigationCacheMode.Disabled;
             this.locationTextBox.Text = ApplicationData.Current.LocalSettings.Values["downloadPath"] as string ?? string.Empty;
-            if ((bool)ApplicationData.Current.LocalSettings.Values["cpuLimit"]) this.cpuLimitSwitch.IsOn = true;
+            //if ((bool)ApplicationData.Current.LocalSettings.Values["cpuLimit"]) this.cpuLimitSwitch.IsOn = true;
             if ((bool)ApplicationData.Current.LocalSettings.Values["HEVC"]) this.hevcDownloadSwitch.IsOn = true;
             if ((bool)ApplicationData.Current.LocalSettings.Values["NeedNotice"]) this.needNoticeSwitch.IsOn = true;
             if ((bool)ApplicationData.Current.LocalSettings.Values["autoDownloadDanmaku"]) this.autoDownloadDanmakuSwitch.IsOn = true;
+            if ((bool)ApplicationData.Current.LocalSettings.Values["ignoreEx"]) this.ignoreExSwitch.IsOn = true;
         }
 
         private async void selectLocationBtn_Click(object sender, RoutedEventArgs e)
@@ -40,7 +41,7 @@ namespace BiliDownload
 
         private void cpuLimitSwitch_Toggled(object sender, RoutedEventArgs e)
         {
-            ApplicationData.Current.LocalSettings.Values["cpuLimit"] = cpuLimitSwitch.IsOn;
+            //ApplicationData.Current.LocalSettings.Values["cpuLimit"] = cpuLimitSwitch.IsOn;
         }
 
         private void hevcDownloadSwitch_Toggled(object sender, RoutedEventArgs e)
@@ -56,6 +57,11 @@ namespace BiliDownload
         private void autoDownloadDanmakuSwitch_Toggled(object sender, RoutedEventArgs e)
         {
             ApplicationData.Current.LocalSettings.Values["autoDownloadDanmaku"] = autoDownloadDanmakuSwitch.IsOn;
+        }
+
+        private void ignoreExSwitch_Toggled(object sender, RoutedEventArgs e)
+        {
+            ApplicationData.Current.LocalSettings.Values["ignoreEx"] = ignoreExSwitch.IsOn;
         }
     }
 }

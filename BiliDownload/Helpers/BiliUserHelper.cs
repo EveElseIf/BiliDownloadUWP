@@ -24,14 +24,15 @@ namespace BiliDownload.Helper
             var json = JsonConvert.DeserializeObject<SelfInfoJson>(await NetHelper.HttpGet("http://api.bilibili.com/x/space/myinfo", cookies, null));
             var user = new BiliUser();
 
-            var file = await ApplicationData.Current.LocalCacheFolder.CreateFileAsync("avatar", CreationCollisionOption.ReplaceExisting);
-            var imgStream = await NetHelper.HttpGetStreamAsync(json.data.face, null, null);
-            var fileStream = await file.OpenStreamForWriteAsync();
-            await imgStream.CopyToAsync(fileStream);
-            imgStream.Close();
-            fileStream.Close();
-            var imgSource = new BitmapImage();
-            await imgSource.SetSourceAsync((await file.OpenStreamForReadAsync()).AsRandomAccessStream());
+            //var file = await ApplicationData.Current.LocalCacheFolder.CreateFileAsync("avatar", CreationCollisionOption.ReplaceExisting);
+            //var imgStream = await NetHelper.HttpGetStreamAsync(json.data.face, null, null);
+            //var fileStream = await file.OpenStreamForWriteAsync();
+            //await imgStream.CopyToAsync(fileStream);
+            //imgStream.Close();
+            //fileStream.Close();
+            //var imgSource = new BitmapImage();
+            //await imgSource.SetSourceAsync((await file.OpenStreamForReadAsync()).AsRandomAccessStream());
+            var imgSource = new BitmapImage(new Uri(json.data.face));
 
             user.Uid = json.data.mid;
             user.Name = json.data.name;

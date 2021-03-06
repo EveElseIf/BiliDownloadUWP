@@ -55,14 +55,15 @@ namespace BiliDownload.SearchDialogs
             var model = new BangumiDialogViewModel();
             model.VideoTitle = bangumi.Title;
 
-            var stream = await NetHelper.HttpGetStreamAsync(bangumi.Cover, null, null);
-            var file = await ApplicationData.Current.LocalCacheFolder.CreateFileAsync("videocovercache", CreationCollisionOption.GenerateUniqueName);
-            var fileStream = await file.OpenStreamForWriteAsync();
-            await stream.CopyToAsync(fileStream);
-            stream.Close();
-            fileStream.Close();
-            var img = new BitmapImage();
-            await img.SetSourceAsync((await file.OpenStreamForReadAsync()).AsRandomAccessStream());
+            //var stream = await NetHelper.HttpGetStreamAsync(bangumi.Cover, null, null);
+            //var file = await ApplicationData.Current.LocalCacheFolder.CreateFileAsync("videocovercache", CreationCollisionOption.GenerateUniqueName);
+            //var fileStream = await file.OpenStreamForWriteAsync();
+            //await stream.CopyToAsync(fileStream);
+            //stream.Close();
+            //fileStream.Close();
+            //var img = new BitmapImage();
+            //await img.SetSourceAsync((await file.OpenStreamForReadAsync()).AsRandomAccessStream());
+            var img = new BitmapImage(new Uri(bangumi.Cover));
             model.VideoCover = img;
 
             var list = bangumi.EpisodeList.Select(v => new VideoInfo()

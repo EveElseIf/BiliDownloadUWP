@@ -61,14 +61,15 @@ namespace BiliDownload.SearchDialogs
 
             model.VideoTitle = master.Title;
 
-            var stream = await NetHelper.HttpGetStreamAsync(master.Picture, null, null);
-            var file = await ApplicationData.Current.LocalCacheFolder.CreateFileAsync("videocovercache", CreationCollisionOption.GenerateUniqueName);
-            var fileStream = await file.OpenStreamForWriteAsync();
-            await stream.CopyToAsync(fileStream);
-            stream.Close();
-            fileStream.Close();
-            var img = new BitmapImage();
-            await img.SetSourceAsync((await file.OpenStreamForReadAsync()).AsRandomAccessStream());
+            //var stream = await NetHelper.HttpGetStreamAsync(master.Picture, null, null);
+            //var file = await ApplicationData.Current.LocalCacheFolder.CreateFileAsync("videocovercache", CreationCollisionOption.GenerateUniqueName);
+            //var fileStream = await file.OpenStreamForWriteAsync();
+            //await stream.CopyToAsync(fileStream);
+            //stream.Close();
+            //fileStream.Close();
+            //var img = new BitmapImage();
+            //await img.SetSourceAsync((await file.OpenStreamForReadAsync()).AsRandomAccessStream());
+            var img = new BitmapImage(new Uri(master.Picture));
             model.VideoCover = img;
 
             var list = master.VideoList.Select(v => new VideoInfo()

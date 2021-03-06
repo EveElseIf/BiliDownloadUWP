@@ -26,6 +26,19 @@ namespace BiliDownload
         {
             this.InitializeComponent();
             this.Suspending += OnSuspending;
+            this.UnhandledException += (s, e) =>
+            {
+                if (ApplicationData.Current.LocalSettings.Values["ignoreEx"] as bool? ?? false)
+                    e.Handled = true;
+                if (e.Message == @"某个异步操作没有正常启动。
+
+Only a single ContentDialog can be open at any time.")
+                {
+                    e.Handled = true;
+                    return;
+                }
+                if (e.Exception is Exception) e.Handled = true;
+            };
         }
 
         /// <summary>

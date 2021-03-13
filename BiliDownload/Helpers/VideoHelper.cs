@@ -17,10 +17,11 @@ namespace BiliDownload.Helper
                 Locked = true;
                 ApplicationData.Current.LocalSettings.Values["lock"] = true;//锁定，这是不同程序之间通信用的锁
                 string para;
-                if ((bool)ApplicationData.Current.LocalSettings.Values["cpuLimit"])
-                    para = $"-i \"{video.Path}\" -i \"{audio.Path}\" -c:v copy -c:a copy -strict experimental -threads 2 \"{outputPath}\"";//设置cpu限制
-                else
-                    para = $"-i \"{video.Path}\" -i \"{audio.Path}\" -c:v copy -c:a copy -strict experimental \"{outputPath}\"";
+                //if ((bool)ApplicationData.Current.LocalSettings.Values["cpuLimit"])
+                //    para = $"-i \"{video.Path}\" -i \"{audio.Path}\" -c:v copy -c:a copy -strict experimental -threads 2 \"{outputPath}\"";//设置cpu限制
+                //else
+                //    para = $"-i \"{video.Path}\" -i \"{audio.Path}\" -c:v copy -c:a copy -strict experimental \"{outputPath}\"";
+                para = $"-i \"{video.Path}\" -i \"{audio.Path}\" -c:v copy -c:a copy -strict experimental \"{outputPath}\"";
                 ApplicationData.Current.LocalSettings.Values["para"] = para;
                 if (ApiInformation.IsApiContractPresent("Windows.ApplicationModel.FullTrustAppContract", 1, 0))
                 {

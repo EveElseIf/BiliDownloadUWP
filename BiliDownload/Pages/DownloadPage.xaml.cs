@@ -190,9 +190,8 @@ namespace BiliDownload
 
         private async void openFolderBtn_Click(object sender, RoutedEventArgs e)
         {
-            var model = (sender as Button)?.DataContext as CompletedDownloadModel;
-            var path = ApplicationData.Current.LocalSettings.Values["downloadPath"] as string;
-            if (path == null)
+            //var model = (sender as Button)?.DataContext as CompletedDownloadModel;
+            if (!(ApplicationData.Current.LocalSettings.Values["downloadPath"] is string path))
             {
                 var dialog = new ErrorDialog("未设置下载储存文件夹，请前往设置以更改")
                 {

@@ -41,11 +41,11 @@ namespace BiliDownload.Components
             {
                 if (currentSpeed >= 1000000)
                 {
-                    return $"{string.Format("{0:f2}", currentSpeed / 1000000)}Mb/s";
+                    return $"{string.Format("{0:f2}", currentSpeed / 1000000)}MB/s";
                 }
                 else
                 {
-                    return $"{string.Format("{0:f2}", currentSpeed / 1000)}Kb/s";
+                    return $"{string.Format("{0:f2}", currentSpeed / 1000)}KB/s";
                 }
             }
             set { currentSpeed = float.Parse(value); PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("CurrentSpeed")); }
@@ -131,7 +131,7 @@ namespace BiliDownload.Components
                     .GetToastContent();
                 ToastNotificationManager.CreateToastNotifier().Show(new ToastNotification(content.GetXml()));
             }
-            CreateCompleted($"{DownloadName} - {title}", FullProgress, outputFile.Path);//添加到完成列表
+            CreateCompleted($"{title} - {downloadName}", FullProgress, outputFile.Path);//添加到完成列表
         }
         private void CreateCompleted(string title, ulong size, string path)
         {
@@ -256,7 +256,7 @@ namespace BiliDownload.Components
                 await Task.Delay(1000);
             }
             await Task.WhenAll(downloadTasks);
-            ChineseStatus = "转换中";
+            ChineseStatus = "合并中";
             await OnCompleteAsync();
         }
 
@@ -301,7 +301,7 @@ namespace BiliDownload.Components
                 await Task.Delay(1000);
             }
             await Task.WhenAll(downloadTasks);
-            ChineseStatus = "转换中";
+            ChineseStatus = "合并中";
             await OnCompleteAsync();
         }
 

@@ -4,12 +4,13 @@ using BiliDownload.Helpers;
 using BiliDownload.Interfaces;
 using BiliDownload.Models;
 using BiliDownload.Others;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using Windows.Storage;
-using Windows.UI.Xaml.Controls;
 
 namespace BiliDownload.Helper
 {
@@ -23,11 +24,11 @@ namespace BiliDownload.Helper
         /// <param name="quality"></param>
         /// <param name="sESSDATA"></param>
         /// <returns></returns>
-        public static async Task CreateDownloadAsync(string bv, long cid, int quality, string sESSDATA) //创建下载
+        public static async Task CreateDownloadAsync(string bv, long cid, int quality, string sESSDATA, XamlRoot xamlRoot) //创建下载
         {
             if (string.IsNullOrWhiteSpace(Settings.DownloadPath))//检查下载目录是否为空
             {
-                var dialog = new ErrorDialog("未设置下载储存文件夹，请前往设置以更改")
+                var dialog = new ErrorDialog("未设置下载储存文件夹，请前往设置以更改", xamlRoot)
                 {
                     PrimaryButtonText = "前往设置"
                 };
@@ -67,7 +68,7 @@ namespace BiliDownload.Helper
             }
             catch (Exception ex)
             {
-                var dialog = new ExceptionDialog(ex.Message);
+                var dialog = new ExceptionDialog(ex.Message, xamlRoot);
                 await dialog.ShowAsync();
             }
         }
@@ -78,11 +79,11 @@ namespace BiliDownload.Helper
         /// <param name="quality"></param>
         /// <param name="sESSDATA"></param>
         /// <returns></returns>
-        public static async Task CreateDownloadsAsync(List<BiliVideoInfo> videos, int quality, string sESSDATA)
+        public static async Task CreateDownloadsAsync(List<BiliVideoInfo> videos, int quality, string sESSDATA, XamlRoot xamlRoot)
         {
             if (ApplicationData.Current.LocalSettings.Values["downloadPath"] as string == null)//检查下载目录是否为空
             {
-                var dialog = new ErrorDialog("未设置下载储存文件夹，请前往设置以更改")
+                var dialog = new ErrorDialog("未设置下载储存文件夹，请前往设置以更改", xamlRoot)
                 {
                     PrimaryButtonText = "前往设置"
                 };
@@ -140,7 +141,7 @@ namespace BiliDownload.Helper
             }
             catch (Exception ex)
             {
-                var dialog = new ExceptionDialog(ex.Message);
+                var dialog = new ExceptionDialog(ex.Message, xamlRoot);
                 await dialog.ShowAsync();
             }
         }

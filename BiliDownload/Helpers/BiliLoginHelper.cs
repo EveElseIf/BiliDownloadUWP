@@ -1,4 +1,7 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Imaging;
+using Newtonsoft.Json;
 using QRCoder;
 using System;
 using System.IO;
@@ -6,10 +9,6 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.Storage;
-using Windows.UI.Core;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Media.Imaging;
 
 namespace BiliDownload.Helper
 {
@@ -23,10 +22,7 @@ namespace BiliDownload.Helper
 
             var QRcode = await GetQRCodeImageAsync(QRcodeUrl);
 
-            await qRCodeImage.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-             {
-                 qRCodeImage.Source = QRcode;
-             });
+            qRCodeImage.DispatcherQueue.TryEnqueue(() => qRCodeImage.Source = QRcode);
             while (true)
             {
                 if (token.IsCancellationRequested) return null;

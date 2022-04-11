@@ -2,6 +2,7 @@
 using BiliDownload.Interfaces;
 using BiliDownload.Models.Xml;
 using Microsoft.Toolkit.Uwp.Notifications;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -9,7 +10,6 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Windows.Networking.BackgroundTransfer;
 using Windows.Storage;
 using Windows.UI.Notifications;
 
@@ -62,13 +62,17 @@ namespace BiliDownload.Components
         public StorageFolder CacheFolder { get; set; }
         public bool IsPaused { get; set; }
         public bool IsCompleted { get; set; }
-        public CancellationTokenSource TokenSource { get; set; }
+        public string Bv { get; set; }
+        public long Cid { get; set; }
+        public int Quality { set; get; }
 
         public event PropertyChangedEventHandler PropertyChanged;
+        private bool isCanceled = false;
 
         public async Task CancelAsync()
         {
-            this.TokenSource.Cancel();
+            isCanceled = true;
+            PartList.ForEach(x => x.Task.Cancel());
             DownloadPage.Current.activeDownloadList.Remove(this);
             await this.CacheFolder.DeleteAsync();
         }
@@ -80,27 +84,28 @@ namespace BiliDownload.Components
             var downloadName = video.Name;
             var title = video.Title;
 
-            var downloader = new BackgroundDownloader();
-            downloader.SetRequestHeader("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.135 Safari/537.36 Edg/84.0.522.63");
-            downloader.SetRequestHeader("referer", "http://www.bilibili.com");
+            var ua = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.135 Safari/537.36 Edg/84.0.522.63";
+            var referer = "http://www.bilibili.com";
             if (Directory.Exists(ApplicationData.Current.LocalCacheFolder.Path + "/" + downloadName + "Cache"))
                 await (await ApplicationData.Current.LocalCacheFolder.GetFolderAsync(downloadName + "Cache")).DeleteAsync();
             var cacheFolder = await ApplicationData.Current.LocalCacheFolder.CreateFolderAsync(downloadName + "Cache");
             var partList = new List<IBiliDownloadPart>
             {
-                await BiliDashDownloadPart.CreateAsync(video.VideoUrl, $"{downloadName}Video", cacheFolder, downloader, tokenSource),
-                await BiliDashDownloadPart.CreateAsync(video.AudioUrl, $"{downloadName}Audio", cacheFolder, downloader, tokenSource)
+                await BiliDashDownloadPart.CreateAsync(video.VideoUrl,ua,referer, $"{downloadName}Video", cacheFolder),
+                await BiliDashDownloadPart.CreateAsync(video.AudioUrl,ua,referer, $"{downloadName}Audio", cacheFolder)
             };
 
             var download = new BiliDashDownload()
             {
                 DownloadName = downloadName,
+                Bv = bv,
+                Cid = cid,
+                Quality = quality,
                 VideoUrl = video.VideoUrl,
                 AudioUrl = video.AudioUrl,
                 CacheFolder = cacheFolder,
                 PartList = partList,
-                Title = title,
-                TokenSource = tokenSource
+                Title = title
             };
             return download;
         }
@@ -119,13 +124,12 @@ namespace BiliDownload.Components
             await outputFile.DeleteAsync(StorageDeleteOption.PermanentDelete);//创建文件再删除获取写入权限
             ApplicationData.Current.LocalSettings.Values["currentCacheFolder"] = CacheFolder.Path;
 
-            while (VideoHelper.Locked) await Task.Delay(100);
             await VideoHelper.MakeVideoAsync(videoFile, audioFile, outputFile.Path);
             ChineseStatus = "已完成";
             IsCompleted = true;
             if ((bool)ApplicationData.Current.LocalSettings.Values["NeedNotice"])//如果需要通知，就发送下载完成通知
             {
-                var content = new ToastContentBuilder().AddToastActivationInfo("downloadCompleted", ToastActivationType.Foreground)
+                var content = new ToastContentBuilder().AddToastActivationInfo($"downloadCompleted {downloadFolder.Path}", ToastActivationType.Foreground)
                     .AddText("下载完成")
                     .AddText($"{title} - {downloadName}")
                     .GetToastContent();
@@ -161,58 +165,50 @@ namespace BiliDownload.Components
             };
         }
 
-        public static async Task<IBiliDownload> ReCreateAsync(DownloadXmlModel xml, List<DownloadOperation> operations)
+        public static async Task<IBiliDownload> RecreateAsync(DownloadXmlModel xml, string sessdata)
         {
-            var tokenSource = new CancellationTokenSource();
+            var video = await BiliVideoHelper.GetSingleVideoAsync(xml.Bv, xml.Cid, xml.Quality, sessdata);
+
             var partList = new List<IBiliDownloadPart>();
+
+            var t1 = JsonConvert.DeserializeObject<DownloadTaskRestoreModel>(xml.PartList[0].RestoreModelJson);
+            var t2 = JsonConvert.DeserializeObject<DownloadTaskRestoreModel>(xml.PartList[1].RestoreModelJson);
+            t1.Url = video.VideoUrl;
+            t2.Url = video.AudioUrl;
 
             var part1 = new BiliDashDownloadPart()//使用构造函数来创建实例，灵活
             {
-                Operation = operations.Where(o => o.Guid == xml.PartList[0].OperationGuid)?.FirstOrDefault(),
-                OperationGuid = xml.PartList[0].OperationGuid,
-                CacheFile = await StorageFile.GetFileFromPathAsync(xml.PartList[0].CacheFilePath),
-                Url = xml.PartList[0].Url,
-                IsRecreated = true,
-                TokenSource = tokenSource
+                Task = DownloadTask.Restore(t1),
+                CacheFile = await StorageFile.GetFileFromPathAsync(t1.Path)
             };
             var part2 = new BiliDashDownloadPart()
             {
-                Operation = operations.Where(o => o.Guid == xml.PartList[1].OperationGuid)?.FirstOrDefault(),
-                OperationGuid = xml.PartList[1].OperationGuid,
-                CacheFile = await StorageFile.GetFileFromPathAsync(xml.PartList[1].CacheFilePath),
-                Url = xml.PartList[1].Url,
-                IsRecreated = true,
-                TokenSource = tokenSource
+                Task = DownloadTask.Restore(t2),
+                CacheFile = await StorageFile.GetFileFromPathAsync(t2.Path)
             };
 
             partList.Add(part1);
             partList.Add(part2);
 
-            foreach (var part in partList)
-            {
-                if (part.Operation == null) part.IsComplete = true;
-            }
-
             var download = new BiliDashDownload()
             {
                 DownloadName = xml.DownloadName,
-                VideoUrl = xml.VideoUrl,
-                AudioUrl = xml.AudioUrl,
+                Bv = xml.Bv,
+                Cid = xml.Cid,
+                Quality = xml.Quality,
+                VideoUrl = video.VideoUrl,
+                AudioUrl = video.AudioUrl,
                 CacheFolder = await StorageFolder.GetFolderFromPathAsync(xml.CacheFolderPath),
                 PartList = partList,
-                Title = xml.Title,
-                TokenSource = tokenSource
+                Title = xml.Title
             };
             download.ChineseStatus = "已暂停";
             ulong currentProgress = 0;
             ulong fullProgress = 0;
             foreach (var part in partList)
             {
-                if (part.Operation != null)
-                {
-                    currentProgress += part.Operation.Progress.BytesReceived;
-                    fullProgress += part.Operation.Progress.TotalBytesToReceive;
-                }
+                currentProgress += part.Task.DownloadedBytes;
+                fullProgress += part.Task.TotalBytes;
             }
             download.CurrentProgress = currentProgress;
             download.FullProgress = fullProgress;
@@ -222,67 +218,43 @@ namespace BiliDownload.Components
             return download;
         }
 
-        public async Task ReStartAsync()
-        {
-            ChineseStatus = "已暂停";
-            var downloadTasks = new List<Task>();
-            ulong currentProgress;
-            ulong fullProgress;
-            ulong lastBytes = 0;
-            foreach (var part in PartList)
-            {
-                downloadTasks.Add(part.StartAsync());
-            }
-            while (!IsPartAllComplete() || FullProgress != CurrentProgress)
-            {
-                if (TokenSource.IsCancellationRequested) return;//设置取消
-                currentProgress = 0;
-                fullProgress = 0;
-                foreach (var part in PartList)
-                {
-                    if (part.Operation != null)
-                    {
-                        currentProgress += part.Operation.Progress.BytesReceived;
-                        fullProgress += part.Operation.Progress.TotalBytesToReceive;
-                    }
-                }
-                CurrentProgress = currentProgress;
-                FullProgress = fullProgress;
-                if (lastBytes != 0)
-                {
-                    CurrentSpeed = (currentProgress - lastBytes).ToString();
-                }
-                lastBytes = currentProgress;
-                await Task.Delay(1000);
-            }
-            await Task.WhenAll(downloadTasks);
-            ChineseStatus = "合并中";
-            await OnCompleteAsync();
-        }
-
         public async Task StartAsync()
         {
             ChineseStatus = "下载中";
             var downloadTasks = new List<Task>();
-            ulong currentProgress;
-            ulong fullProgress;
-            ulong lastBytes = 0;
             foreach (var part in PartList)
             {
                 downloadTasks.Add(part.StartAsync());
             }
+            await Loop(downloadTasks);
+        }
+
+        public bool IsPartAllComplete() => PartList.All(x => x.IsComplete);
+
+        public async Task RestartAsync()
+        {
+            ChineseStatus = "已暂停";
+            var downloadTasks = new List<Task>();
+            foreach (var part in PartList)
+            {
+                downloadTasks.Add(part.StartAsync());
+            }
+            await Loop(downloadTasks);
+        }
+        public async Task Loop(List<Task> tasks)
+        {
+            ulong currentProgress;
+            ulong fullProgress;
             while (!IsPartAllComplete() || FullProgress != CurrentProgress)
             {
-                if (TokenSource.IsCancellationRequested) return;//可取消
+                if (isCanceled)
+                    return;
                 currentProgress = 0;
                 fullProgress = 0;
                 foreach (var part in PartList)
                 {
-                    if (part.Operation != null)
-                    {
-                        currentProgress += part.Operation.Progress.BytesReceived;
-                        fullProgress += part.Operation.Progress.TotalBytesToReceive;
-                    }
+                    currentProgress += part.Task.DownloadedBytes;
+                    fullProgress += part.Task.TotalBytes;
                 }
                 if (currentProgress == 0)//防止进度条卡满
                 {
@@ -293,77 +265,49 @@ namespace BiliDownload.Components
                 }
                 CurrentProgress = currentProgress;
                 FullProgress = fullProgress;
-                if (lastBytes != 0)
-                {
-                    CurrentSpeed = (currentProgress - lastBytes).ToString();
-                }
-                lastBytes = currentProgress;
+                CurrentSpeed = PartList.Sum(x => (long)x.Task.DeltaBytes).ToString();
                 await Task.Delay(1000);
             }
-            await Task.WhenAll(downloadTasks);
+            await Task.WhenAll(tasks);
             ChineseStatus = "合并中";
             await OnCompleteAsync();
-        }
-
-        public bool IsPartAllComplete()
-        {
-            foreach (var part in this.PartList)
-            {
-                if (part.IsComplete == false) return false;
-            }
-            return true;
         }
     }
     public class BiliDashDownloadPart : IBiliDownloadPart
     {
-        public DownloadOperation Operation { get; set; }
-        public Guid OperationGuid { get; set; }
-        public string Url { get; set; }
+        public DownloadTask Task { get; init; }
+        public Guid TaskGuid { get => Task.TaskGuid; }
+        public string Url { get => Task.Url; }
         public StorageFile CacheFile { get; set; }
-        public bool IsStarted { get; set; }
-        public bool IsPaused { get; set; }
-        public bool IsComplete { get; set; }
+        public bool IsStarted { get => Task.IsStarted; }
+        public bool IsPaused { get => !Task.IsRunning; }
+        public bool IsComplete { get => Task.IsCompleted; }
         public CancellationTokenSource TokenSource { get; set; }
-        public bool IsRecreated { get; set; }
-
-        public async static Task<IBiliDownloadPart> CreateAsync(string url, string fileName, StorageFolder folder, BackgroundDownloader downloader, CancellationTokenSource tokenSource)
+        public string TaskRestoreModelJson => JsonConvert.SerializeObject(Task.CreateRestoreModel());
+        public async static Task<IBiliDownloadPart> CreateAsync(string url, string ua, string referer, string fileName, StorageFolder folder)
         {
             if (!Uri.TryCreate(url, UriKind.RelativeOrAbsolute, out Uri uri)) throw new ArgumentException();
             var cacheFile = await folder.CreateFileAsync(fileName);
             var part = new BiliDashDownloadPart()
             {
-                Operation = downloader.CreateDownload(uri, cacheFile),
-                Url = url,
-                CacheFile = cacheFile,
-                TokenSource = tokenSource
+                Task = DownloadTask.CreateNew(url, cacheFile.Path, referer, ua),
+                CacheFile = cacheFile
             };
-            part.OperationGuid = part.Operation.Guid;//添加Guid，当重启程序后，使用这个东西来reattach下载
             return part;
         }
 
         public void PauseOrResume()
         {
-            if (IsRecreated) { Operation?.Resume(); IsRecreated = false; return; }
-            if (Operation?.Progress.Status == BackgroundTransferStatus.PausedByApplication) Operation?.Resume();
-            if (Operation?.Progress.Status == BackgroundTransferStatus.Running) Operation?.Pause();
+            if (Task.IsRunning)
+                Task.Pause();
+            else
+                Task.Resume();
         }
 
         public async Task StartAsync()
         {
-            if (IsRecreated)//如果是重建的下载任务，就attach
-            {
-                IsStarted = true;
-                if (Operation == null) return;
-                var task = Operation.AttachAsync().AsTask(TokenSource.Token);
-                await task;
-            }
-            else
-            {
-                IsStarted = true;
-                var task = Operation.StartAsync().AsTask(TokenSource.Token);
-                await task;
-            }
-            IsComplete = true;
+            await Task.StartAsync();
+            await Task.WaitForCompleteAsync();
         }
     }
 }

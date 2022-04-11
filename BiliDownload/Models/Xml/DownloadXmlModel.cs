@@ -16,10 +16,12 @@ namespace BiliDownload.Models.Xml
         public string DownloadName { get; set; }
         [XmlElement("Title")]
         public string Title { get; set; }
-        [XmlElement("VideoUrl")]
-        public string VideoUrl { get; set; }
-        [XmlElement("AudioUrl")]
-        public string AudioUrl { get; set; }
+        [XmlElement("Bv")]
+        public string Bv { get; set; }
+        [XmlElement("Cid")]
+        public long Cid { get; set; }
+        [XmlElement("Quality")]
+        public int Quality { get; set; }
         [XmlElement("CacheFolderPath")]
         public string CacheFolderPath { get; set; }
         [XmlArray("Parts"), XmlArrayItem("Part")]
@@ -29,10 +31,8 @@ namespace BiliDownload.Models.Xml
     public class DownloadPartXmlModel
     {
         [XmlElement("OperationGuid")]
-        public Guid OperationGuid { get; set; }
-        [XmlElement("Url")]
-        public string Url { get; set; }
-        [XmlElement("CacheFilePath")]
-        public string CacheFilePath { get; set; }
+        public Guid TaskGuid { get; set; }
+        [XmlElement("RestoreModelJson")]
+        public string RestoreModelJson { get; set; }
     }
 }

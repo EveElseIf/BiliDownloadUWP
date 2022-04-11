@@ -4,6 +4,11 @@ using BiliDownload.Helper;
 using BiliDownload.Helpers;
 using BiliDownload.Models;
 using BiliDownload.Others;
+using Microsoft.UI;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Imaging;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -12,11 +17,6 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Windows.Storage;
-using Windows.UI;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Media.Imaging;
 
 // https://go.microsoft.com/fwlink/?LinkId=234238 上介绍了“内容对话框”项模板
 
@@ -26,13 +26,14 @@ namespace BiliDownload.SearchDialogs
     {
         MasteredVideoDialogViewModel vm;
         bool needToClose = false;
-        private MasteredVideoDialog(MasteredVideoDialogViewModel vm)
+        private MasteredVideoDialog(MasteredVideoDialogViewModel vm, XamlRoot xamlRoot)
         {
             this.vm = vm;
             this.DataContext = vm;
             this.InitializeComboBoxData(vm);
             this.InitializeComponent();
             this.Closing += MasteredVideoDialog_Closing;
+            XamlRoot = xamlRoot;
         }
 
         private void MasteredVideoDialog_Closing(ContentDialog sender, ContentDialogClosingEventArgs args)
@@ -55,7 +56,7 @@ namespace BiliDownload.SearchDialogs
             };
             vm.ComboBoxDataList = list;
         }
-        public static async Task<MasteredVideoDialog> CreateAsync(BiliVideoMaster master)
+        public static async Task<MasteredVideoDialog> CreateAsync(BiliVideoMaster master, XamlRoot xamlRoot)
         {
             var model = new MasteredVideoDialogViewModel();
 
@@ -87,7 +88,7 @@ namespace BiliDownload.SearchDialogs
             }).ToList();
             model.VideoList = new ObservableCollection<VideoInfo>(list);
 
-            var dialog = new MasteredVideoDialog(model);
+            var dialog = new MasteredVideoDialog(model, xamlRoot);
             return dialog;
         }
         private async void ContentDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
@@ -122,11 +123,11 @@ namespace BiliDownload.SearchDialogs
 
             try
             {
-                await DownloadHelper.CreateDownloadsAsync(list, quality, sESSDATA);
+                await DownloadHelper.CreateDownloadsAsync(list, quality, sESSDATA, XamlRoot);
             }
             catch (ParsingVideoException ex)
             {
-                var dialog = new ErrorDialog(ex.Message);
+                var dialog = new ErrorDialog(ex.Message, XamlRoot);
                 var result = await dialog.ShowAsync();
 
                 if (result == ContentDialogResult.Primary)
@@ -167,13 +168,13 @@ namespace BiliDownload.SearchDialogs
             try
             {
                 var info = await BiliVideoHelper.GetSingleVideoInfoAsync(model.Info.Bv, model.Info.Cid, 64, sESSDATA);
-                var dialog = await SingleVideoDialog.CreateAsync(info);
+                var dialog = await SingleVideoDialog.CreateAsync(info, XamlRoot);
                 var result = await dialog.ShowAsync();
                 if (result == ContentDialogResult.Secondary) { this.needToClose = false; await this.ShowAsync(); }
             }
             catch (ParsingVideoException ex)
             {
-                var dialog = new ErrorDialog(ex.Message);
+                var dialog = new ErrorDialog(ex.Message, XamlRoot);
                 var result = await dialog.ShowAsync();
 
                 if (result == ContentDialogResult.Primary)
@@ -229,7 +230,7 @@ namespace BiliDownload.SearchDialogs
             {
                 this.needToClose = true;
                 this.Hide();
-                var dialog = new ErrorDialog("未设置下载储存文件夹，请前往设置以更改")
+                var dialog = new ErrorDialog("未设置下载储存文件夹，请前往设置以更改", XamlRoot)
                 {
                     PrimaryButtonText = "前往设置"
                 };
@@ -270,7 +271,7 @@ namespace BiliDownload.SearchDialogs
             {
                 this.needToClose = true;
                 this.Hide();
-                var dialog = new ExceptionDialog(ex.Message);
+                var dialog = new ExceptionDialog(ex.Message, XamlRoot);
                 _ = await dialog.ShowAsync();
             }
             catch (Exception ex)

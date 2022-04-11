@@ -20,10 +20,10 @@
             <HyperlinkButton Grid.Row="1" x:Name="loginBtn" Click="loginBtn_Click" Margin="20,5,0,5">
                 <TextBlock Text="使用二维码登录" FontFamily="Microsoft Yahei UI" FontSize="20"/>
             </HyperlinkButton>
-            <HyperlinkButton Grid.Row="2" x:Name="pwdLoginBtn" Click="pwdLoginBtn_Click" Margin="20,5,0,5">
+            <HyperlinkButton Grid.Row="2" x:Name="pwdLoginBtn" Click="pwdLoginBtn_Click" Margin="20,5,0,5" Visibility="Collapsed">
                 <TextBlock Text="使用账号密码登录" FontFamily="Microsoft Yahei UI" FontSize="20"/>
             </HyperlinkButton>
-            <HyperlinkButton Grid.Row="3" x:Name="sESSDATALoginBtn" Click="sESSDATALoginBtn_Click" Margin="20,5,0,5">
+            <HyperlinkButton Grid.Row="2" x:Name="sESSDATALoginBtn" Click="sESSDATALoginBtn_Click" Margin="20,5,0,5">
                 <TextBlock Text="使用Session Data登录" FontFamily="Microsoft Yahei UI" FontSize="20"/>
             </HyperlinkButton>
         </Grid>

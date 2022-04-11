@@ -27,7 +27,7 @@
             <Button Grid.Column="1" Content="🔍" x:Name="searchBtn" 
                     Click="searchBtn_Click" Height="40"/>
             <ProgressRing Grid.Column="2" Height="40" Width="40" 
-                          x:Name="searchProgressRing"/>
+                          x:Name="searchProgressRing" Visibility="Collapsed"/>
         </Grid>
     </Grid>
 </Page>

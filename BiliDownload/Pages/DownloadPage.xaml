@@ -54,7 +54,7 @@
                                            FontSize="15"
                                            FontWeight="Light"
                                            VerticalAlignment="Center" Margin="0,0,10,0"/>
-                                            <Button x:Name="pauseOrResumeBtn" Click="pauseOrResumeBtn_Click" Content="&#xE103;" FontFamily="Segoe MDL2 Assets" Margin="0,0,10,0"/>
+                                            <Button x:Name="pauseOrResumeBtn" Click="pauseOrResumeBtn_Click" Loaded="pauseOrResumeBtn_Loaded" Content="&#xE103;" FontFamily="Segoe MDL2 Assets" Margin="0,0,10,0"/>
                                             <Button Click="cancelBtn_Click" Content="&#xE10A;" FontFamily="Segoe MDL2 Assets"/>
                                         </StackPanel>
                                     </Grid>

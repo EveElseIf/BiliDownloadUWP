@@ -16,20 +16,12 @@ namespace BiliDownload.Helper
         static string XmlPath = ApplicationData.Current.LocalFolder.Path + "\\CurrentDownloadList.xml";
         public static string ReadXml()
         {
-            var file = File.Open(XmlPath, FileMode.Open);
-            var content = new StreamReader(file).ReadToEnd();
-            file.Close();
-            file.Dispose();
-            return content;
+            return File.ReadAllText(XmlPath);
         }
         public static void WriteXml(string content)
         {
             DeleteCurrentDownloads();
-            var file = File.Create(XmlPath);
-            var bytes = Encoding.UTF8.GetBytes(content);
-            file.Write(bytes, 0, bytes.Count());
-            file.Close();
-            file.Dispose();
+            File.WriteAllText(XmlPath, content);
         }
         public static bool CheckXml()//xml不存在就创建，当xml内容为空时，直接返回false
         {
@@ -54,12 +46,6 @@ namespace BiliDownload.Helper
         }
         private static T XmlToModel<T>(string xml)
         {
-            //xml = Regex.Replace(xml, @"<\?xml*.*?>", "", RegexOptions.IgnoreCase);
-            //XmlSerializer xmlSer = new XmlSerializer(typeof(T));
-            //using (StringReader xmlReader = new StringReader(xml))
-            //{
-            //    return (T)xmlSer.Deserialize(xmlReader);
-            //}
             var serializer = new XmlSerializer(typeof(T));
             return (T)serializer.Deserialize(new StringReader(xml));
         }
@@ -94,22 +80,21 @@ namespace BiliDownload.Helper
             {
                 DownloadName = viewModel.DownloadName,
                 Title = viewModel.Title,
-                VideoUrl = viewModel.VideoUrl,
-                AudioUrl = viewModel.AudioUrl,
+                Bv = viewModel.Bv,
+                Cid = viewModel.Cid,
+                Quality = viewModel.Quality,
                 CacheFolderPath = viewModel.CacheFolder.Path,
                 PartList = new DownloadPartXmlModel[]
                 {
                     new DownloadPartXmlModel()
                     {
-                        OperationGuid = viewModel.PartList[0].OperationGuid,
-                        Url = viewModel.PartList[0].Url,
-                        CacheFilePath = viewModel.PartList[0].CacheFile.Path
+                        TaskGuid = viewModel.PartList[0].TaskGuid,
+                        RestoreModelJson = viewModel.PartList[0].TaskRestoreModelJson
                     },
                     new DownloadPartXmlModel()
                     {
-                        OperationGuid = viewModel.PartList[1].OperationGuid,
-                        Url = viewModel.PartList[1].Url,
-                        CacheFilePath = viewModel.PartList[1].CacheFile.Path
+                        TaskGuid = viewModel.PartList[1].TaskGuid,
+                        RestoreModelJson = viewModel.PartList[1].TaskRestoreModelJson
                     }
                 }
             };//建立xml模型，用于储存
@@ -120,18 +105,17 @@ namespace BiliDownload.Helper
             var downloadXElement = new XElement("Download",
                 new XElement("Name", model.DownloadName),
                 new XElement("Title", model.Title),
-                new XElement("VideoUrl", model.VideoUrl),
-                new XElement("AudioUrl", model.AudioUrl),
+                new XElement("Bv", model.Bv),
+                new XElement("Cid", model.Cid),
+                new XElement("Quality", model.Quality),
                 new XElement("CacheFolderPath", model.CacheFolderPath),
                 new XElement("Parts",
                 new XElement("Part",
-                new XElement("OperationGuid", model.PartList[0].OperationGuid.ToString()),
-                new XElement("Url", model.PartList[0].Url),
-                new XElement("CacheFilePath", model.PartList[0].CacheFilePath)),
-                 new XElement("Part",
-                new XElement("OperationGuid", model.PartList[1].OperationGuid.ToString()),
-                new XElement("Url", model.PartList[1].Url),
-                new XElement("CacheFilePath", model.PartList[1].CacheFilePath))));
+                new XElement("TaskGuid", model.PartList[0].TaskGuid.ToString()),
+                new XElement("RestoreModelJson", model.PartList[0].RestoreModelJson)),
+                new XElement("Part",
+                new XElement("TaskGuid", model.PartList[1].TaskGuid.ToString()),
+                new XElement("RestoreModelJson", model.PartList[1].RestoreModelJson))));
             return downloadXElement;
         }
         public static string ToStringWithDeclaration(this XDocument doc)//拓展方法，让XDocument转换为字符串时带有编码头

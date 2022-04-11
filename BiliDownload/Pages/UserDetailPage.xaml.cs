@@ -2,19 +2,18 @@
 using BiliDownload.Helper;
 using BiliDownload.Models;
 using BiliDownload.SearchDialogs;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Imaging;
+using Microsoft.UI.Xaml.Navigation;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Windows.Storage;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Media.Imaging;
-using Windows.UI.Xaml.Navigation;
 
 // https://go.microsoft.com/fwlink/?LinkId=234238 上介绍了“空白页”项模板
 
@@ -107,7 +106,7 @@ namespace BiliDownload.Pages
             if ((e.ClickedItem as FavVideoViewModel).Bv == "加载更多")
             {
                 var viewModel = this.favListView.SelectedItem as FavViewModel;
-                await viewModel.GetMoreVideoAsync();
+                await viewModel.GetMoreVideoAsync(XamlRoot);
             }
             else if (!Regex.IsMatch((e.ClickedItem as FavVideoViewModel).Bv, "[B|b][V|v][0-9]*")) return;
             else
@@ -116,7 +115,7 @@ namespace BiliDownload.Pages
                 {
                     var infoVideo = e.ClickedItem as FavVideoViewModel;
                     var video = await BiliVideoHelper.GetVideoMasterInfoAsync(infoVideo.Bv, SESSDATA);
-                    var dialog = await MasteredVideoDialog.CreateAsync(video);//创建下载对话框
+                    var dialog = await MasteredVideoDialog.CreateAsync(video, XamlRoot);//创建下载对话框
                     var result = await dialog.ShowAsync();
                     if (result == ContentDialogResult.Secondary) return;
                 }
@@ -155,7 +154,7 @@ namespace BiliDownload.Pages
 
             if (fav == null)
             {
-                var dialog = new ErrorDialog("已经没有更多了")
+                var dialog = new ErrorDialog("已经没有更多了", XamlRoot)
                 {
                     PrimaryButtonText = ""
                 };
@@ -189,7 +188,7 @@ namespace BiliDownload.Pages
                 var count = list.Count - 1;
                 if ((count < 15) || (count % 15 != 0))
                 {
-                    var dialog = new ErrorDialog("已经没有更多了")
+                    var dialog = new ErrorDialog("已经没有更多了", XamlRoot)
                     {
                         PrimaryButtonText = ""
                     };
@@ -201,7 +200,7 @@ namespace BiliDownload.Pages
 
                 if (newList == null)
                 {
-                    var dialog = new ErrorDialog("已经没有更多了")
+                    var dialog = new ErrorDialog("已经没有更多了", XamlRoot)
                     {
                         PrimaryButtonText = ""
                     };
@@ -249,7 +248,7 @@ namespace BiliDownload.Pages
             else
             {
                 var bangumi = await BiliVideoHelper.GetBangumiInfoAsync(bangumiInfo.SessonId, 1, SESSDATA);
-                var dialog = await BangumiDialog.CreateAsync(bangumi);
+                var dialog = await BangumiDialog.CreateAsync(bangumi, XamlRoot);
                 var result = await dialog.ShowAsync();
                 if (result == ContentDialogResult.Secondary) return;
             }
@@ -340,12 +339,12 @@ namespace BiliDownload.Pages
 
             return model;
         }
-        public async Task GetMoreVideoAsync()
+        public async Task GetMoreVideoAsync(XamlRoot xamlRoot)
         {
             var count = this.VideoList.Count - 1;
             if ((count < 20) || (count % 20 != 0))
             {
-                var dialog = new ErrorDialog("已经没有更多了")
+                var dialog = new ErrorDialog("已经没有更多了", xamlRoot)
                 {
                     PrimaryButtonText = ""
                 };
@@ -357,7 +356,7 @@ namespace BiliDownload.Pages
 
             if (fav == null)
             {
-                var dialog = new ErrorDialog("已经没有更多了")
+                var dialog = new ErrorDialog("已经没有更多了", xamlRoot)
                 {
                     PrimaryButtonText = ""
                 };

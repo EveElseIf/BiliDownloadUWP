@@ -3,6 +3,11 @@ using BiliDownload.Exceptions;
 using BiliDownload.Helper;
 using BiliDownload.Models;
 using BiliDownload.Models.Json;
+using Microsoft.UI;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Imaging;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -10,11 +15,6 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Windows.Storage;
-using Windows.UI;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Media.Imaging;
 
 // https://go.microsoft.com/fwlink/?LinkId=234238 上介绍了“内容对话框”项模板
 
@@ -24,7 +24,7 @@ namespace BiliDownload.SearchDialogs
     {
         BangumiDialogViewModel vm;
         bool needToClose = false;
-        private BangumiDialog(BangumiDialogViewModel vm)
+        private BangumiDialog(BangumiDialogViewModel vm, XamlRoot xamlRoot)
         {
             this.vm = vm;
             this.DataContext = vm;
@@ -34,6 +34,7 @@ namespace BiliDownload.SearchDialogs
             {
                 if (!needToClose) e.Cancel = true;
             };
+            XamlRoot = xamlRoot;
         }
         private void InitializeComboBoxData(BangumiDialogViewModel vm)
         {
@@ -50,7 +51,7 @@ namespace BiliDownload.SearchDialogs
             };
             vm.ComboBoxDataList = list;
         }
-        public static async Task<BangumiDialog> CreateAsync(BiliBangumi bangumi)
+        public static async Task<BangumiDialog> CreateAsync(BiliBangumi bangumi, XamlRoot xamlRoot)
         {
             var model = new BangumiDialogViewModel();
             model.VideoTitle = bangumi.Title;
@@ -87,7 +88,7 @@ namespace BiliDownload.SearchDialogs
             }
             model.VideoList = new ObservableCollection<VideoInfo>(list);
 
-            return new BangumiDialog(model);
+            return new BangumiDialog(model, xamlRoot);
         }
         private async void ContentDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
         {
@@ -120,16 +121,16 @@ namespace BiliDownload.SearchDialogs
 
             try
             {
-                await DownloadHelper.CreateDownloadsAsync(list, quality, sESSDATA);
+                await DownloadHelper.CreateDownloadsAsync(list, quality, sESSDATA, XamlRoot);
             }
             catch (DirectoryNotFoundException ex)
             {
-                var dialog = new ExceptionDialog(ex.Message);
+                var dialog = new ExceptionDialog(ex.Message, XamlRoot);
                 _ = await dialog.ShowAsync();
             }
             catch (ParsingVideoException ex)
             {
-                var dialog = new ErrorDialog(ex.Message);
+                var dialog = new ErrorDialog(ex.Message, XamlRoot);
                 var result = await dialog.ShowAsync();
 
                 if (result == ContentDialogResult.Primary)
@@ -155,18 +156,18 @@ namespace BiliDownload.SearchDialogs
             try
             {
                 var info = await BiliVideoHelper.GetSingleVideoInfoAsync(model.Info.Bv, model.Info.Cid, 64, sESSDATA);
-                var dialog = await SingleVideoDialog.CreateAsync(info);
+                var dialog = await SingleVideoDialog.CreateAsync(info, XamlRoot);
                 var result = await dialog.ShowAsync();
                 if (result == ContentDialogResult.Secondary) { this.needToClose = false; await this.ShowAsync(); }
             }
             catch (DirectoryNotFoundException ex)
             {
-                var dialog = new ExceptionDialog(ex.Message);
+                var dialog = new ExceptionDialog(ex.Message, XamlRoot);
                 await dialog.ShowAsync();
             }
             catch (ParsingVideoException ex)
             {
-                var dialog = new ErrorDialog(ex.Message);
+                var dialog = new ErrorDialog(ex.Message, XamlRoot);
                 var result = await dialog.ShowAsync();
 
                 if (result == ContentDialogResult.Primary)
@@ -177,7 +178,7 @@ namespace BiliDownload.SearchDialogs
             }
             catch (System.Exception ex)
             {
-                var dialog = new ErrorDialog(ex.Message);
+                var dialog = new ErrorDialog(ex.Message, XamlRoot);
                 dialog.PrimaryButtonText = "";
                 await dialog.ShowAsync();
             }

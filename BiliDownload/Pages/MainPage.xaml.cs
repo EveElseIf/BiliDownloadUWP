@@ -1,12 +1,12 @@
-﻿using System;
+﻿using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Navigation;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Windows.Storage;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
 
 // https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x804 上介绍了“空白页”项模板
 
@@ -52,33 +52,36 @@ namespace BiliDownload
         {
             base.OnNavigatedTo(e);
 
-            if (ApplicationData.Current.LocalSettings.Values["Initialized"] == null)
-                ApplicationData.Current.LocalSettings.Values["Initialized"] = false;
-            if (Initialized == false)
+            this.Loaded += async (s, e) =>
             {
-                var dialog = new ContentDialog()
+                if (ApplicationData.Current.LocalSettings.Values["Initialized"] == null)
+                    ApplicationData.Current.LocalSettings.Values["Initialized"] = false;
+                if (Initialized == false)
                 {
-                    Title = "初次使用，请阅读说明",
-                    Content = new TextBlock()
+                    var dialog = new ContentDialog()
                     {
-                        Text = "欢迎使用，此程序处于早期测试版本，您可能会遇到各种各样的BUG。由于您是初次启动本程序，请完成设置。",
-                        FontFamily = new FontFamily("Microsoft Yahei UI"),
-                        FontSize = 20,
-                        TextWrapping = TextWrapping.Wrap,
-                        Margin = new Thickness(10)
-                    },
-                    PrimaryButtonText = "前往设置",
-                    SecondaryButtonText = "关闭"
-                };
-                var result = await dialog.ShowAsync();
-                if (result == ContentDialogResult.Primary)
-                {
-                    this.contentFrame.Navigate(typeof(SettingPage));
-                    this.navView.SelectedItem = navView.SettingsItem;
+                        Title = "初次使用，请阅读说明",
+                        Content = new TextBlock()
+                        {
+                            Text = "欢迎使用，此程序处于早期测试版本，您可能会遇到各种各样的BUG。由于您是初次启动本程序，请完成设置。",
+                            FontFamily = new FontFamily("Microsoft Yahei UI"),
+                            FontSize = 20,
+                            TextWrapping = TextWrapping.Wrap,
+                            Margin = new Thickness(10)
+                        },
+                        PrimaryButtonText = "前往设置",
+                        SecondaryButtonText = "关闭",
+                        XamlRoot = XamlRoot
+                    };
+                    var result = await dialog.ShowAsync();
+                    if (result == ContentDialogResult.Primary)
+                    {
+                        this.contentFrame.Navigate(typeof(SettingPage));
+                        this.navView.SelectedItem = navView.SettingsItem;
+                    }
+                    ApplicationData.Current.LocalSettings.Values["Initialized"] = true;
                 }
-                ApplicationData.Current.LocalSettings.Values["Initialized"] = true;
-            }
-
+            };
             this.navView.IsPaneOpen = true;
             await Task.Delay(1500);
             this.navView.IsPaneOpen = false;

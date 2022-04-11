@@ -5,20 +5,17 @@ using BiliDownload.Helpers;
 using BiliDownload.Models;
 using BiliDownload.Others;
 using BiliDownload.SearchDialogs;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Navigation;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Windows.Foundation;
 using Windows.Storage;
-using Windows.UI.WindowManagement;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Hosting;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
 
 // https://go.microsoft.com/fwlink/?LinkId=234238 上介绍了“空白页”项模板
 
@@ -30,7 +27,7 @@ namespace BiliDownload
     public sealed partial class SearchPage : Page
     {
         public static SearchPage Current { private set; get; }
-        private Dictionary<BiliMangaMaster, AppWindow> mangaWindowDic = new Dictionary<BiliMangaMaster, AppWindow>();
+        private Dictionary<BiliMangaMaster, Window> mangaWindowDic = new Dictionary<BiliMangaMaster, Window>();
         public SearchPage()
         {
             this.InitializeComponent();
@@ -41,27 +38,31 @@ namespace BiliDownload
                 if (e.Key == Windows.System.VirtualKey.Enter) this.searchBtn_Click(this, new RoutedEventArgs());
             };
         }
-        protected async override void OnNavigatedTo(NavigationEventArgs e)//首次打开给小提示
+        protected override void OnNavigatedTo(NavigationEventArgs e)//首次打开给小提示
         {
             base.OnNavigatedTo(e);
-            if (ApplicationData.Current.LocalSettings.Values["searchPageFirstOpen"] == null)
-            {
-                var dialog = new ContentDialog()
-                {
-                    Title = "提示",
-                    Content = new TextBlock()
-                    {
-                        FontFamily = new FontFamily("Microsoft Yahei UI"),
-                        FontSize = 20,
-                        TextWrapping = TextWrapping.Wrap,
-                        Margin = new Thickness(10),
-                        Text = "搜索视频时，可以看到所有支持的清晰度，但是您的权限不足时，程序会自动为您选择可用的较高清晰度"
-                    },
-                    PrimaryButtonText = "明白了"
-                };
-                await dialog.ShowAsync();
-                ApplicationData.Current.LocalSettings.Values["searchPageFirstOpen"] = true;
-            }
+            this.Loaded += async (s, e) =>
+              {
+                  if (ApplicationData.Current.LocalSettings.Values["searchPageFirstOpen"] == null)
+                  {
+                      var dialog = new ContentDialog()
+                      {
+                          Title = "提示",
+                          Content = new TextBlock()
+                          {
+                              FontFamily = new FontFamily("Microsoft Yahei UI"),
+                              FontSize = 20,
+                              TextWrapping = TextWrapping.Wrap,
+                              Margin = new Thickness(10),
+                              Text = "搜索视频时，可以看到所有支持的清晰度，但是您的权限不足时，程序会自动为您选择可用的较高清晰度"
+                          },
+                          PrimaryButtonText = "明白了",
+                          XamlRoot = XamlRoot
+                      };
+                      await dialog.ShowAsync();
+                      ApplicationData.Current.LocalSettings.Values["searchPageFirstOpen"] = true;
+                  }
+              };
         }
 
         public async void searchBtn_Click(object sender, RoutedEventArgs e)
@@ -82,14 +83,14 @@ namespace BiliDownload
             catch (NullReferenceException)
             {
                 Reset();
-                var dialog = new ExceptionDialog("未找到视频");
+                var dialog = new ExceptionDialog("未找到视频", XamlRoot);
                 await dialog.ShowAsync();
                 return;
             }
             catch (Exception ex)
             {
                 Reset();
-                var dialog = new ExceptionDialog(ex.Message);
+                var dialog = new ExceptionDialog(ex.Message, XamlRoot);
                 await dialog.ShowAsync();
                 return;
             }
@@ -97,7 +98,7 @@ namespace BiliDownload
             if (info.Item3 == UrlType.BangumiEP)//下载ep番剧
             {
                 var bangumi = await BiliVideoHelper.GetBangumiInfoAsync(info.Item4, 0, sESSDATA);
-                var dialog = await BangumiDialog.CreateAsync(bangumi);
+                var dialog = await BangumiDialog.CreateAsync(bangumi, XamlRoot);
                 Reset();
                 var result = await dialog.ShowAsync();
                 if (result == ContentDialogResult.Secondary) return;
@@ -105,7 +106,7 @@ namespace BiliDownload
             else if (info.Item3 == UrlType.BangumiSS)//下载ss番剧
             {
                 var bangumi = await BiliVideoHelper.GetBangumiInfoAsync(info.Item4, 1, sESSDATA);
-                var dialog = await BangumiDialog.CreateAsync(bangumi);
+                var dialog = await BangumiDialog.CreateAsync(bangumi, XamlRoot);
                 Reset();
                 var result = await dialog.ShowAsync();
                 if (result == ContentDialogResult.Secondary) return;
@@ -121,7 +122,7 @@ namespace BiliDownload
             else if (info.Item3 == UrlType.MasteredVideo) //下载普通视频集合
             {
                 var master = await BiliVideoHelper.GetVideoMasterInfoAsync(info.Item1, sESSDATA);
-                var dialog = await MasteredVideoDialog.CreateAsync(master);
+                var dialog = await MasteredVideoDialog.CreateAsync(master, XamlRoot);
                 Reset();
                 var result = await dialog.ShowAsync();
                 if (result == ContentDialogResult.Secondary) return;
@@ -131,7 +132,7 @@ namespace BiliDownload
                 if (Settings.DownloadPath == null)//检查下载目录是否为空
                 {
                     Reset();
-                    var dialog = new ErrorDialog("未设置下载储存文件夹，请前往设置以更改")
+                    var dialog = new ErrorDialog("未设置下载储存文件夹，请前往设置以更改", XamlRoot)
                     {
                         PrimaryButtonText = "前往设置"
                     };
@@ -151,19 +152,22 @@ namespace BiliDownload
                 catch (FileNotFoundException)
                 {
                     Reset();
-                    var dialog = new ExceptionDialog("找不到指定下载目录:" + Settings.DownloadPath);
+                    var dialog = new ExceptionDialog("找不到指定下载目录:" + Settings.DownloadPath, XamlRoot);
                     await dialog.ShowAsync();
                     return;
                 }
                 var master = await BiliMangaHelper.GetBiliMangaMasterAsync(info.Item4, sESSDATA);
                 Reset();
-                AppWindow mangaWindow = await AppWindow.TryCreateAsync();
-                mangaWindow.RequestSize(new Size(1024, 768));
-                Frame mangaFrame = new Frame();
+
+                var mangaFrame = new Frame();
+                var mangaWindow = new Window
+                {
+                    ExtendsContentIntoTitleBar = true,
+                    Content = mangaFrame
+                };
+                mangaWindowDic.Add(master, mangaWindow);
                 mangaFrame.Navigate(typeof(MangaDownloadPage), master);
-                ElementCompositionPreview.SetAppWindowContent(mangaWindow, mangaFrame);
-                this.mangaWindowDic.Add(master, mangaWindow);
-                await mangaWindow.TryShowAsync();
+                mangaWindow.Activate();
             }
             else
             {
@@ -175,9 +179,9 @@ namespace BiliDownload
                 await dialog.ShowAsync();
             }
         }
-        public async Task CloseMangaWindow(BiliMangaMaster master)
+        public void CloseMangaWindow(BiliMangaMaster master)
         {
-            await this.mangaWindowDic[master].CloseAsync();
+            this.mangaWindowDic[master].Close();
         }
         public void Reset()
         {

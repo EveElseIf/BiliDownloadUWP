@@ -16,7 +16,7 @@
             <RowDefinition Height="2*"/>
         </Grid.RowDefinitions>
         <ProgressRing Grid.RowSpan="999" Visibility="Collapsed" Height="100" Width="100" x:Name="progressRing" IsActive="True"/>
-        <WebView Grid.Row="1" x:Name="loginWebView" Visibility="Collapsed" Canvas.ZIndex="999"></WebView>
+        <WebView2 Grid.Row="1" x:Name="loginWebView" Visibility="Collapsed" Canvas.ZIndex="999"></WebView2>
         <Grid x:Name="loginGrid" Canvas.ZIndex="999">
             <Grid.RowDefinitions>
                 <RowDefinition/>

@@ -1,13 +1,10 @@
-﻿using BiliDownload.HelperPage;
-using BiliDownload.LoginDialogs;
+﻿using BiliDownload.LoginDialogs;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using System;
 using System.Threading.Tasks;
-using Windows.Foundation;
 using Windows.Storage;
 using Windows.UI.WindowManagement;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Hosting;
 
 // https://go.microsoft.com/fwlink/?LinkId=234238 上介绍了“空白页”项模板
 
@@ -36,7 +33,7 @@ namespace BiliDownload.Pages
         #region 下面都是登录用的
         private async void loginBtn_Click(object sender, RoutedEventArgs e)//二维码登录
         {
-            var dialog = new QRcodeLoginDialog();
+            var dialog = new QRcodeLoginDialog(XamlRoot);
             var result = await dialog.ShowAsync();
             if (result == ContentDialogResult.Primary)
             {
@@ -46,6 +43,7 @@ namespace BiliDownload.Pages
         #region 下面是密码登录用的
         private async void pwdLoginBtn_Click(object sender, RoutedEventArgs e)
         {
+            /*
             AppWindow loginWindow = await AppWindow.TryCreateAsync();
             this.LoginWindow = loginWindow;
             loginWindow.RequestSize(new Size(600, 800));
@@ -53,6 +51,7 @@ namespace BiliDownload.Pages
             loginFrame.Navigate(typeof(PwdLoginPage));
             ElementCompositionPreview.SetAppWindowContent(loginWindow, loginFrame);
             await loginWindow.TryShowAsync();
+            */
         }
         public async Task PwdLoginOk()
         {
@@ -75,7 +74,7 @@ namespace BiliDownload.Pages
 
         private async void sESSDATALoginBtn_Click(object sender, RoutedEventArgs e)
         {
-            var dialog = new SESSDATALoginDialog();
+            var dialog = new SESSDATALoginDialog(XamlRoot);
             var result = await dialog.ShowAsync();
             if (result == ContentDialogResult.Primary) this.LoginOk();
         }

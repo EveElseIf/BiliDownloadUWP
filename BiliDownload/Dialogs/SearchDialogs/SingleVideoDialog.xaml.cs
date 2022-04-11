@@ -2,15 +2,15 @@
 using BiliDownload.Exceptions;
 using BiliDownload.Helper;
 using BiliDownload.Models;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Imaging;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using Windows.Storage;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Media.Imaging;
 
 // https://go.microsoft.com/fwlink/?LinkId=234238 上介绍了“内容对话框”项模板
 
@@ -28,12 +28,13 @@ namespace BiliDownload.SearchDialogs
 
         SingleVideoDialogViewModel vm;
         bool needToClose = false;
-        private SingleVideoDialog(SingleVideoDialogViewModel vm)
+        private SingleVideoDialog(SingleVideoDialogViewModel vm, XamlRoot xamlRoot)
         {
             this.vm = vm;
             this.DataContext = vm;
             this.InitializeComponent();
             this.Closing += SingleVideoDialog_Closing;
+            XamlRoot = xamlRoot;
         }
 
         private void SingleVideoDialog_Closing(ContentDialog sender, ContentDialogClosingEventArgs args)
@@ -41,10 +42,10 @@ namespace BiliDownload.SearchDialogs
             if (!needToClose) args.Cancel = true;
         }
 
-        public static async Task<SingleVideoDialog> CreateAsync(BiliVideoInfo videoInfo)
+        public static async Task<SingleVideoDialog> CreateAsync(BiliVideoInfo videoInfo, XamlRoot xamlRoot)
         {
             var vm = await InitializeVideoModel(videoInfo);
-            var model = new SingleVideoDialog(vm);
+            var model = new SingleVideoDialog(vm, xamlRoot);
             return model;
         }
         private static async Task<SingleVideoDialogViewModel> InitializeVideoModel(BiliVideoInfo videoInfo)
@@ -100,11 +101,11 @@ namespace BiliDownload.SearchDialogs
             try
             {
                 await DownloadHelper.CreateDownloadAsync
-                    (vm.Bv, vm.Cid, this.QualitySelectionProperty, ApplicationData.Current.LocalSettings.Values["biliUserSESSDATA"] as string);
+                    (vm.Bv, vm.Cid, this.QualitySelectionProperty, ApplicationData.Current.LocalSettings.Values["biliUserSESSDATA"] as string, XamlRoot);
             }
             catch (ParsingVideoException ex)
             {
-                var dialog = new ErrorDialog(ex.Message);
+                var dialog = new ErrorDialog(ex.Message, XamlRoot);
                 var result = await dialog.ShowAsync();
 
                 if (result == ContentDialogResult.Primary)
@@ -115,7 +116,7 @@ namespace BiliDownload.SearchDialogs
             }
             catch (DirectoryNotFoundException ex)
             {
-                var dialog = new ExceptionDialog(ex.Message);
+                var dialog = new ExceptionDialog(ex.Message, XamlRoot);
                 _ = await dialog.ShowAsync();
             }
         }

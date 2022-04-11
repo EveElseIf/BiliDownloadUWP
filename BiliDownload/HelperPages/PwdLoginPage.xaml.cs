@@ -1,16 +1,12 @@
 ﻿using BiliDownload.Helper;
 using BiliDownload.Pages;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Navigation;
 using Newtonsoft.Json;
-using System;
 using System.Security.Cryptography;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Windows.Storage;
-using Windows.UI.Core;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Navigation;
 using XC.RSAUtil;
 
 // https://go.microsoft.com/fwlink/?LinkId=234238 上介绍了“空白页”项模板
@@ -41,6 +37,7 @@ namespace BiliDownload.HelperPage
             base.OnNavigatedTo(e);
         }
 
+        /*
         private async void LoginWebView_ScriptNotify(object sender, NotifyEventArgs e)//验证成功时触发
         {
             this.Validate = e.Value.Substring(0, e.Value.LastIndexOf('&'));
@@ -70,6 +67,7 @@ namespace BiliDownload.HelperPage
                      }
                  });
         }
+        */
 
         private async Task<(string, string, string)> GetCaptchaCodeAsync()
         {
@@ -79,6 +77,7 @@ namespace BiliDownload.HelperPage
 
         private async void loginBtn_Click(object sender, RoutedEventArgs e)
         {
+            /*
             if (string.IsNullOrWhiteSpace(userNameTextBox.Text)) return;
             if (string.IsNullOrWhiteSpace(pwdPasswordBox.Password)) return;
 
@@ -99,6 +98,7 @@ namespace BiliDownload.HelperPage
             this.progressRing.Visibility = Visibility.Visible;
             (sender as Button).IsEnabled = false;
             this.loginWebView.Navigate(new Uri($"https://eveelseif.gitee.io/geetest-validator?gt={gt}&challenge={challenge}"));
+            */
         }
 
         private async void cancelBtn_Click(object sender, RoutedEventArgs e)

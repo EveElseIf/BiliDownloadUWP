@@ -1,8 +1,8 @@
 ﻿using BiliDownload.Helper;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using System.Threading;
 using Windows.Storage;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
 
 // https://go.microsoft.com/fwlink/?LinkId=234238 上介绍了“内容对话框”项模板
 
@@ -11,10 +11,11 @@ namespace BiliDownload.LoginDialogs
     public sealed partial class QRcodeLoginDialog : ContentDialog
     {
         CancellationTokenSource token;
-        public QRcodeLoginDialog()
+        public QRcodeLoginDialog(XamlRoot xamlRoot)
         {
             this.InitializeComponent();
             token = new CancellationTokenSource();
+            XamlRoot = xamlRoot;
         }
 
         private void ContentDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)

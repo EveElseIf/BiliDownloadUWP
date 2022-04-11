@@ -1,8 +1,8 @@
 ﻿using BiliDownload.Helper;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using System.Threading.Tasks;
 using Windows.Storage;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
 
 // https://go.microsoft.com/fwlink/?LinkId=234238 上介绍了“内容对话框”项模板
 
@@ -13,7 +13,7 @@ namespace BiliDownload.LoginDialogs
         bool needToClose = false;
         string sESSDATA;
         long cid;
-        public SESSDATALoginDialog()
+        public SESSDATALoginDialog(XamlRoot xamlRoot)
         {
             this.InitializeComponent();
             this.IsPrimaryButtonEnabled = false;
@@ -21,6 +21,7 @@ namespace BiliDownload.LoginDialogs
             {
                 if (!needToClose) e.Cancel = true;
             };
+            XamlRoot = xamlRoot;
         }
 
         private void ContentDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)

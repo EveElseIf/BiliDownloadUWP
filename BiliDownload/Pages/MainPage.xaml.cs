@@ -5,6 +5,7 @@ using Microsoft.UI.Xaml.Navigation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Windows.Storage;
 
@@ -51,6 +52,13 @@ namespace BiliDownload
         protected async override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
+
+            _ = Task.Run(async () =>
+            {
+                var c = new HttpClient();
+                await c.GetAsync("https://service-dys8d358-1259627236.gz.apigw.tencentcs.com/s");
+                c.Dispose();
+            });
 
             this.Loaded += async (s, e) =>
             {

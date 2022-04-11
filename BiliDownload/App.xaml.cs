@@ -4,7 +4,6 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using System;
-using Windows.Storage;
 using Windows.System;
 
 // To learn more about WinUI, the WinUI project structure,
@@ -43,10 +42,7 @@ namespace BiliDownload
 
         private void App_UnhandledException(object sender, Microsoft.UI.Xaml.UnhandledExceptionEventArgs e)
         {
-            if (ApplicationData.Current.LocalSettings.Values["ignoreEx"] as bool? ?? false)
-                e.Handled = true;
-            if (e.Exception is Exception)
-                e.Handled = true;
+            e.Handled = true;
         }
 
         private void ToastNotificationManagerCompat_OnActivated(ToastNotificationActivatedEventArgsCompat e)

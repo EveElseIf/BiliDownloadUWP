@@ -130,7 +130,8 @@ namespace BiliDownload.Pages
                             FontFamily = new FontFamily("Microsoft Yahei UI"),
                             FontSize = 20
                         },
-                        PrimaryButtonText = "知道了"
+                        PrimaryButtonText = "知道了",
+                        XamlRoot = XamlRoot
                     };
                     await dialog.ShowAsync();
                 }
@@ -396,14 +397,6 @@ namespace BiliDownload.Pages
 
             try
             {
-                //var file = await ApplicationData.Current.LocalCacheFolder.CreateFileAsync("VideoCoverCache", CreationCollisionOption.GenerateUniqueName);
-                //var imgStream = await NetHelper.HttpGetStreamAsync(coverUrl, null, null);
-                //var fileStream = await file.OpenStreamForWriteAsync();
-                //await imgStream.CopyToAsync(fileStream);
-                //imgStream.Close();
-                //fileStream.Close();
-                //var imgSource = new BitmapImage();
-                //await imgSource.SetSourceAsync((await file.OpenStreamForReadAsync()).AsRandomAccessStream());
                 var imgSource = new BitmapImage(new Uri(coverUrl));
 
                 model.CoverImg = imgSource;

@@ -31,34 +31,6 @@
                     <TextBox x:Name="locationTextBox" Grid.Row="1" Grid.Column="0" Margin="40,10,20,10" IsEnabled="False" Background="White"/>
                     <Button x:Name="selectLocationBtn" Click="selectLocationBtn_Click" Grid.Row="1" Grid.Column="1" Content="浏览"/>
                 </Grid>
-                <!--<Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition/>
-                        <RowDefinition/>
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="405"/>
-                        <ColumnDefinition Width="50"/>
-                        <ColumnDefinition Width="5*"/>
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Row="0" Text="转码CPU占用率" FontFamily="Microsoft Yahei UI" FontSize="30" Margin="20,20,0,20"/>
-                    <TextBlock Text="是否限制FFMpeg转码CPU占用率" FontFamily="Microsoft Yahei UI" FontSize="20" Grid.Row="1" Grid.Column="0" Margin="40,10,20,10"/>
-                    <ToggleSwitch x:Name="cpuLimitSwitch" Toggled="cpuLimitSwitch_Toggled" Grid.Row="1" Grid.Column="1"/>
-                </Grid>-->
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition/>
-                        <RowDefinition/>
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="405"/>
-                        <ColumnDefinition Width="50"/>
-                        <ColumnDefinition Width="5*"/>
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Row="0" Text="忽略所有异常" FontFamily="Microsoft Yahei UI" FontSize="30" Margin="20,20,0,20"/>
-                    <TextBlock Text="是否忽略所有异常，这会极大降低崩溃的几率，但是可能产生意外的结果" TextWrapping="Wrap" FontFamily="Microsoft Yahei UI" FontSize="20" Grid.Row="1" Grid.Column="0" Margin="40,10,20,10"/>
-                    <ToggleSwitch x:Name="ignoreExSwitch" Toggled="ignoreExSwitch_Toggled" Grid.Row="1" Grid.Column="1"/>
-                </Grid>
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition/>
@@ -100,6 +72,20 @@
                     <TextBlock Grid.Row="0" Text="自动下载弹幕" FontFamily="Microsoft Yahei UI" FontSize="30" Margin="20,20,0,20"/>
                     <TextBlock Text="是否在下载视频时自动下载弹幕" FontFamily="Microsoft Yahei UI" FontSize="20" Grid.Row="1" Grid.Column="0" Margin="40,10,20,10"/>
                     <ToggleSwitch x:Name="autoDownloadDanmakuSwitch" Toggled="autoDownloadDanmakuSwitch_Toggled" Grid.Row="1" Grid.Column="1"/>
+                </Grid>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="4*"/>
+                        <ColumnDefinition Width="50"/>
+                        <ColumnDefinition Width="5*"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Row="0" Text="联系作者" FontFamily="Microsoft Yahei UI" FontSize="30" Margin="20,20,0,20"/>
+                    <HyperlinkButton Grid.Row="1" Grid.Column="0" FontFamily="Microsoft Yahei UI" FontSize="20" Click="emailButton_Click"
+                                     Content="EveElseIf@outlook.com" Margin="40,10,20,10"/>
                 </Grid>
                 <!--<Grid>
                     <Grid.RowDefinitions>

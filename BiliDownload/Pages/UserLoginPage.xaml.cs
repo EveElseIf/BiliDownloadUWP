@@ -1,10 +1,9 @@
-﻿using BiliDownload.LoginDialogs;
+﻿using BiliDownload.HelperPage;
+using BiliDownload.LoginDialogs;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using System;
-using System.Threading.Tasks;
 using Windows.Storage;
-using Windows.UI.WindowManagement;
 
 // https://go.microsoft.com/fwlink/?LinkId=234238 上介绍了“空白页”项模板
 
@@ -15,7 +14,7 @@ namespace BiliDownload.Pages
     /// </summary>
     public sealed partial class UserLoginPage : Page
     {
-        public AppWindow LoginWindow { get; private set; }
+        public Window LoginWindow { get; private set; }
         public static string SESSDATA { get => ApplicationData.Current.LocalSettings.Values["biliUserSESSDATA"] as string; }
         public static long Uid { get => (long)ApplicationData.Current.LocalSettings.Values["biliUserUid"]; }
         public static UserLoginPage Current { get; private set; }
@@ -41,32 +40,29 @@ namespace BiliDownload.Pages
             }
         }
         #region 下面是密码登录用的
-        private async void pwdLoginBtn_Click(object sender, RoutedEventArgs e)
+        private void pwdLoginBtn_Click(object sender, RoutedEventArgs e)
         {
-            /*
-            AppWindow loginWindow = await AppWindow.TryCreateAsync();
-            this.LoginWindow = loginWindow;
-            loginWindow.RequestSize(new Size(600, 800));
-            Frame loginFrame = new Frame() { Height = 800, Width = 600 };
+            var loginWindow = new Window();
+            LoginWindow = loginWindow;
+            var loginFrame = new Frame();
             loginFrame.Navigate(typeof(PwdLoginPage));
-            ElementCompositionPreview.SetAppWindowContent(loginWindow, loginFrame);
-            await loginWindow.TryShowAsync();
-            */
+            loginWindow.Content = loginFrame;
+            loginWindow.Activate();
         }
-        public async Task PwdLoginOk()
+        public void PwdLoginOk()
         {
             if (this.LoginWindow != null)
             {
-                await this.LoginWindow.CloseAsync();
+                this.LoginWindow.Close();
                 this.LoginWindow = null;
                 this.LoginOk();
             }
         }
-        public async Task PwdLoginCancel()
+        public void PwdLoginCancel()
         {
             if (this.LoginWindow != null)
             {
-                await this.LoginWindow.CloseAsync();
+                this.LoginWindow.Close();
                 this.LoginWindow = null;
             }
         }

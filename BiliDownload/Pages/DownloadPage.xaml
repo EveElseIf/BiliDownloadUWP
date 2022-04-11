@@ -13,8 +13,18 @@
             <RowDefinition Height="100"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
-        <TextBlock Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Left" Text="下载列表"
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Left" Text="下载列表"
                    FontFamily="Microsoft Yahei UI" FontSize="40" Margin="20,0,0,0"/>
+            <TextBlock Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Right" MaxWidth="600" TextWrapping="Wrap"
+                   FontFamily="Microsoft Yahei UI" FontSize="20" Margin="20,0,20,0">
+                注意：由于本项目作者学业繁忙，已决定于2022年6月30日归档本项目，届时将停用微软商店下载入口，并不再更新。如有开发者希望接管本项目或在微软商店继续分发，请从设置页通过邮箱联系作者。感谢每位用户一直以来的支持，让我们下次有缘再见呜呜呜！
+            </TextBlock>
+        </Grid>
         <Pivot Grid.Row="1" x:Name="pivot" x:FieldModifier="public">
             <PivotItem Header="进行中">
                 <ScrollViewer>

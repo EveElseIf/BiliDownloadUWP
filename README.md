@@ -1,8 +1,8 @@
-# 萌新写的UWP B站视频下载工具
+# 萌新写的WinUI 3(之前是UWP) B站视频下载工具
 这是一个可以下载B站视频的工具，支持使用BV,AV,SS,EP号搜索视频，自动转换为ass格式下载弹幕，以及MC号搜索漫画。暂不支持4K视频。有些太老的视频（没有dash的视频）暂不支持。
 
-# 重构项目地址
-https://github.com/EveElseIf/BilibiliDownloadToolUWP
+# 弃坑说明
+由于本项目作者学业繁忙，已决定于2022年6月30日归档本项目，届时将停用微软商店下载入口，并不再更新。如有开发者希望接管本项目或在微软商店继续分发，请从设置页通过邮箱联系作者。感谢每位用户一直以来的支持，让我们下次有缘再见呜呜呜！
 
 # 使用说明
 此工具支持断点续传，重启程序后也可以续传。为了尊重版权，需要使用大会员下载高清晰度视频（其实播放视频本质上就是在下载视频，所以能播放就能下载）。
@@ -16,15 +16,10 @@ https://github.com/EveElseIf/BilibiliDownloadToolUWP
 # 安装说明
 发布到了商店，https://www.microsoft.com/store/apps/9NRCX4MWLW8T
 
-# 问题
-程序在后台时（最小化之类），无法执行ffmpeg，无法更新界面
-
 # 废话
-作者是C#萌新，没有经验
+作者是C#萌新，只有一点经验
 
-然后高三了，有时间就久不久更新一下。。。
-
-什么时候有第一颗星呢？⭐
+然后大一了，没时间了还是弃坑了。。。
 
 # 引用
 Newtonsoft.Json
@@ -39,4 +34,4 @@ https://github.com/EveElseIf/DanmakuToAss
 
 参考了 https://github.com/SocialSisterYi/bilibili-API-collect 的文档
 
-ffmpeg是从jjdown那里复制来的（只有3m，完整版可是60m以上。。）
+ffmpeg是从jjdown那里复制来的

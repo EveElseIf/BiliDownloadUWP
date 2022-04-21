@@ -33,7 +33,7 @@
       Executable="$targetnametoken$.exe"
       EntryPoint="$targetentrypoint$">
       <uap:VisualElements
-        DisplayName="bilibili下载工具 测试"
+        DisplayName="小破站下载工具 测试"
         Description="还在测试中"
         BackgroundColor="transparent"
         Square150x150Logo="Images\Square150x150Logo.png"

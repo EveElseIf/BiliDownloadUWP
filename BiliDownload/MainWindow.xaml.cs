@@ -19,7 +19,7 @@ namespace BiliDownload
         {
             this.InitializeComponent();
             m_AppWindow = GetAppWindowForCurrentWindow();
-            m_AppWindow.Title = "bilibili下载工具 测试";
+            m_AppWindow.Title = "小破站下载工具 测试";
             m_AppWindow.TitleBar.IconShowOptions = IconShowOptions.HideIconAndSystemMenu;
         }
         private AppWindow GetAppWindowForCurrentWindow()

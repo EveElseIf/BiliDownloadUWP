@@ -83,8 +83,11 @@ namespace BiliDownload.Components
         {
             var video = await BiliVideoHelper.GetSingleVideoAsync(bv, cid, quality, sESSDATA);
             var tokenSource = new CancellationTokenSource();
-            var downloadName = video.Name;
-            var title = video.Title;
+            var downloadName = video.Name.Replace("\\", "").Replace("/", "").Replace(":", "").Replace("*", "")
+            .Replace("?", "").Replace("\"", "").Replace("<", "").Replace(">", "").Replace("|", "");
+            var title = video.Title.Replace("\\", "").Replace("/", "").Replace(":", "").Replace("*", "")
+            .Replace("?", "").Replace("\"", "").Replace("<", "").Replace(">", "").Replace("|", "");
+            //防止出现不允许的文件名
 
             var ua = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.135 Safari/537.36 Edg/84.0.522.63";
             var referer = "http://www.bilibili.com";
@@ -114,10 +117,8 @@ namespace BiliDownload.Components
 
         public async Task OnCompleteAsync()
         {
-            var title = Title.Replace("\\", "").Replace("/", "").Replace(":", "").Replace("*", "")
-            .Replace("?", "").Replace("\"", "").Replace("<", "").Replace(">", "").Replace("|", "");
-            var downloadName = DownloadName.Replace("\\", "").Replace("/", "").Replace(":", "").Replace("*", "")
-                .Replace("?", "").Replace("\"", "").Replace("<", "").Replace(">", "").Replace("|", "");//防止出现不允许的文件名
+            var title = Title;
+            var downloadName = DownloadName;
 
             var videoFile = PartList.Where(p => p.CacheFile.Name.Contains("Video")).FirstOrDefault().CacheFile;
             var audioFile = PartList.Where(p => p.CacheFile.Name.Contains("Audio")).FirstOrDefault().CacheFile;

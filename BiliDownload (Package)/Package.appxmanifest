@@ -14,7 +14,7 @@
     Version="1.1.5.0" />
 
   <Properties>
-    <DisplayName>小破站下载工具 测试</DisplayName>
+    <DisplayName>小破站下载工具</DisplayName>
     <PublisherDisplayName>EveElseIf</PublisherDisplayName>
     <Logo>Images\StoreLogo.png</Logo>
   </Properties>
@@ -33,7 +33,7 @@
       Executable="$targetnametoken$.exe"
       EntryPoint="$targetentrypoint$">
       <uap:VisualElements
-        DisplayName="小破站下载工具 测试"
+        DisplayName="小破站下载工具"
         Description="还在测试中"
         BackgroundColor="transparent"
         Square150x150Logo="Images\Square150x150Logo.png"
